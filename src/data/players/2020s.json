@@ -1,0 +1,741 @@
+[
+  {
+    "id": "carlos-alcaraz",
+    "name": "Carlos Alcaraz",
+    "country": "Spain",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 7,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "forehand",
+      "drop-shot",
+      "volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Semi-western grip with an explosive unit turn, the racquet tip pointing forward in the take-back and a deep wrist lag before a whip-like acceleration; he hits mostly from open and semi-open stances and often leaves the ground from the leg drive."
+      },
+      {
+        "stroke": "drop-shot",
+        "note": "Disguises the forehand drop shot by using the same full forehand preparation, then slipping to a continental grip at the last moment and carving under the ball with soft hands, usually when the opponent is pinned deep behind the baseline."
+      },
+      {
+        "stroke": "volley",
+        "note": "Moves forward constantly behind big forehands, split-stepping around the service line and punching volleys with a continental grip and short backswing; also uses serve-and-volley as a surprise play."
+      }
+    ],
+    "lesson": "Combine power with variety: the threat of the big forehand is what makes the drop shot work.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Carlos_Alcaraz",
+      "https://www.atptour.com/en/players/carlos-alcaraz/a0e2/overview"
+    ]
+  },
+  {
+    "id": "jannik-sinner",
+    "name": "Jannik Sinner",
+    "country": "Italy",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 5,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "forehand",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Prepares with an early unit turn and a compact take-back, then drives through the ball with a flat swing, a contact point well in front and a long extension; clean timing rather than muscle produces some of the highest backhand speeds on tour."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Semi-western grip with a compact modern take-back and pronounced racquet lag; he stays balanced with a wide base, keeps his head still through contact and takes the ball early from on the baseline."
+      },
+      {
+        "stroke": "footwork",
+        "note": "His background as a skier shows in a low, wide stance and the ability to slide into open-stance shots on both wings on hard courts while staying balanced."
+      }
+    ],
+    "lesson": "Clean timing, early contact and balance generate more pace than swinging harder.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jannik_Sinner",
+      "https://www.atptour.com/en/players/jannik-sinner/s0ag/overview"
+    ]
+  },
+  {
+    "id": "daniil-medvedev",
+    "name": "Daniil Medvedev",
+    "country": "Russia",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "backhand-2h",
+      "return",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Hits an unusually flat two-hander with a short, low take-back and very little topspin, meeting the ball with a firm, linear swing so it skids low through the court and is hard to attack."
+      },
+      {
+        "stroke": "return",
+        "note": "Stands several meters behind the baseline to return, giving himself time for a full groundstroke swing; he returns deep and central, then uses his reach and movement to work back into the point."
+      },
+      {
+        "stroke": "serve",
+        "note": "From 1.98 m he uses a quick, simple motion with a relatively low toss and hits flat serves close to the lines, earning many free points."
+      }
+    ],
+    "lesson": "Depth and low, flat consistency can dismantle opponents even without textbook-looking strokes.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Daniil_Medvedev"
+    ]
+  },
+  {
+    "id": "alexander-zverev",
+    "name": "Alexander Zverev",
+    "country": "Germany",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 4,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Widely considered one of the best two-handers in the game: early shoulder turn, straight arms at contact, and a drive through the ball with the left hand dominant, which lets him hit down the line with pace from almost any position."
+      },
+      {
+        "stroke": "serve",
+        "note": "At 1.98 m he hits first serves regularly above 220 km/h using a high toss, a deep knee bend and full upward extension into contact; the height of contact gives a steep angle into the box."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Uses a semi-western grip with a larger loop and tends to hit with more topspin and net clearance from further back, the more conservative wing of his game."
+      }
+    ],
+    "lesson": "A technically sound two-handed backhand can be both your steadiest shot and your biggest weapon.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Alexander_Zverev",
+      "https://en.wikipedia.org/wiki/2026_US_Open_(tennis)"
+    ]
+  },
+  {
+    "id": "stefanos-tsitsipas",
+    "name": "Stefanos Tsitsipas",
+    "country": "Greece",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 5,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "forehand",
+      "backhand-1h",
+      "volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Runs around his backhand to hit a heavy inside-out forehand, with a fluid high take-back, full shoulder rotation and an aggressive step forward into the court after contact."
+      },
+      {
+        "stroke": "backhand-1h",
+        "note": "Hits the one-hander with an eastern backhand grip, a full shoulder turn and a long, flowing follow-through with the chest staying sideways; he blends in a knifing slice to stay in rallies when the ball gets high."
+      },
+      {
+        "stroke": "volley",
+        "note": "Follows serves and forehands to net often, using a continental grip and a forward-moving split step, closing the net to cut off angles."
+      }
+    ],
+    "lesson": "Build points around your best shot and move forward to finish them.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Stefanos_Tsitsipas"
+    ]
+  },
+  {
+    "id": "casper-ruud",
+    "name": "Casper Ruud",
+    "country": "Norway",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 6,
+    "peakRanking": 2,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Uses a strong semi-western grip and a steep low-to-high swing to produce some of the heaviest topspin on tour; he gives the ball high net clearance and lets it kick up out of the opponent's strike zone."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Moves around the backhand with small adjustment steps to hit forehands from the backhand corner, then recovers with a crossover step; clay-style point construction built on patience and position."
+      },
+      {
+        "stroke": "serve",
+        "note": "Relies on a heavy kick serve with a toss over the head and a brush up the back of the ball, setting up the forehand as the first shot of the rally."
+      }
+    ],
+    "lesson": "Heavy topspin with high net clearance makes you consistent and hard to attack at the same time.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Casper_Ruud"
+    ]
+  },
+  {
+    "id": "taylor-fritz",
+    "name": "Taylor Fritz",
+    "country": "United States",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 7,
+    "peakRanking": 4,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "At 1.96 m he uses a smooth motion with a platform stance and full extension up to contact, hitting flat serves up to around 240 km/h and mixing in a heavy slice out wide on the deuce side."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits a flat, penetrating forehand with a semi-western grip and a fairly straight hitting arm, excelling at sharp cross-court angles and at stepping in on the first ball after the serve."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Drives a flat, compact two-hander, particularly effective cross-court at sharp angles to open the court."
+      }
+    ],
+    "lesson": "Practice the serve and the first shot after it as a single pattern.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Taylor_Fritz"
+    ]
+  },
+  {
+    "id": "andrey-rublev",
+    "name": "Andrey Rublev",
+    "country": "Russia",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 8,
+    "peakRanking": 5,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Swings with maximum racquet-head speed on nearly every forehand: a fast compact take-back, strong hip rotation and a whip through contact, with busy adjustment steps beforehand so the ball is always in his strike zone."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Very active feet between shots, constantly repositioning to hit forehands from the middle and backhand side of the court and recovering quickly to the center."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Hits a flat, early two-hander from on the baseline to keep the tempo high and deny opponents time."
+      }
+    ],
+    "lesson": "Fast feet put the ball in your strike zone so you can swing freely.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Andrey_Rublev"
+    ]
+  },
+  {
+    "id": "ben-shelton",
+    "name": "Ben Shelton",
+    "country": "United States",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 9,
+    "peakRanking": 4,
+    "slams": 0,
+    "hand": "left",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand",
+      "volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "A lefty motion with a very deep knee bend and a huge vertical leg drive, launching up into contact; he has hit serves around 240 km/h and uses the lefty slice out wide on the ad court and a high-bouncing kick."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Whips a heavy lefty forehand with a semi-western grip and a lot of shoulder rotation, often hitting it on the run or while airborne."
+      },
+      {
+        "stroke": "volley",
+        "note": "Comfortable coming forward behind the serve, using his athleticism and reach to cover the net and finish with volleys and overheads."
+      }
+    ],
+    "lesson": "Serve power comes from the legs: bend deep and drive up into the ball.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ben_Shelton"
+    ]
+  },
+  {
+    "id": "lorenzo-musetti",
+    "name": "Lorenzo Musetti",
+    "country": "Italy",
+    "tour": "ATP",
+    "decade": "2020s",
+    "rankInDecade": 10,
+    "peakRanking": 5,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "backhand-1h",
+      "slice",
+      "drop-shot"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "A flowing one-hander with a high, elaborate take-back, a full shoulder turn and an extended, straight-arm contact in front; he can generate winners from deep behind the baseline or wide outside the doubles alley."
+      },
+      {
+        "stroke": "slice",
+        "note": "Uses a continental-grip backhand slice with a high-to-low path and long follow-through to defend, change rhythm and keep the ball low, often preparing identically for the slice and the drop shot."
+      },
+      {
+        "stroke": "drop-shot",
+        "note": "Plays the drop shot off the same slice preparation, softening the grip and shortening the follow-through so opponents cannot read it early."
+      }
+    ],
+    "lesson": "Prepare the same way for slice, drop shot and drive so your variety is disguised.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lorenzo_Musetti"
+    ]
+  },
+  {
+    "id": "iga-swiatek",
+    "name": "Iga Swiatek",
+    "country": "Poland",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 6,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Uses a western grip, rare on the WTA, with a steep upward swing that produces topspin rates comparable to the men's tour; the ball clears the net high and kicks up sharply, especially on clay."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Slides into shots on both clay and hard courts from a low, wide base and recovers with explosive crossover steps, so she is set early enough to attack from defensive positions."
+      },
+      {
+        "stroke": "return",
+        "note": "Steps well inside the baseline to return second serves, taking the ball early with a compact swing to immediately pressure the server."
+      }
+    ],
+    "lesson": "Heavy topspin plus elite movement lets you attack with margin.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Iga_%C5%9Awi%C4%85tek",
+      "https://www.wtatennis.com/players/326408/iga-swiatek"
+    ]
+  },
+  {
+    "id": "aryna-sabalenka",
+    "name": "Aryna Sabalenka",
+    "country": "Belarus",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 4,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "serve",
+      "backhand-2h"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Hits with a semi-western grip, a big shoulder turn and full-body rotation, averaging forehand speeds comparable to top ATP players; she commits to the swing and aims big to large targets rather than the lines."
+      },
+      {
+        "stroke": "serve",
+        "note": "Rebuilt her serve with a biomechanics coach after a period of double faults, stabilizing the toss position and simplifying the rhythm so the motion holds up under pressure."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Drives a flat, heavy two-hander with long extension, equally willing to go down the line as cross-court."
+      }
+    ],
+    "lesson": "Technical flaws can be fixed: rebuild the fundamentals (toss, rhythm) and power becomes reliable.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Aryna_Sabalenka"
+    ]
+  },
+  {
+    "id": "elena-rybakina",
+    "name": "Elena Rybakina",
+    "country": "Kazakhstan",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand",
+      "backhand-2h"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "At 1.84 m she uses a relaxed, effortless-looking motion with a smooth tempo, a toss in front and full extension at contact, producing the biggest first serve on the WTA and regularly leading the tour in aces."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits flat and clean with a calm, simple take-back and little wasted motion, stepping into the ball and driving through it rather than brushing up."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A flat, linear two-hander with early preparation and long extension; she takes it early and redirects down the line with the same swing."
+      }
+    ],
+    "lesson": "Effortless power comes from relaxed, simple technique and clean timing, not from muscling the ball.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Elena_Rybakina",
+      "https://en.wikipedia.org/wiki/2026_US_Open_(tennis)"
+    ]
+  },
+  {
+    "id": "ashleigh-barty",
+    "name": "Ashleigh Barty",
+    "country": "Australia",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 4,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "slice",
+      "serve",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "slice",
+        "note": "Her backhand slice is the best of her generation: continental grip, full shoulder turn, racquet starting above the ball and carving high-to-low with a long follow-through while staying sideways, keeping the ball skidding below the opponent's knees."
+      },
+      {
+        "stroke": "serve",
+        "note": "Only 1.66 m tall but among the WTA ace leaders thanks to precise placement, a strong leg drive and heavy slice and kick variations rather than raw speed."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits a heavy-topspin forehand with a semi-western grip and uses the low slice to draw short balls she can run around and attack with it."
+      }
+    ],
+    "lesson": "A low, biting slice changes the rhythm of a rally and sets up your attacking shots.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ashleigh_Barty"
+    ]
+  },
+  {
+    "id": "coco-gauff",
+    "name": "Coco Gauff",
+    "country": "United States",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 5,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "western",
+    "style": "counterpuncher",
+    "signature": [
+      "backhand-2h",
+      "footwork",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Her two-hander is her most reliable weapon: compact take-back, early contact in front and firm through the hitting zone, struck from open or closed stance and redirected down the line with ease."
+      },
+      {
+        "stroke": "footwork",
+        "note": "One of the fastest players on tour; she defends from a wide open stance, sliding into shots and recovering fast enough to turn defense into offense."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Uses an extreme western-leaning grip with a long swing, which produces heavy spin but makes low or fast balls harder to time; a useful example of how extreme grips trade consistency under pressure for spin."
+      }
+    ],
+    "lesson": "Build your game around your most reliable shot and let your movement cover the rest.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Coco_Gauff"
+    ]
+  },
+  {
+    "id": "naomi-osaka",
+    "name": "Naomi Osaka",
+    "country": "Japan",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 6,
+    "peakRanking": 1,
+    "slams": 4,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "serve",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "Generates first serves near 200 km/h with a smooth motion, a deep knee bend and strong upward leg drive, hitting flat to both corners to win free points."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits from an open stance with a semi-western grip, big hip and shoulder rotation and a flat, heavy ball, looking to strike first from the baseline."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Drives a flat two-hander with good extension, particularly strong cross-court and on the return of serve."
+      }
+    ],
+    "lesson": "First-strike tennis: a big serve followed by a committed first forehand.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Naomi_Osaka"
+    ]
+  },
+  {
+    "id": "barbora-krejcikova",
+    "name": "Barbora Krejcikova",
+    "country": "Czech Republic",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 7,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "volley",
+      "slice",
+      "drop-shot"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "volley",
+        "note": "A former doubles world No. 1 whose net skills carry into singles: continental grip, compact punch with almost no backswing, and a forward-moving split step that lets her close and angle volleys away."
+      },
+      {
+        "stroke": "slice",
+        "note": "Mixes backhand slices and changes of pace into baseline rallies to break the rhythm of harder hitters and create short balls to approach on."
+      },
+      {
+        "stroke": "drop-shot",
+        "note": "Uses soft hands and a late grip change to play disguised drop shots, then follows them forward to cover the reply at net."
+      }
+    ],
+    "lesson": "Doubles skills such as volleys, touch and variety win singles points too.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Barbora_Krej%C4%8D%C3%ADkov%C3%A1"
+    ]
+  },
+  {
+    "id": "madison-keys",
+    "name": "Madison Keys",
+    "country": "United States",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 8,
+    "peakRanking": 5,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "One of the hardest forehands in women's tennis: a semi-western grip, a full unit turn, pronounced racquet lag and very fast racquet-head speed through contact, hit from a loaded open stance."
+      },
+      {
+        "stroke": "serve",
+        "note": "A powerful first serve from a fluid motion with a strong leg drive; late in her career she adjusted equipment and technique for more control and margin rather than more pace."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Hits a heavy two-hander with full rotation and is willing to change direction down the line early in the rally."
+      }
+    ],
+    "lesson": "Raw power becomes a winning weapon once you add margin and shot selection to it.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Madison_Keys"
+    ]
+  },
+  {
+    "id": "mirra-andreeva",
+    "name": "Mirra Andreeva",
+    "country": "Russia",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 9,
+    "peakRanking": 5,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "backhand-2h",
+      "drop-shot",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "A compact, early-prepared two-hander that she redirects down the line with the same swing, using clean timing and contact in front rather than a large backswing."
+      },
+      {
+        "stroke": "drop-shot",
+        "note": "Blends drop shots, slices and lobs into baseline rallies with soft hands, choosing them when the opponent is pushed deep so the variety is tactical rather than decorative."
+      },
+      {
+        "stroke": "return",
+        "note": "Reads the serve early and returns deep with a short swing, starting points on neutral or better against bigger servers."
+      }
+    ],
+    "lesson": "Tactical variety and good shot selection can beat bigger hitters at any age.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mirra_Andreeva"
+    ]
+  },
+  {
+    "id": "ons-jabeur",
+    "name": "Ons Jabeur",
+    "country": "Tunisia",
+    "tour": "WTA",
+    "decade": "2020s",
+    "rankInDecade": 10,
+    "peakRanking": 2,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "drop-shot",
+      "slice",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "drop-shot",
+        "note": "The most prolific drop-shotter of her era: she sets up with a normal forehand or backhand preparation, changes to a continental grip late and cuts under the ball with an open face and relaxed hand, adding sidespin so the ball moves away after the bounce."
+      },
+      {
+        "stroke": "slice",
+        "note": "Uses forehand and backhand slices to change pace and height, keeping the ball low and forcing opponents to generate their own pace."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Varies the forehand between a flat drive, a heavy topspin roll and sharp short angles, all from similar preparation, so opponents cannot settle into a rhythm."
+      }
+    ],
+    "lesson": "Disguise comes from identical preparation: make your drop shot look like your drive until the last moment.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ons_Jabeur"
+    ]
+  }
+]

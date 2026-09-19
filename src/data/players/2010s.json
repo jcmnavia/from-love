@@ -1,0 +1,738 @@
+[
+  {
+    "id": "novak-djokovic",
+    "name": "Novak Djokovic",
+    "country": "Serbia",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 24,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "return",
+      "backhand-2h",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "return",
+        "note": "Uses a very compact unit turn with almost no backswing on the return, split-stepping as the server makes contact and meeting the ball well in front so the server's pace does the work; he aims deep down the middle to take away angles."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Keeps both arms relatively straight at contact with the left hand driving the shot like a left-handed forehand, and rotates hips and shoulders together so he can redirect the ball down the line without changing his preparation."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Slides into open-stance shots on hard courts with a wide base and low center of gravity, planting the outside foot and pushing back immediately so recovery begins during the follow-through."
+      }
+    ],
+    "lesson": "Build your game on a compact, early-contact return and balanced, elastic movement rather than raw power.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Novak_Djokovic",
+      "https://www.atptour.com/en/players/novak-djokovic/d643/overview"
+    ]
+  },
+  {
+    "id": "rafael-nadal",
+    "name": "Rafael Nadal",
+    "country": "Spain",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 22,
+    "hand": "left",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork",
+      "mental"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Hits with an extreme semi-western grip and a steep low-to-high swing, often finishing with a 'lasso' follow-through over the same-side shoulder; the vertical racquet path brushes up the back of the ball for very heavy topspin that kicks above the opponent's shoulders."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Takes many small adjustment steps to run around the backhand and hit inside-out forehands from the ad corner, loading the outside (left) leg in an open stance and exploding up through the shot."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "As a natural right-hander playing lefty, his dominant right arm leads a compact two-hander; he stays low with bent knees and drives flat cross-court with a short backswing when pressed."
+      }
+    ],
+    "lesson": "Heavy topspin with big net clearance gives you aggression and safety at the same time.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Rafael_Nadal",
+      "https://www.atptour.com/en/players/rafael-nadal/n409/overview"
+    ]
+  },
+  {
+    "id": "andy-murray",
+    "name": "Andy Murray",
+    "country": "United Kingdom",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "return",
+      "backhand-2h",
+      "lob"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Takes the racquet back with a short, low loop and hits through the ball with a firm left wrist and a long extension toward the target, making his two-hander flat, early and easy to redirect down the line."
+      },
+      {
+        "stroke": "return",
+        "note": "Steps inside the baseline against second serves with an abbreviated backswing and blocks the ball back with his body weight moving forward, shrinking the server's recovery time."
+      },
+      {
+        "stroke": "lob",
+        "note": "Disguises the topspin lob by preparing exactly as for a passing shot, then opening the racquet face late and brushing sharply upward so the ball clears the volleyer and dips inside the baseline."
+      }
+    ],
+    "lesson": "Absorb pace with compact swings and use variety and placement to turn defense into offense.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Andy_Murray"
+    ]
+  },
+  {
+    "id": "stan-wawrinka",
+    "name": "Stan Wawrinka",
+    "country": "Switzerland",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 4,
+    "peakRanking": 3,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-1h",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "Uses a strong eastern backhand grip with a full shoulder turn that shows his back to the opponent, then swings with a straight hitting arm and releases the non-hitting hand backwards as a counterbalance, staying sideways through a contact point well in front of the lead hip."
+      },
+      {
+        "stroke": "backhand-1h",
+        "note": "Loads heavily on a bent front leg and drives upward and forward through the ball, finishing high with the chest still closed; this leg drive is what lets him hit a one-hander with pace from shoulder height."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Takes a big looping backswing and hits with a heavy, full-body rotation from a semi-open stance, giving himself time by standing a little deeper behind the baseline."
+      }
+    ],
+    "lesson": "A one-handed backhand becomes a weapon when you turn fully, stay sideways and hit out in front with a straight arm.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Stan_Wawrinka"
+    ]
+  },
+  {
+    "id": "juan-martin-del-potro",
+    "name": "Juan Martin del Potro",
+    "country": "Argentina",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 5,
+    "peakRanking": 3,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "eastern",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Hits with a near-eastern grip and a relatively flat, through-the-ball swing path; his long levers and a straight hitting arm at contact create huge racquet-head speed, and the ball travels low over the net with little margin but enormous pace."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Prepares with a high, extended take-back and steps into a neutral or semi-open stance, transferring weight forward through contact rather than spinning off the ball."
+      },
+      {
+        "stroke": "serve",
+        "note": "Uses his 1.98 m height with a simple, rhythmic motion and a high contact point, hitting flat first serves down the T to set up the first-strike forehand."
+      }
+    ],
+    "lesson": "A flatter eastern-grip forehand hit through the ball with weight transfer is the most direct route to pace.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Juan_Mart%C3%ADn_del_Potro"
+    ]
+  },
+  {
+    "id": "marin-cilic",
+    "name": "Marin Cilic",
+    "country": "Croatia",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 6,
+    "peakRanking": 3,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "serve",
+      "backhand-2h",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "Simplified his motion to a more compact take-back with a consistent toss slightly in front, reaching up at full extension from 1.98 m to hit flat serves with steep downward angles."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Hits a flat, linear two-hander with a low take-back and minimal loop, stepping in with a closed stance and driving through the ball, which makes it especially effective on low-bouncing grass and fast hard courts."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Takes the ball early on the rise from on or inside the baseline with a big shoulder turn, accepting lower margin in exchange for taking time away."
+      }
+    ],
+    "lesson": "Pair a reliable first serve with stepping inside the baseline and taking the next ball early.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Marin_%C4%8Cili%C4%87"
+    ]
+  },
+  {
+    "id": "dominic-thiem",
+    "name": "Dominic Thiem",
+    "country": "Austria",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 7,
+    "peakRanking": 3,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-1h",
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "Uses a very large, high take-back and an extreme eastern backhand grip, then whips a long swing with a straight arm through contact; the long runway generates heavy topspin and pace but requires standing deeper to buy time."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Coils with an exaggerated shoulder turn and a big wrist lag, accelerating steeply upward for heavy topspin from a full open stance, often leaving the ground from the force of the leg drive."
+      },
+      {
+        "stroke": "serve",
+        "note": "Hits a heavy kick second serve by tossing over his head, arching his back and brushing up and across the ball from 7 to 1 o'clock so it jumps high to a right-hander's backhand."
+      }
+    ],
+    "lesson": "Full-commitment swings with heavy topspin work if you give yourself time with court position and early preparation.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dominic_Thiem"
+    ]
+  },
+  {
+    "id": "david-ferrer",
+    "name": "David Ferrer",
+    "country": "Spain",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 8,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "footwork",
+      "return",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "footwork",
+        "note": "Never stops moving his feet between shots: constant small adjustment steps, a split step on every opponent contact, and an immediate crossover recovery step toward the middle after each groundstroke."
+      },
+      {
+        "stroke": "return",
+        "note": "Stands close to the baseline with a short backswing and takes the return early, putting a very high percentage back deep to neutralize bigger servers despite being 1.75 m tall."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Runs around his backhand to hit inside-out forehands with a semi-western grip and safe net clearance, aiming for depth and repeated patterns rather than outright winners."
+      }
+    ],
+    "lesson": "Relentless footwork and consistency can beat more powerful players.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/David_Ferrer"
+    ]
+  },
+  {
+    "id": "kei-nishikori",
+    "name": "Kei Nishikori",
+    "country": "Japan",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 9,
+    "peakRanking": 4,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "return",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Takes the two-hander very early on the rise with a compact take-back, often jumping into the shot off both feet to meet higher balls at a comfortable contact height and redirect them down the line."
+      },
+      {
+        "stroke": "return",
+        "note": "Holds his position on the baseline, reads the toss and uses a short blocking swing with quick hands to send returns back at the server's feet."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Hugs the baseline and uses fast, light steps to hit on the rise, compensating for a smaller frame by taking time from opponents instead of trying to out-hit them."
+      }
+    ],
+    "lesson": "Taking the ball early with compact strokes is how a smaller player takes time away from a bigger one.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kei_Nishikori"
+    ]
+  },
+  {
+    "id": "milos-raonic",
+    "name": "Milos Raonic",
+    "country": "Canada",
+    "tour": "ATP",
+    "decade": "2010s",
+    "rankInDecade": 10,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand",
+      "volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "Uses a smooth, abbreviated take-back into a deep trophy position with a pronounced knee bend, a toss well in front, and strong internal shoulder rotation and pronation at a very high contact point; the same toss disguises flat, slice and kick serves."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Runs around the backhand to hit a heavy inside-out forehand as the first shot after the serve, setting his feet early and hitting with full shoulder rotation."
+      },
+      {
+        "stroke": "volley",
+        "note": "Follows big serves forward behind a deep split step and keeps volleys simple with a firm continental grip and short punch, aiming into the open court."
+      }
+    ],
+    "lesson": "A repeatable toss and one consistent service motion for every serve type makes your serve unreadable.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Milos_Raonic"
+    ]
+  },
+  {
+    "id": "serena-williams",
+    "name": "Serena Williams",
+    "country": "United States",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 23,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "serve",
+      "return",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "A rhythmic, unhurried motion with an extremely consistent toss placed slightly in front and to the right, a relaxed arm that drops fully into the racquet-drop position, and explosive leg drive up into contact; every serve type comes from the same toss."
+      },
+      {
+        "stroke": "return",
+        "note": "Stands on or inside the baseline and attacks second serves with a full but early-prepared swing, stepping forward into an open stance and hitting deep at the server's feet."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits from an open stance with a big hip and shoulder rotation and a relatively flat swing path, transferring weight from the loaded outside leg into the ball."
+      }
+    ],
+    "lesson": "A relaxed, rhythmic service motion with a consistent toss is the foundation of a dominant serve.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Serena_Williams",
+      "https://www.wtatennis.com/players/230234/serena-williams"
+    ]
+  },
+  {
+    "id": "angelique-kerber",
+    "name": "Angelique Kerber",
+    "country": "Germany",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "left",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "forehand",
+      "footwork",
+      "backhand-2h"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Her trademark is the down-the-line lefty forehand hit from a very low, deep knee bend, sometimes with a knee nearly touching the court, which lets her get under low balls and redirect cross-court pace up the line with a short swing."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Defends from a wide, low base and uses the opponent's pace, pushing off the outside leg in an open stance so she can recover while the ball is still travelling."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Uses a compact two-hander with little backswing to counterpunch, changing direction by adjusting contact point rather than swing size."
+      }
+    ],
+    "lesson": "Get low with your legs and use your opponent's pace to redirect the ball instead of generating your own.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Angelique_Kerber"
+    ]
+  },
+  {
+    "id": "simona-halep",
+    "name": "Simona Halep",
+    "country": "Romania",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "backhand-2h",
+      "footwork",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Prepares early with a compact unit turn and hits the two-hander on the rise with a flat, driving swing; she changes direction down the line by contacting the ball slightly later while keeping the same preparation."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Uses quick adjustment steps and a well-timed split step to arrive balanced, then recovers with a crossover step; at 1.68 m her court coverage and balance replace raw power."
+      },
+      {
+        "stroke": "return",
+        "note": "Takes returns early from near the baseline with a short swing, aiming deep and central to start the rally on neutral terms."
+      }
+    ],
+    "lesson": "Early preparation and balance let you redirect the ball to any target with the same swing.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Simona_Halep"
+    ]
+  },
+  {
+    "id": "victoria-azarenka",
+    "name": "Victoria Azarenka",
+    "country": "Belarus",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 4,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "One of the cleanest two-handers of her era: early shoulder turn, racquet head dropping below the ball, and a long extension through contact with the left arm driving, producing a deep, penetrating ball both cross-court and down the line."
+      },
+      {
+        "stroke": "return",
+        "note": "Stands on the baseline and steps into the return with a shortened backswing, contacting the ball in front and aiming deep down the middle to take the server's time away."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Holds her court position on the baseline and takes the ball early, using a strong first step and a split step timed to the opponent's contact."
+      }
+    ],
+    "lesson": "Step into the return with a short swing and you start every point on offense.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Victoria_Azarenka"
+    ]
+  },
+  {
+    "id": "petra-kvitova",
+    "name": "Petra Kvitova",
+    "country": "Czech Republic",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 5,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "left",
+    "backhand": "two-handed",
+    "forehandGrip": "eastern",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Hits a flat, first-strike lefty forehand with a relatively conservative grip and a swing path that goes through the ball rather than up it, taking it early and aiming for the lines."
+      },
+      {
+        "stroke": "serve",
+        "note": "The lefty slice serve out wide on the ad court is her signature: toss slightly to the left, brush around the outside of the ball and let the curve drag the returner off the court to open space for the next shot."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Drives the two-hander flat from a closed stance with a low trajectory, especially effective on grass where the ball stays low."
+      }
+    ],
+    "lesson": "Use the serve to open the court, then hit the first ball after it into the space you created.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Petra_Kvitov%C3%A1"
+    ]
+  },
+  {
+    "id": "caroline-wozniacki",
+    "name": "Caroline Wozniacki",
+    "country": "Denmark",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 6,
+    "peakRanking": 1,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "backhand-2h",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Her two-hander is compact and flat with an early contact point and firm wrists, and she can drive it down the line at will because the preparation is identical for both directions."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Covers the court with endurance-based movement: a split step on every ball, efficient crossover recovery steps, and balanced open-stance defense that sends the ball back deep with high margin."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Plays the forehand with safe net clearance and depth rather than pace, using shape and consistency to extend rallies until the opponent errs."
+      }
+    ],
+    "lesson": "Depth, consistency and fitness win a huge number of points without needing outright winners.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Caroline_Wozniacki"
+    ]
+  },
+  {
+    "id": "li-na",
+    "name": "Li Na",
+    "country": "China",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 7,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "forehand",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Hits a flat, early two-hander with a short take-back and strong hip rotation, taking the ball on the rise and driving it cross-court at sharp angles."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Generates pace with fast hip and shoulder rotation from a semi-open stance and a flat swing path, stepping forward into short balls rather than waiting for them."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Athletic, explosive first step and a habit of holding the baseline, which lets her take time away by meeting the ball early."
+      }
+    ],
+    "lesson": "Rotate your hips and shoulders together and step into the ball to hit flat and early from the baseline.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Li_Na"
+    ]
+  },
+  {
+    "id": "garbine-muguruza",
+    "name": "Garbine Muguruza",
+    "country": "Spain",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 8,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "At 1.82 m she takes the two-hander at shoulder height and drives it flat, staying tall through contact with a long extension toward the target instead of rolling over the ball."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Stands on the baseline and takes the forehand early with a flat, heavy swing, stepping inside the court on any short ball and hitting to the corners."
+      },
+      {
+        "stroke": "volley",
+        "note": "Finishes points at the net more than most baseliners, moving forward behind deep approach shots and using a firm continental-grip punch volley."
+      }
+    ],
+    "lesson": "Hold your ground on the baseline and move forward on short balls to finish points.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Garbi%C3%B1e_Muguruza"
+    ]
+  },
+  {
+    "id": "agnieszka-radwanska",
+    "name": "Agnieszka Radwanska",
+    "country": "Poland",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 9,
+    "peakRanking": 2,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "eastern",
+    "style": "counterpuncher",
+    "signature": [
+      "drop-shot",
+      "slice",
+      "lob"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "drop-shot",
+        "note": "Disguises the drop shot by preparing as for a normal groundstroke, then switching to a continental grip late, opening the racquet face and cutting softly under the ball with relaxed hands."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Famous for the squat shot: dropping into a deep crouch to half-volley deep, fast balls off the baseline with a short blocking two-hander, using the legs rather than the swing to adjust to the ball height."
+      },
+      {
+        "stroke": "slice",
+        "note": "Varies pace and height with slices and soft angles, keeping the ball low and out of power hitters' strike zones, and redirects pace with minimal backswing."
+      }
+    ],
+    "lesson": "Touch, disguise and variety can take a power hitter's rhythm away.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Agnieszka_Radwa%C5%84ska"
+    ]
+  },
+  {
+    "id": "karolina-pliskova",
+    "name": "Karolina Pliskova",
+    "country": "Czech Republic",
+    "tour": "WTA",
+    "decade": "2010s",
+    "rankInDecade": 10,
+    "peakRanking": 1,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "eastern",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "From 1.86 m she uses a simple, fluid motion with a high toss and full extension at contact, hitting flat first serves with precise placement to the T and out wide; she led the WTA in aces multiple seasons."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hits flat with a conservative grip and minimal topspin, taking big cuts from a stable base; because movement is not her strength she aims to end points within the first few shots."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Drives a flat two-hander with long extension and little loop, keeping the ball low and fast through the court."
+      }
+    ],
+    "lesson": "A precise, well-placed first serve sets up simple one-two patterns that keep points short.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Karol%C3%ADna_Pl%C3%AD%C5%A1kov%C3%A1"
+    ]
+  }
+]

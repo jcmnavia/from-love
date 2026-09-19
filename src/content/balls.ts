@@ -1,0 +1,88 @@
+import type { BallType } from './types'
+
+// ITF Rules of Tennis, Appendix I. Rebound is measured from a 254 cm (100 in)
+// drop onto concrete. Relative bounce and size below are the midpoint of each
+// ITF range divided by the midpoint of the standard (type 2) ball:
+// 141 cm rebound and 6.70 cm diameter.
+export const BALLS: BallType[] = [
+  {
+    id: 'red-foam',
+    name: 'Red ball, stage 3 (foam)',
+    color: 'Red or red and yellow, solid foam',
+    bounce: 0.67,
+    size: 1.27,
+    forWhom: 'Children 5–8 years old in their first sessions, and absolute beginners of any age who need a very slow ball. It is the safest ball for indoor spaces and for learning to hit without fear.',
+    where: 'The red court: 11 m long and 5.5–6 m wide (a service box to service box court, or a court set across a normal court), net at 0.80 m. Also used in gyms and school halls.',
+    notes: 'ITF specification: 25.0–43.0 g, 8.00–9.00 cm across, rebound 85–105 cm. About 25% bigger than a standard ball and roughly 70% of the bounce. Foam is quieter and lighter than felt, which helps on hard floors indoors, but it drifts in the wind so it is less useful outdoors.',
+  },
+  {
+    id: 'red-felt',
+    name: 'Red ball, stage 3 (felt)',
+    color: 'Red and yellow felt, or yellow with a red dot',
+    bounce: 0.69,
+    size: 1.12,
+    forWhom: 'Children roughly 5–8 years old (Play and Stay “red” stage) who can already make contact and are ready to rally on a mini court outdoors.',
+    where: 'The red court: 11 m x 5.5 m, net at 0.80 m. Outdoors this is the standard red ball because the felt version does not blow around like foam.',
+    notes: 'ITF specification: 36.0–49.0 g, 7.00–8.00 cm across, rebound 90–105 cm. Up to 15% larger than a standard ball, around 75% of the mass and about 70% of the bounce. The low-pressure core is what makes it slow, so it never bounces above a child’s waist. Red balls are also great for adult beginners learning volleys close together.',
+  },
+  {
+    id: 'orange',
+    name: 'Orange ball, stage 2',
+    color: 'Orange and yellow felt, or yellow with an orange dot',
+    bounce: 0.8,
+    size: 0.96,
+    forWhom: 'Children roughly 8–10 years old who can rally with a red ball and are ready for a longer court, and beginner adults who want to learn to build points before using a full-speed ball.',
+    where: 'The orange court: 18 m long and 6.5 m wide (the singles court shortened to the service lines with an extra 2.6 m on each side, or lines marked inside the normal court), net at 0.80 m.',
+    notes: 'ITF specification: 36.0–46.9 g, 6.00–6.86 cm across, rebound 105–120 cm. Standard size but noticeably lighter and 50% slower than a yellow ball, with about 80% of the bounce. This is the stage where children learn to serve overhead and use the whole court width, because the ball still gives them time to move.',
+  },
+  {
+    id: 'green',
+    name: 'Green ball, stage 1',
+    color: 'Yellow felt with a green dot',
+    bounce: 0.9,
+    size: 0.98,
+    forWhom: 'Children roughly 9–12 years old moving to the full court, and adults returning after a long break or learning as complete beginners. Many clubs run green-ball adult leagues.',
+    where: 'The full 23.77 m court with a normal 0.914 m net. Green ball is the last stage before the yellow ball.',
+    notes: 'ITF specification: 47.0–51.5 g, 6.30–6.86 cm across, rebound 120–135 cm. Standard size, about 85% of the mass and roughly 90% of the bounce, so it plays about 25% slower than a yellow ball. The bounce stays closer to hip height on a full court, which is why players can keep a modern grip and swing rather than lifting balls above their shoulder.',
+  },
+  {
+    id: 'standard-regular-duty',
+    name: 'Standard ball, regular duty',
+    color: 'Optic yellow (or white) felt',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Everyone from green-ball graduates to professionals. Regular duty is the choice for clay and indoor courts, where the felt is not abraded much.',
+    where: 'Clay, indoor hard, carpet and grass. The thinner felt does not fluff up on soft surfaces, so the ball stays fast and true and does not pick up as much clay.',
+    notes: 'ITF type 2 (medium) specification: 56.0–59.4 g, 6.54–6.86 cm across, rebound 135–147 cm from 254 cm. The core is pressurised to about 12 psi above atmospheric, which is why a can is sealed. Regular duty uses a thinner, tighter felt. On a hard court it wears out fast, so keep it for clay and indoors.',
+  },
+  {
+    id: 'standard-extra-duty',
+    name: 'Standard ball, extra duty',
+    color: 'Optic yellow felt',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Everyone playing on outdoor hard courts. This is the most sold ball in the world and the one used at the US Open (Wilson US Open extra duty) and the Australian Open (Dunlop AO).',
+    where: 'Outdoor hard courts, which grind the felt. The thicker, woollier felt lasts longer before going bald and slightly slows the ball through the air.',
+    notes: 'Same ITF type 2 specification as regular duty: 56.0–59.4 g, 6.54–6.86 cm, rebound 135–147 cm. Only the felt differs. Extra duty fluffs up on clay and gets heavy and slow, so use regular duty there. Once opened, a pressurised ball loses noticeable bounce in two to four weeks even if never hit.',
+  },
+  {
+    id: 'pressureless',
+    name: 'Pressureless ball',
+    color: 'Optic yellow felt, often with a black or red dot, sometimes a whole coloured bucket',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Coaches filling ball baskets, players who own a ball machine, and anyone who practises a few times a month and wants balls that still bounce next year.',
+    where: 'Any court. Tretorn Micro X and Penn Pressureless are the usual choices for teaching baskets and ball machines because they cannot go flat.',
+    notes: 'The bounce comes from a thicker, stiffer rubber core rather than internal air, so it stays within the ITF 135–147 cm rebound range for its whole life. They feel harder and heavier at first and actually gain bounce as the felt wears off. The downside is a dead, wooden feel compared with a fresh pressurised ball. Perfect for drilling, not for match practice.',
+  },
+  {
+    id: 'high-altitude',
+    name: 'High-altitude ball',
+    color: 'Optic yellow felt',
+    bounce: 0.91,
+    size: 1,
+    forWhom: 'Anyone playing at 1,219 m (4,000 ft) or higher, where thinner air makes a normal ball fly faster, further and bounce higher. Common in Denver, Mexico City, Bogotá, Johannesburg and Madrid’s hills.',
+    where: 'Courts above 1,219 m. ITF type 3 (high-altitude) balls are the standard for events like the ATP tournaments in Bogotá or Quito.',
+    notes: 'ITF specification: same 56.0–59.4 g and 6.54–6.86 cm as a standard ball but a lower rebound of 122–135 cm when tested at sea level, so at altitude it bounces like a normal ball. The ITF also allows pressureless balls at altitude if they have been acclimatised at the venue for at least 60 days. If you play at altitude with sea-level balls, expect to shorten your strokes and add spin.',
+  },
+]

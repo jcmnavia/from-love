@@ -1,0 +1,743 @@
+[
+  {
+    "id": "roger-federer",
+    "name": "Roger Federer",
+    "country": "Switzerland",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 20,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "eastern",
+    "style": "all-court",
+    "signature": [
+      "forehand",
+      "serve",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Used a modified eastern grip with a compact backswing kept on the hitting side of the body, a nearly straight hitting arm at contact well out in front, and kept his head still with eyes on the contact point even after the ball left."
+      },
+      {
+        "stroke": "serve",
+        "note": "A relaxed, identical-looking motion with a moderate toss and deep shoulder turn allowed him to hit all four corners; accuracy and disguise, not raw speed, earned his free points."
+      },
+      {
+        "stroke": "slice",
+        "note": "Hit the backhand slice with a continental grip, high takeback and a long high-to-low-to-level carve, staying sideways so the ball skidded low. He used it to change rhythm and draw short balls for his forehand."
+      }
+    ],
+    "lesson": "Keep your head still at contact and stay relaxed: efficient technique and balance create effortless power.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Roger_Federer",
+      "https://www.liveabout.com/photo-tour-of-male-pro-forehand-grips-3208154"
+    ]
+  },
+  {
+    "id": "lleyton-hewitt",
+    "name": "Lleyton Hewitt",
+    "country": "Australia",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "return",
+      "lob",
+      "mental"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "return",
+        "note": "Read the server early, split-stepped forward and used a short, firm swing to send returns low at the feet of serve-and-volleyers or deep down the middle against baseliners."
+      },
+      {
+        "stroke": "lob",
+        "note": "His signature shot was the offensive topspin lob off both wings, prepared exactly like a passing shot and then brushed sharply upward over the net-rusher's backhand shoulder."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A flat, compact two-hander hit with a low base and excellent balance on the run, used to counterpunch down the line when opponents attacked crosscourt."
+      }
+    ],
+    "lesson": "Passing shots and lobs should look identical until contact: disguise beats power against a net player.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lleyton_Hewitt",
+      "https://bleacherreport.com/articles/616272-top-shot-ranking-the-top-18-forehands-in-mens-tennis-2000-2010"
+    ]
+  },
+  {
+    "id": "andy-roddick",
+    "name": "Andy Roddick",
+    "country": "United States",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "big-server",
+    "signature": [
+      "serve",
+      "forehand"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "Used a super-abbreviated windup: with a continental grip he lifted the racquet straight up with the tossing arm, so the racquet head already pointed up at the toss. From a narrow stance and deep knee bend he exploded upward with a loose arm."
+      },
+      {
+        "stroke": "serve",
+        "note": "His second serve was a heavy kick or twist, swinging at near full racquet-head speed up and across the ball so it jumped high. Swing fast and add spin on the second serve rather than slowing the arm down."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hit a heavy forehand with a strong semi-western grip and lots of racquet-head speed, using it straight after the serve in a serve-plus-one pattern."
+      }
+    ],
+    "lesson": "A simpler service motion has fewer things that can go wrong: load the legs, keep the arm loose and swing up.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Andy_Roddick",
+      "https://tennisinstruction.com/andy-roddick-serve/",
+      "https://www.active.com/tennis/articles/the-secrets-of-andy-roddick-s-rocket-serve-883040"
+    ]
+  },
+  {
+    "id": "marat-safin",
+    "name": "Marat Safin",
+    "country": "Russia",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 4,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "serve",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "One of the great two-handers: a compact straight-back takeback, strong hip and shoulder rotation and full extension of both arms through the ball. He often hit it off a jump on high balls and changed direction down the line with ease."
+      },
+      {
+        "stroke": "serve",
+        "note": "Used his height with a high contact point and a simple, rhythmic motion, hitting flat first serves down the T on big points."
+      },
+      {
+        "stroke": "return",
+        "note": "Stood close to the baseline and drove returns with the backhand using a short backswing and the server's pace."
+      }
+    ],
+    "lesson": "On the two-handed backhand, rotate the hips and extend both arms through the ball toward the target.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Marat_Safin"
+    ]
+  },
+  {
+    "id": "gustavo-kuerten",
+    "name": "Gustavo Kuerten",
+    "country": "Brazil",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 5,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-1h",
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "His trademark was an arcing topspin one-hander hit with a strong grip, a very large shoulder turn and a long, flowing swing finishing high above his head. The strong grip let him drive high clay-court balls at shoulder height."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hit heavy topspin with a loose, whippy swing from well behind the baseline, then stepped in to flatten the ball out when he got a short reply."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Slid into wide balls on clay with long strides, timing the slide to end at contact so he was balanced for the big swing."
+      }
+    ],
+    "lesson": "A full shoulder turn and a long, relaxed swing let a one-handed backhand handle high balls.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gustavo_Kuerten"
+    ]
+  },
+  {
+    "id": "david-nalbandian",
+    "name": "David Nalbandian",
+    "country": "Argentina",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 6,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "backhand-2h",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Took the two-hander extremely early with a short, quiet takeback and could send it crosscourt at a sharp angle or down the line from the same preparation. The key was a stable head and contact well in front of the lead hip."
+      },
+      {
+        "stroke": "return",
+        "note": "Stood in close and blocked or drove returns off both sides with a minimal backswing, often winning the point with the return itself or the next shot."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Used a smooth semi-western forehand to change direction rather than overpower, hitting behind opponents who were recovering."
+      }
+    ],
+    "lesson": "Early, clean timing and changes of direction can control a rally without big power.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/David_Nalbandian"
+    ]
+  },
+  {
+    "id": "nikolay-davydenko",
+    "name": "Nikolay Davydenko",
+    "country": "Russia",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 7,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "footwork",
+      "backhand-2h",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "footwork",
+        "note": "Stood right on the baseline and used many tiny adjustment steps to take every ball on the rise, never backing up. His speed of preparation, not strength, created the pace."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A flat, compact two-hander with an early racquet set and a level swing, hit to both corners at the same speed to move opponents side to side."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Prepared with an early unit turn and a short backswing, meeting the ball at waist height in front and redirecting it with precise, flat drives."
+      }
+    ],
+    "lesson": "Prepare early and take the ball on the rise: fast feet and compact swings make up for a lack of size.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nikolay_Davydenko"
+    ]
+  },
+  {
+    "id": "juan-carlos-ferrero",
+    "name": "Juan Carlos Ferrero",
+    "country": "Spain",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 8,
+    "peakRanking": 1,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "His weapon was a fast, relatively flat semi-western forehand, hit with a quick unit turn and explosive hip rotation, particularly the inside-out forehand from the backhand corner."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Nicknamed the Mosquito for his speed, he combined clay-court sliding with quick recovery steps, arriving early enough to hit offensively from balls that would put others on defence."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A solid two-hander used to hold the crosscourt rally until he could run around a ball and hit the forehand."
+      }
+    ],
+    "lesson": "Speed of foot is an offensive skill: arrive early and you can attack balls others only defend.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Juan_Carlos_Ferrero"
+    ]
+  },
+  {
+    "id": "fernando-gonzalez",
+    "name": "Fernando González",
+    "country": "Chile",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 9,
+    "peakRanking": 5,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "slice"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "One of the biggest forehands ever: he started the takeaway by lifting the elbow high, took a very large backswing and uncoiled with a full-body rotation, often leaving the ground. The long swing demanded very early preparation."
+      },
+      {
+        "stroke": "slice",
+        "note": "Used the backhand slice as a holding shot, keeping the ball low and deep with a continental grip until he could run around the next ball for a forehand."
+      },
+      {
+        "stroke": "serve",
+        "note": "Backed up a strong first serve by looking for the forehand on the very next ball, a simple serve-plus-one pattern."
+      }
+    ],
+    "lesson": "If you own one huge weapon, use a neutral slice to stay in the rally until you can unleash it.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fernando_González",
+      "https://bleacherreport.com/articles/616272-top-shot-ranking-the-top-18-forehands-in-mens-tennis-2000-2010"
+    ]
+  },
+  {
+    "id": "tim-henman",
+    "name": "Tim Henman",
+    "country": "United Kingdom",
+    "tour": "ATP",
+    "decade": "2000s",
+    "rankInDecade": 10,
+    "peakRanking": 4,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "eastern",
+    "style": "serve-and-volley",
+    "signature": [
+      "volley",
+      "slice",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "volley",
+        "note": "A textbook volleyer: continental grip, racquet head up and in front, a small shoulder turn instead of a backswing, and a step forward through contact. On low volleys he bent his knees to keep the racquet head up."
+      },
+      {
+        "stroke": "slice",
+        "note": "Chipped and charged off second serves with a short, firm backhand slice taken early, keeping the approach low and deep down the line to shrink the passing angle."
+      },
+      {
+        "stroke": "serve",
+        "note": "Placed his serve rather than blasting it and followed the line of the ball to net, split-stepping around the service line before the first volley."
+      }
+    ],
+    "lesson": "At the net, less is more: a short punch, a firm wrist and your feet doing the work.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Tim_Henman"
+    ]
+  },
+  {
+    "id": "justine-henin",
+    "name": "Justine Henin",
+    "country": "Belgium",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 1,
+    "peakRanking": 1,
+    "slams": 7,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "backhand-1h",
+      "forehand",
+      "volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "Used a strong backhand grip, a big shoulder turn with her back partly to the net, and a full release of the arm up and across with the left arm extending behind for balance. She could hit it flat, with heavy topspin or as a slice from the same turn."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Despite her size she generated pace with a semi-western grip, a full hip and shoulder rotation and by stepping inside the baseline to take the ball early."
+      },
+      {
+        "stroke": "volley",
+        "note": "Finished points at the net regularly, moving forward behind deep approaches and volleying with a compact continental-grip punch."
+      }
+    ],
+    "lesson": "Full body rotation and timing, not size, produce power: turn the shoulders completely on every groundstroke.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Justine_Henin",
+      "https://tennisinstruction.com/justine-henin-backhand-technique/",
+      "https://www.tennisforum.com/threads/forehand-grips-of-the-top-20-and-a-few-other-assorted-favorites.280619/page-2"
+    ]
+  },
+  {
+    "id": "venus-williams",
+    "name": "Venus Williams",
+    "country": "United States",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 2,
+    "peakRanking": 1,
+    "slams": 7,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "serve",
+      "backhand-2h",
+      "swing-volley"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "serve",
+        "note": "Used her height and a full reach to contact the ball at maximum extension with a loose, long swing, producing the fastest serves on the women's tour. Reach up to the ball rather than letting it drop."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "Her steadier wing: an open-stance two-hander hit flat or with topspin, with strong shoulder rotation and long arms extending through the ball on the run."
+      },
+      {
+        "stroke": "swing-volley",
+        "note": "Helped popularise the swinging volley, moving forward to take floating balls out of the air with a full topspin groundstroke swing at shoulder height instead of letting them bounce."
+      }
+    ],
+    "lesson": "Move forward and take floating balls out of the air with a swinging volley instead of letting the opponent recover.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Venus_Williams"
+    ]
+  },
+  {
+    "id": "kim-clijsters",
+    "name": "Kim Clijsters",
+    "country": "Belgium",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 3,
+    "peakRanking": 1,
+    "slams": 4,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "footwork",
+      "forehand",
+      "backhand-2h"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "footwork",
+        "note": "Famous for sliding into a split on hard courts to reach wide balls, she stayed low with a wide base and hit aggressive shots from fully stretched defensive positions. Flexibility and a strong outside leg made the recovery possible."
+      },
+      {
+        "stroke": "forehand",
+        "note": "Hit a heavy semi-western forehand from an open stance, loading the outside leg and rotating hard, so she could turn defence into attack in one shot."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A flat, reliable two-hander hit from a wide, low base that she could drive down the line while on the run."
+      }
+    ],
+    "lesson": "Load the outside leg on wide balls so you can hit and recover in one movement.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kim_Clijsters"
+    ]
+  },
+  {
+    "id": "maria-sharapova",
+    "name": "Maria Sharapova",
+    "country": "Russia",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 4,
+    "peakRanking": 1,
+    "slams": 5,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "backhand-2h",
+      "return",
+      "mental"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Her most reliable shot: a flat two-hander with an early shoulder turn, the left hand driving through contact and a long extension toward the target, hit deep to both corners."
+      },
+      {
+        "stroke": "return",
+        "note": "Stepped well inside the baseline against second serves and swung fully at the return, aiming deep down the middle or at the corners to take control immediately."
+      },
+      {
+        "stroke": "mental",
+        "note": "Followed the same ritual between every point, turning her back to the court, resetting and then walking to the line, which kept her intensity identical regardless of the score."
+      }
+    ],
+    "lesson": "Use a fixed between-point routine to reset, then commit fully to the next first strike.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Maria_Sharapova"
+    ]
+  },
+  {
+    "id": "amelie-mauresmo",
+    "name": "Amélie Mauresmo",
+    "country": "France",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 5,
+    "peakRanking": 1,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "one-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "backhand-1h",
+      "volley",
+      "slice"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-1h",
+        "note": "Could hit her one-hander flat and deep, with heavy topspin or with slice; on the topspin drive she used a full shoulder turn, a low racquet drop and a high finish."
+      },
+      {
+        "stroke": "volley",
+        "note": "Won Wimbledon by serving and volleying and approaching behind slices, volleying with a continental grip and a firm, short punch angled away from the opponent."
+      },
+      {
+        "stroke": "slice",
+        "note": "Used the low backhand slice approach to keep the ball under the opponent's strike zone, moving through the shot so she arrived at net balanced."
+      }
+    ],
+    "lesson": "Variety wins: mix topspin, slice and net approaches so the opponent never settles into a rhythm.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Amélie_Mauresmo"
+    ]
+  },
+  {
+    "id": "jennifer-capriati",
+    "name": "Jennifer Capriati",
+    "country": "United States",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 6,
+    "peakRanking": 1,
+    "slams": 3,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "return",
+      "backhand-2h"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Took the ball early and on the rise with a powerful, fairly flat forehand, preparing with an early unit turn and driving through with strong leg and hip rotation."
+      },
+      {
+        "stroke": "return",
+        "note": "Played with an aggressive mindset on the return, moving forward into the ball and swinging through second serves to start the point on offence."
+      },
+      {
+        "stroke": "backhand-2h",
+        "note": "A compact, heavy two-hander struck from an athletic, low base that held up under pace in long crosscourt exchanges."
+      }
+    ],
+    "lesson": "Step into the court and take the ball on the rise to put opponents under immediate pressure.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jennifer_Capriati"
+    ]
+  },
+  {
+    "id": "svetlana-kuznetsova",
+    "name": "Svetlana Kuznetsova",
+    "country": "Russia",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 7,
+    "peakRanking": 2,
+    "slams": 2,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "all-court",
+    "signature": [
+      "forehand",
+      "footwork",
+      "drop-shot"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Trained on Spanish clay, she hit a heavy topspin forehand with a fast, steep low-to-high swing and high net clearance, then flattened it out inside-out when she got a short ball."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Very quick around the court, she combined clay-court sliding with balanced open-stance hitting and fast recovery to the middle."
+      },
+      {
+        "stroke": "drop-shot",
+        "note": "Mixed in drop shots and net approaches off the heavy forehand, using the opponent's deep court position against them."
+      }
+    ],
+    "lesson": "Heavy topspin pushes opponents back; use that space with drop shots and approaches.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Svetlana_Kuznetsova"
+    ]
+  },
+  {
+    "id": "jelena-jankovic",
+    "name": "Jelena Janković",
+    "country": "Serbia",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 8,
+    "peakRanking": 1,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "counterpuncher",
+    "signature": [
+      "backhand-2h",
+      "footwork"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "backhand-2h",
+        "note": "Her signature was the two-handed backhand down the line, hit from an open stance even on the run, with the shoulders rotating through and the racquet extending along the line."
+      },
+      {
+        "stroke": "footwork",
+        "note": "An outstanding mover who slid on all surfaces, often into a near split, and stayed balanced enough to hit with direction from defensive positions."
+      },
+      {
+        "stroke": "forehand",
+        "note": "A steady, medium-paced topspin forehand used to keep depth until she could change direction with the backhand."
+      }
+    ],
+    "lesson": "Learn to change direction down the line with the backhand: it turns defence into offence in one shot.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jelena_Janković"
+    ]
+  },
+  {
+    "id": "ana-ivanovic",
+    "name": "Ana Ivanovic",
+    "country": "Serbia",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 9,
+    "peakRanking": 1,
+    "slams": 1,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "serve"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Built her game on a big forehand hit with a full shoulder turn and fast racquet-head speed, running around the backhand to hit inside-out and inside-in from the ad corner."
+      },
+      {
+        "stroke": "footwork",
+        "note": "Used quick sidestep and crossover footwork to get around the ball early enough to hit forehands from the backhand side, which requires moving as soon as the ball leaves the opponent's strings."
+      },
+      {
+        "stroke": "serve",
+        "note": "Her later struggles with an erratic ball toss are a lesson in themselves: a consistent toss from a relaxed, extended arm is the foundation of the serve."
+      }
+    ],
+    "lesson": "Run around the backhand early and commit to the inside-out forehand, and guard your service toss.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ana_Ivanovic"
+    ]
+  },
+  {
+    "id": "elena-dementieva",
+    "name": "Elena Dementieva",
+    "country": "Russia",
+    "tour": "WTA",
+    "decade": "2000s",
+    "rankInDecade": 10,
+    "peakRanking": 3,
+    "slams": 0,
+    "hand": "right",
+    "backhand": "two-handed",
+    "forehandGrip": "semi-western",
+    "style": "aggressive-baseliner",
+    "signature": [
+      "forehand",
+      "footwork",
+      "return"
+    ],
+    "techniqueNotes": [
+      {
+        "stroke": "forehand",
+        "note": "Hit one of the hardest forehands on tour, especially on the run, staying low through the shot and driving flat crosscourt with a full follow-through while moving."
+      },
+      {
+        "stroke": "footwork",
+        "note": "One of the best athletes on tour, she covered the baseline with long, powerful strides and recovered with crossover steps, allowing her to hit offensively from wide positions."
+      },
+      {
+        "stroke": "return",
+        "note": "Compensated for a weak, heavily sliced serve with an outstanding return game, taking the ball early with compact swings off both wings."
+      }
+    ],
+    "lesson": "Groundstrokes and returns can carry you far, but do not neglect the serve: it is the one shot you fully control.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Elena_Dementieva"
+    ]
+  }
+]

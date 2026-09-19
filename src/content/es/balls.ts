@@ -1,0 +1,88 @@
+import type { BallType } from '../types'
+
+// Reglas de Tenis de la ITF, Apéndice I. El rebote se mide dejando caer la
+// pelota desde 254 cm (100 in) sobre hormigón. El bote y el tamaño relativos
+// son el punto medio de cada rango ITF dividido por el punto medio de la pelota
+// estándar (tipo 2): 141 cm de rebote y 6,70 cm de diámetro.
+export const BALLS: BallType[] = [
+  {
+    id: 'red-foam',
+    name: 'Pelota roja, etapa 3 (espuma)',
+    color: 'Roja o roja y amarilla, espuma sólida',
+    bounce: 0.67,
+    size: 1.27,
+    forWhom: 'Niños de 5–8 años en sus primeras sesiones y principiantes absolutos de cualquier edad que necesitan una pelota muy lenta. Es la pelota más segura para espacios cubiertos y para aprender a golpear sin miedo.',
+    where: 'La cancha roja: 11 m de largo y 5,5–6 m de ancho (de cuadro de saque a cuadro de saque, o una cancha marcada transversalmente sobre una normal), red a 0,80 m. También se usa en gimnasios y salones escolares.',
+    notes: 'Especificación ITF: 25,0–43,0 g, 8,00–9,00 cm de diámetro, rebote 85–105 cm. Cerca de un 25 % más grande que una pelota estándar y alrededor del 70 % del bote. La espuma es más silenciosa y ligera que el fieltro, lo que ayuda en pisos duros bajo techo, pero se desvía con el viento, así que es menos útil al aire libre.',
+  },
+  {
+    id: 'red-felt',
+    name: 'Pelota roja, etapa 3 (fieltro)',
+    color: 'Fieltro rojo y amarillo, o amarillo con un punto rojo',
+    bounce: 0.69,
+    size: 1.12,
+    forWhom: 'Niños de unos 5–8 años (etapa «roja» de Play and Stay) que ya logran hacer contacto y están listos para pelotear en una minicancha al aire libre.',
+    where: 'La cancha roja: 11 m x 5,5 m, red a 0,80 m. Al aire libre esta es la pelota roja estándar porque la versión de fieltro no se vuela como la espuma.',
+    notes: 'Especificación ITF: 36,0–49,0 g, 7,00–8,00 cm de diámetro, rebote 90–105 cm. Hasta un 15 % más grande que una pelota estándar, alrededor del 75 % de la masa y cerca del 70 % del bote. El núcleo de baja presión es lo que la hace lenta, así que nunca bota por encima de la cintura de un niño. Las pelotas rojas también son excelentes para adultos principiantes que aprenden voleas a corta distancia.',
+  },
+  {
+    id: 'orange',
+    name: 'Pelota naranja, etapa 2',
+    color: 'Fieltro naranja y amarillo, o amarillo con un punto naranja',
+    bounce: 0.8,
+    size: 0.96,
+    forWhom: 'Niños de unos 8–10 años que ya pelotean con pelota roja y están listos para una cancha más larga, y adultos principiantes que quieren aprender a construir puntos antes de usar una pelota a velocidad completa.',
+    where: 'La cancha naranja: 18 m de largo y 6,5 m de ancho (la cancha de individuales acortada a las líneas de saque con 2,6 m extra a cada lado, o líneas marcadas dentro de la cancha normal), red a 0,80 m.',
+    notes: 'Especificación ITF: 36,0–46,9 g, 6,00–6,86 cm de diámetro, rebote 105–120 cm. Tamaño estándar, pero notablemente más ligera y un 50 % más lenta que una pelota amarilla, con cerca del 80 % del bote. Esta es la etapa en que los niños aprenden a sacar por encima de la cabeza y a usar todo el ancho de la cancha, porque la pelota todavía les da tiempo para moverse.',
+  },
+  {
+    id: 'green',
+    name: 'Pelota verde, etapa 1',
+    color: 'Fieltro amarillo con un punto verde',
+    bounce: 0.9,
+    size: 0.98,
+    forWhom: 'Niños de unos 9–12 años que pasan a la cancha completa, y adultos que vuelven tras una pausa larga o que aprenden desde cero. Muchos clubes organizan ligas de adultos con pelota verde.',
+    where: 'La cancha completa de 23,77 m con la red normal a 0,914 m. La pelota verde es la última etapa antes de la pelota amarilla.',
+    notes: 'Especificación ITF: 47,0–51,5 g, 6,30–6,86 cm de diámetro, rebote 120–135 cm. Tamaño estándar, cerca del 85 % de la masa y alrededor del 90 % del bote, así que juega un 25 % más lenta que una pelota amarilla. El bote se queda más cerca de la altura de la cadera en cancha completa, y por eso los jugadores pueden mantener una empuñadura y un swing modernos en lugar de levantar pelotas por encima del hombro.',
+  },
+  {
+    id: 'standard-regular-duty',
+    name: 'Pelota estándar, regular duty',
+    color: 'Fieltro amarillo óptico (o blanco)',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Todos, desde quienes dejan la pelota verde hasta los profesionales. La regular duty es la elección para canchas de polvo de ladrillo y cubiertas, donde el fieltro se desgasta poco.',
+    where: 'Polvo de ladrillo, dura cubierta, alfombra y césped. El fieltro más fino no se esponja en superficies blandas, así que la pelota se mantiene rápida y fiel y no recoge tanto polvo.',
+    notes: 'Especificación ITF tipo 2 (media): 56,0–59,4 g, 6,54–6,86 cm de diámetro, rebote 135–147 cm desde 254 cm. El núcleo está presurizado a unos 12 psi sobre la presión atmosférica, y por eso el tubo viene sellado. La regular duty usa un fieltro más fino y apretado. En cancha dura se desgasta rápido, así que resérvala para arcilla y bajo techo.',
+  },
+  {
+    id: 'standard-extra-duty',
+    name: 'Pelota estándar, extra duty',
+    color: 'Fieltro amarillo óptico',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Todos los que juegan en canchas duras al aire libre. Es la pelota más vendida del mundo y la que se usa en el US Open (Wilson US Open extra duty) y en el Abierto de Australia (Dunlop AO).',
+    where: 'Canchas duras al aire libre, que muelen el fieltro. El fieltro más grueso y lanoso dura más antes de quedar pelado y frena un poco la pelota en el aire.',
+    notes: 'Misma especificación ITF tipo 2 que la regular duty: 56,0–59,4 g, 6,54–6,86 cm, rebote 135–147 cm. Solo cambia el fieltro. La extra duty se esponja en polvo de ladrillo y se vuelve pesada y lenta, así que ahí usa regular duty. Una vez abierta, una pelota presurizada pierde bote notable en dos a cuatro semanas aunque nunca se golpee.',
+  },
+  {
+    id: 'pressureless',
+    name: 'Pelota sin presión',
+    color: 'Fieltro amarillo óptico, a menudo con un punto negro o rojo, a veces un balde entero de color',
+    bounce: 1,
+    size: 1,
+    forWhom: 'Entrenadores que llenan canastos, jugadores que tienen máquina lanzapelotas y cualquiera que practique unas pocas veces al mes y quiera pelotas que sigan botando el año que viene.',
+    where: 'Cualquier cancha. Tretorn Micro X y Penn Pressureless son las opciones habituales para canastos de enseñanza y máquinas porque no pueden desinflarse.',
+    notes: 'El bote proviene de un núcleo de goma más grueso y rígido en lugar de aire interno, así que se mantiene dentro del rango ITF de rebote de 135–147 cm durante toda su vida. Al principio se sienten más duras y pesadas y, de hecho, ganan bote a medida que el fieltro se desgasta. La desventaja es una sensación muerta, de madera, comparada con una pelota presurizada nueva. Perfectas para ejercicios, no para práctica de partido.',
+  },
+  {
+    id: 'high-altitude',
+    name: 'Pelota de altura',
+    color: 'Fieltro amarillo óptico',
+    bounce: 0.91,
+    size: 1,
+    forWhom: 'Cualquiera que juegue a 1.219 m (4.000 ft) o más, donde el aire más delgado hace que una pelota normal vuele más rápido, más lejos y bote más alto. Habitual en Denver, Ciudad de México, Bogotá, Johannesburgo y las colinas de Madrid.',
+    where: 'Canchas por encima de 1.219 m. Las pelotas ITF tipo 3 (altura) son el estándar en eventos como los torneos ATP de Bogotá o Quito.',
+    notes: 'Especificación ITF: mismos 56,0–59,4 g y 6,54–6,86 cm que una pelota estándar, pero con un rebote menor de 122–135 cm al probarse a nivel del mar, de modo que en altura bota como una pelota normal. La ITF también permite pelotas sin presión en altura si se han aclimatado en la sede durante al menos 60 días. Si juegas en altura con pelotas de nivel del mar, prepárate para acortar los golpes y añadir efecto.',
+  },
+]
