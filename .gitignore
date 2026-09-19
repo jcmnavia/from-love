@@ -25,3 +25,5 @@ dist-ssr
 
 # Playwright screenshots taken during development
 .playwright-mcp
+.vercel
+.env*
