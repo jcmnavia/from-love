@@ -205,6 +205,8 @@ const keys = sequence()
 
 export const serve: Stroke = {
   id: 'serve',
+  clip: 'serve',
+  contactRacket: { dir: [0.1, 0.97, 0.2], normal: [0, -0.2, 0.98] },
   name: 'Serve',
   aka: 'Flat first serve, platform stance',
   category: 'serve',

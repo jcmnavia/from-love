@@ -108,6 +108,8 @@ const forehandVolleyKeys = sequence(NET_READY)
 
 export const forehandVolley: Stroke = {
   id: 'forehand-volley',
+  clip: 'forehand-volley',
+  contactRacket: { dir: [0.55, 0.65, 0.35], normal: [-0.35, 0.25, 0.9] },
   name: 'Forehand volley',
   category: 'net',
   level: 'beginner',
@@ -237,6 +239,8 @@ const backhandVolleyKeys = sequence(NET_READY)
 
 export const backhandVolley: Stroke = {
   id: 'backhand-volley',
+  clip: 'backhand-volley',
+  contactRacket: { dir: [-0.55, 0.65, 0.35], normal: [0.35, 0.25, 0.9] },
   name: 'Backhand volley',
   category: 'net',
   level: 'beginner',
@@ -633,6 +637,8 @@ const smashKeys = sequence(NET_READY)
 
 export const smash: Stroke = {
   id: 'smash',
+  clip: 'smash',
+  contactRacket: { dir: [0.1, 0.97, 0.2], normal: [0, -0.35, 0.94] },
   name: 'Overhead smash',
   category: 'net',
   level: 'intermediate',

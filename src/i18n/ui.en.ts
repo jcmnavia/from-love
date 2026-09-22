@@ -14,6 +14,8 @@ export const en: Record<string, string> = {
   'lang.label': 'Language',
   'theme.light': 'Switch to light theme',
   'theme.dark': 'Switch to dark theme',
+  'footer.credits': 'Captured motion for the forehand, two-handed backhand, serve, smash and volleys is adapted from',
+  'footer.credits.model': 'Player model: Microsoft Rocketbox (MIT).',
   'footer.disclaimer':
     'From Love is a self-guided tennis course. Court, ball and racquet figures follow the ITF Rules of Tennis. Stroke models are biomechanical reconstructions built from coaching literature and the recorded technique of top players since the 1970s, not motion capture of any individual. Always warm up, and see a qualified coach for feedback on your own swing.',
 

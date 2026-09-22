@@ -168,6 +168,9 @@ const keys = sequence()
 
 export const forehand: Stroke = {
   id: 'forehand',
+  clip: 'forehand',
+  forearmRoll: [[-0.05, 0], [0, 0], [0.2, 80], [0.45, 105]],
+  contactRacket: { dir: [0.95, -0.15, 0.25], normal: [-0.25, -0.06, 0.97] },
   name: 'Forehand drive',
   aka: 'Topspin forehand',
   category: 'groundstroke',

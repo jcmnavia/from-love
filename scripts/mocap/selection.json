@@ -1,0 +1,116 @@
+[
+  {
+    "id": "forehand",
+    "file": "jarua_Derecha_18seg.bvh",
+    "player": "jarua",
+    "peak": 608,
+    "contact": 6.115,
+    "window": [
+      5.14,
+      7.16
+    ],
+    "net": [
+      -0.01707,
+      0.99985
+    ],
+    "netMethod": "mean contact-hand direction over jarua_Derecha_18seg.bvh (-1°)",
+    "mirror": false,
+    "vPeak": 9.58,
+    "score": 3.04
+  },
+  {
+    "id": "backhand-two-handed",
+    "file": "jarua_Reves.bvh",
+    "player": "jarua",
+    "peak": 400,
+    "contact": 4,
+    "window": [
+      3.1,
+      4.85
+    ],
+    "net": [
+      -0.35991,
+      0.93299
+    ],
+    "netMethod": "mean contact-hand direction over jarua_Reves.bvh (-21°)",
+    "mirror": false,
+    "vPeak": 7.75,
+    "score": 2.2
+  },
+  {
+    "id": "serve",
+    "file": "jarua_Servicio.bvh",
+    "player": "jarua",
+    "peak": 688,
+    "contact": 6.91,
+    "window": [
+      5.01,
+      7.81
+    ],
+    "net": [
+      -0.15327,
+      0.98818
+    ],
+    "netMethod": "mean contact-hand direction over jarua_Servicio.bvh (-9°)",
+    "mirror": false,
+    "vPeak": 10.85,
+    "score": 3.05
+  },
+  {
+    "id": "smash",
+    "file": "jduribe_Remate.bvh",
+    "player": "jduribe",
+    "peak": 2851,
+    "contact": 28.51,
+    "window": [
+      27.11,
+      29.45
+    ],
+    "net": [
+      -0.30412,
+      0.95263
+    ],
+    "netMethod": "mean contact-hand direction over jduribe_Remate.bvh (-18°)",
+    "mirror": false,
+    "vPeak": 9,
+    "score": 2.05
+  },
+  {
+    "id": "forehand-volley",
+    "file": "jarua_VDerecha.bvh",
+    "player": "jarua",
+    "peak": 645,
+    "contact": 6.46,
+    "window": [
+      5.23,
+      7.42
+    ],
+    "net": [
+      -0.15359,
+      0.98814
+    ],
+    "netMethod": "mean of jarua_VDerecha.bvh (24°) and jarua_VReves.bvh (-42°) contact-hand directions",
+    "mirror": false,
+    "vPeak": 5.51,
+    "score": 3.36
+  },
+  {
+    "id": "backhand-volley",
+    "file": "jarua_VReves.bvh",
+    "player": "jarua",
+    "peak": 1402,
+    "contact": 14.03,
+    "window": [
+      13.06,
+      14.82
+    ],
+    "net": [
+      -0.15359,
+      0.98814
+    ],
+    "netMethod": "mean of jarua_VReves.bvh (-42°) and jarua_VDerecha.bvh (24°) contact-hand directions",
+    "mirror": false,
+    "vPeak": 5.76,
+    "score": 3.11
+  }
+]

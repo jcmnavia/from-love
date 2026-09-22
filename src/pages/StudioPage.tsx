@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { StrokeScene } from '@/studio/StrokeScene'
 import { isPlayerModel, useStudio, type CamPreset } from '@/studio/store'
-import type { FocusId } from '@/engine/types'
+import type { FocusId, Stroke } from '@/engine/types'
+import { useMotion } from '@/studio/useMotion'
 import { useContent } from '@/i18n/content'
 import { useT } from '@/i18n'
 import { StrokeList, StrokeSelect } from '@/studio/StrokeList'
@@ -17,7 +18,7 @@ export function StudioPage() {
   const { strokeId } = useParams()
   const [params] = useSearchParams()
   const { strokes } = useContent()
-  const stroke = strokes.find((s) => s.id === strokeId)
+  const authored = strokes.find((s) => s.id === strokeId)
   const set = useStudio((s) => s.set)
   const setCam = useStudio((s) => s.setCam)
 
@@ -38,12 +39,18 @@ export function StudioPage() {
   }, [params, set, setCam, strokeId])
 
   useEffect(() => {
-    if (stroke) document.title = `${stroke.name} · ${t('brand')}`
-  }, [stroke, t])
+    if (authored) document.title = `${authored.name} · ${t('brand')}`
+  }, [authored, t])
 
   if (!strokeId) return <Navigate to="/studio/forehand" replace />
-  if (!stroke) return <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 text-muted-foreground sm:px-6">{t('studio.missing')}</main>
+  if (!authored) return <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 text-muted-foreground sm:px-6">{t('studio.missing')}</main>
+  return <StudioView authored={authored} />
+}
 
+/** The studio for one stroke, with timings taken from its mocap clip when it has one. */
+function StudioView({ authored }: { authored: Stroke }) {
+  const t = useT()
+  const { stroke } = useMotion(authored)
   return (
     <main className="mx-auto grid w-full max-w-7xl flex-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[200px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)_340px]">
       <div className="lg:hidden">
@@ -58,7 +65,7 @@ export function StudioPage() {
           <p className="w-full text-sm text-muted-foreground sm:w-auto">{stroke.tagline}</p>
         </header>
         <div className="relative aspect-4/3 overflow-hidden rounded-xl border bg-muted sm:aspect-16/10">
-          <StrokeScene stroke={stroke} />
+          <StrokeScene stroke={authored} />
         </div>
         <StudioToolbar hasBall={Boolean(stroke.ball)} />
         <Timeline stroke={stroke} />

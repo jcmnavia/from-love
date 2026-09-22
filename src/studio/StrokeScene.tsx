@@ -11,6 +11,8 @@ import { Court, SURFACES } from './Court'
 import { PlayerRig } from './PlayerRig'
 import { SkinnedPlayer } from './SkinnedPlayer'
 import { useStudio, type CamPreset } from './store'
+import { useMotion } from './useMotion'
+import type { ClipData } from '../engine/rig/clip'
 
 const PRESETS: Record<CamPreset, [number, number, number]> = {
   side: [6, 0.35, -0.3],
@@ -105,8 +107,8 @@ function CameraRig({ solved, preset }: { solved: Solved; preset?: CamPreset }) {
   )
 }
 
-function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAdvance: boolean; fixedT?: number; preset?: CamPreset }) {
-  const runtime = useMemo(() => new StrokeRuntime(stroke), [stroke])
+function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; clip: ClipData | null; autoAdvance: boolean; fixedT?: number; preset?: CamPreset }) {
+  const runtime = useMemo(() => new StrokeRuntime(stroke, clip), [stroke, clip])
   const rig = useMemo(() => new PlayerRig(), [])
   const solved = useMemo(() => createSolved(), [])
   const ballPos = useMemo(() => new Vector3(), [])
@@ -152,7 +154,8 @@ function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAd
     const useSkinned = !!skinned?.ready
     rig.group.visible = !useSkinned
     if (skinned) skinned.group.visible = useSkinned
-    if (useSkinned) skinned.update(solved)
+    if (useSkinned && runtime.clip && runtime.rig) skinned.updateFromRig(runtime.rig, runtime.clip.data.bones, solved)
+    else if (useSkinned) skinned.update(solved)
     else rig.update(solved)
     if (contactShadow.current) contactShadow.current.position.set(solved.pelvis.x, 0.002, solved.pelvis.z)
 
@@ -280,7 +283,7 @@ function StudioEnvironment({ sky, ground }: { sky: string; ground: string }) {
 }
 
 export function StrokeScene({
-  stroke,
+  stroke: authored,
   autoAdvance = true,
   fixedT,
   preset,
@@ -291,6 +294,7 @@ export function StrokeScene({
   fixedT?: number
   preset?: CamPreset
 }) {
+  const { stroke, clip, ready } = useMotion(authored)
   return (
     <Canvas
       shadows={{ type: PCFShadowMap }}
@@ -317,7 +321,7 @@ export function StrokeScene({
         shadow-radius={4}
       />
       <directionalLight position={[-5, 4, 6]} intensity={0.35} color="#cfdcff" />
-      <Stage stroke={stroke} autoAdvance={autoAdvance} fixedT={fixedT} preset={preset} />
+      {ready && <Stage stroke={stroke} clip={clip} autoAdvance={autoAdvance} fixedT={fixedT} preset={preset} />}
     </Canvas>
   )
 }

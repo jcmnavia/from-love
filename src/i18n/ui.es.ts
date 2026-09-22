@@ -14,6 +14,8 @@ export const es: Record<string, string> = {
   'lang.label': 'Idioma',
   'theme.light': 'Cambiar a tema claro',
   'theme.dark': 'Cambiar a tema oscuro',
+  'footer.credits': 'La captura de movimiento de la derecha, el revés a dos manos, el saque, el remate y las voleas está adaptada de',
+  'footer.credits.model': 'Modelo del jugador: Microsoft Rocketbox (MIT).',
   'footer.disclaimer':
     'From Love es un curso de tenis autoguiado. Las medidas de cancha, pelota y raqueta siguen las Reglas del Tenis de la ITF. Los modelos de golpes son reconstrucciones biomecánicas basadas en literatura de entrenamiento y en la técnica documentada de los mejores jugadores desde los años 70, no captura de movimiento de ninguna persona. Calienta siempre y busca a un entrenador calificado para que revise tu propio swing.',
 

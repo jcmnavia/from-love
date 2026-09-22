@@ -93,4 +93,18 @@ export interface Stroke {
   proTags: string[]
   /** where on court the player stands, [x, z] from the centre of the baseline (author frame) */
   origin?: [number, number]
+  /** id of a retargeted mocap clip in public/motion; when present it drives the body instead of `keys` */
+  clip?: string
+  /**
+   * Racket orientation at contact (author frame: handle → tip, and the string face's normal).
+   * Mocap has no racket, so the grip is calibrated once per clip to match this at contact;
+   * the rest of the swing then follows the captured hand.
+   */
+  contactRacket?: { dir: V3; normal: V3 }
+  /**
+   * Forearm roll (pronation +, degrees) added to a mocap clip, keyed in seconds relative to contact.
+   * Optical mocap without hand markers misses most of the forearm rotation that drives the wiper
+   * finish and the serve's pronation; this restores it on top of the captured motion.
+   */
+  forearmRoll?: [number, number][]
 }

@@ -2,6 +2,9 @@ import { Vector3 } from 'three'
 import { PoseTrack, emptyPose } from './pose'
 import { createSolved, solve, toWorld, type ArmBends, type Solved } from './solver'
 import type { Stroke } from './types'
+import { ClipTrack, type ClipData } from './rig/clip'
+import { Rig } from './rig/rig'
+import { calibrateGrip, makeGrip, rigToSolved, type Grip } from './rig/solved'
 
 const G = 9.81
 const BALL_R = 0.033
@@ -45,23 +48,42 @@ export class StrokeRuntime {
   private bendR: Float32Array
   private bendL: Float32Array
   private bends: ArmBends = { r: new Vector3(), l: new Vector3() }
+  /** mocap mode: the clip drives the real skeleton; the keyframe track is unused */
+  readonly clip: ClipTrack | null = null
+  readonly rig: Rig | null = null
+  private grip: Grip | null = null
   private outDir = new Vector3(0, 0, -1)
   private bounceP = new Vector3()
   private bounceV = new Vector3()
 
-  constructor(stroke: Stroke) {
+  constructor(stroke: Stroke, clip?: ClipData | null) {
     this.stroke = stroke
     this.track = new PoseTrack(stroke.keys)
     this.duration = stroke.duration
+    if (clip) {
+      this.rig = new Rig()
+      this.clip = new ClipTrack(clip, this.rig)
+      this.grip = makeGrip(this.rig, stroke.grips[0]?.id ?? 'semi-western')
+      this.duration = this.clip.duration
+      const want = stroke.contactRacket
+      if (want) {
+        const hand = this.rig.find('RightHand')
+        const qs = [-0.02, -0.01, 0, 0.01, 0.02].map((dt) => {
+          this.clip!.apply(this.rig!, clip.events.contact + dt)
+          return this.rig!.quat[hand].clone()
+        })
+        this.grip = calibrateGrip(this.grip, qs, want.dir, want.normal)
+      }
+    }
 
     const scratch = createSolved()
     // pass 1: bake the raw elbow bend directions, then smooth them so the elbow swivels
     // continuously instead of whipping round where the arm lines up with its pole
-    const nb = Math.max(2, Math.round(this.duration * BEND_HZ) + 1)
+    const nb = this.clip ? 2 : Math.max(2, Math.round(this.duration * BEND_HZ) + 1)
     const rawR = new Float32Array(nb * 3)
     const rawL = new Float32Array(nb * 3)
     for (let i = 0; i < nb; i++) {
-      solve(this.track.sample((i / (nb - 1)) * this.duration, this.pose), scratch)
+      if (!this.clip) solve(this.track.sample((i / (nb - 1)) * this.duration, this.pose), scratch)
       rawR.set([scratch.bendR.x, scratch.bendR.y, scratch.bendR.z], i * 3)
       rawL.set([scratch.bendL.x, scratch.bendL.y, scratch.bendL.z], i * 3)
     }
@@ -70,7 +92,7 @@ export class StrokeRuntime {
 
     for (let i = 0; i < TRAIL_SAMPLES; i++) {
       const t = (i / (TRAIL_SAMPLES - 1)) * this.duration
-      solve(this.track.sample(t, this.pose), scratch, null, this.bendsAt(t))
+      this.solveAt(t, scratch)
       this.trail.push(scratch.racketTip.clone())
       this.handTrail.push(scratch.wristR.clone())
       this.trailTimes.push(t)
@@ -93,11 +115,11 @@ export class StrokeRuntime {
 
     const ball = stroke.ball
     if (ball) {
-      solve(this.track.sample(ball.contactT, this.pose), scratch, null, this.bendsAt(ball.contactT))
+      this.solveAt(ball.contactT, scratch)
       this.contact = scratch.racketHead.clone()
       const points: { t: number; p: Vector3 }[] = ball.waypoints.map((w) => {
         if (w.p === 'lHand') {
-          solve(this.track.sample(w.t, this.pose), scratch, null, this.bendsAt(w.t))
+          this.solveAt(w.t, scratch)
           this.heldUntil = w.t
           return { t: w.t, p: scratch.wristL.clone().add(new Vector3(0, 0.06, 0)) }
         }
@@ -123,9 +145,48 @@ export class StrokeRuntime {
     }
   }
 
+  /** forearm roll (radians) added at `t` on top of the clip, smoothstep between keys */
+  private rollAt(t: number) {
+    const keys = this.stroke.forearmRoll
+    if (!keys?.length || !this.clip) return 0
+    const x = t - this.clip.data.events.contact
+    if (x <= keys[0][0]) return (keys[0][1] * Math.PI) / 180
+    for (let i = 0; i < keys.length - 1; i++) {
+      const [t0, a0] = keys[i]
+      const [t1, a1] = keys[i + 1]
+      if (x <= t1) {
+        const u = (x - t0) / (t1 - t0)
+        return ((a0 + (a1 - a0) * u * u * (3 - 2 * u)) * Math.PI) / 180
+      }
+    }
+    return (keys[keys.length - 1][1] * Math.PI) / 180
+  }
+
+  /** the body at `t` without gaze: from the clip on the real skeleton, or from the keyframes */
+  private solveAt(t: number, out: Solved) {
+    if (this.clip && this.rig && this.grip) {
+      this.clip.apply(this.rig, t)
+      const roll = this.rollAt(t)
+      if (roll) this.rig.twistLocal(this.rig.find('RightHand'), roll)
+      rigToSolved(this.rig, this.grip, out)
+    } else {
+      solve(this.track.sample(t, this.pose), out, null, this.bendsAt(t))
+    }
+    return out
+  }
+
   /** Samples the pose at `t`, resolves the head gaze against the ball, and returns the solved skeleton. */
   evaluate(t: number, out: Solved, ballOut: Vector3): { ballVisible: boolean } {
     const ballVisible = this.ballAt(t, ballOut)
+    if (this.clip) {
+      // captured motion already carries the player's real head and eye line
+      this.solveAt(t, out)
+      if (this.stroke.ball && this.heldUntil >= 0 && t < this.heldUntil) {
+        ballOut.copy(out.wristL).y += 0.06
+        return { ballVisible: true }
+      }
+      return { ballVisible }
+    }
     this.track.sample(t, this.pose)
     let gaze: Vector3 | null = null
     const spec = this.stroke.ball

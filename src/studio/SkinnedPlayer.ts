@@ -5,6 +5,7 @@ import {
 import { GLTFLoader, SkeletonUtils } from 'three-stdlib'
 import type { Solved } from '../engine/solver'
 import { KIT, buildRacket } from './PlayerRig'
+import type { Rig } from '../engine/rig/rig'
 
 /**
  * A skinned humanoid (Mixamo skeleton, e.g. the three.js `Xbot.glb`) posed every
@@ -138,6 +139,11 @@ export class SkinnedPlayer {
   private grip = new Quaternion()
   private gripInv = new Quaternion()
   private disposed = false
+  private clipConj = new Matrix4()
+  private clipConjQ = new Quaternion()
+  private boneByName: (name: string) => Bone | undefined = () => undefined
+  private clipBones: { bone: Bone; k: number; root: boolean }[] | null = null
+  private clipFor: object | null = null
 
   constructor(kind: SkinnedKind = 'player') {
     this.kind = kind
@@ -218,7 +224,8 @@ export class SkinnedPlayer {
     const top = find(B.headTop)?.getWorldPosition(new Vector3()).y ?? 1.8
     const toe = find(B.toeL)?.getWorldPosition(new Vector3()).y ?? 0
     const height = top - Math.min(toe, 0)
-    const scale = TARGET_HEIGHT / height
+    // the Rocketbox player is already metric and must match the engine's rig exactly; the X Bot is resized
+    const scale = this.kind === 'player' ? 1 : TARGET_HEIGHT / height
     scene.scale.setScalar(scale)
     scene.updateMatrixWorld(true)
     armature.updateMatrixWorld(true)
@@ -227,6 +234,11 @@ export class SkinnedPlayer {
     this.toArmature.copy(armMat).invert()
     armMat.decompose(tA, this.armatureQ, tB)
     this.unit = tB.x
+    // clip playback: the engine's rig applies rotY(180°) above the armature, the mesh does not, so
+    // rotations and the hips position are conjugated into the mesh armature's frame once here
+    this.clipConj.copy(this.toArmature).multiply(new Matrix4().makeRotationY(Math.PI)).multiply(armMat)
+    this.clipConj.decompose(tA, this.clipConjQ, tB)
+    this.boneByName = (name: string) => find(name)
 
     const register = (key: BoneKey, parentKey: BoneKey | null, childName?: string) => {
       const bone = find(B[key])
@@ -335,6 +347,31 @@ export class SkinnedPlayer {
   private tip(key: BoneKey, out: Vector3) {
     const b = this.bones[key]!
     return out.copy(b.axis).multiplyScalar(b.length).applyQuaternion(b.q).add(b.p)
+  }
+
+  /**
+   * Mocap playback: copy the rig's local rotations (only the bones the clip animates, so the
+   * finger curl survives) and place the hips; the racket follows the rig's grip.
+   */
+  updateFromRig(rig: Rig, animated: readonly string[], s: Solved) {
+    this.racket.position.copy(s.wristR)
+    this.racket.quaternion.copy(s.racketQ)
+    if (!this.ready) return
+    if (this.clipFor !== animated) {
+      this.clipFor = animated
+      this.clipBones = animated.flatMap((name) => {
+        const bone = this.boneByName(name)
+        const k = rig.find(name)
+        return bone && k >= 0 ? [{ bone, k, root: rig.parent[k] < 0 }] : []
+      })
+    }
+    for (const { bone, k, root } of this.clipBones!) {
+      if (root) {
+        bone.quaternion.copy(this.clipConjQ).multiply(rig.local[k])
+        rig.rootLocal(k, bone.position).applyMatrix4(this.clipConj)
+      } else bone.quaternion.copy(rig.local[k])
+    }
+    if (this.skel.visible) this.drawSkeleton(s)
   }
 
   update(s: Solved) {
