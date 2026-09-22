@@ -135,3 +135,19 @@ with mocap; they buy time while stage 2 is set up.
   little low, the left hand does not close on the grip for two-handers, and Xbot is a grey robot, not a person.
 - Lighting/materials shared by both models: procedural `Environment` (Lightformers, no network), ACES tone mapping,
   PCF shadows with a tight frustum, `ContactShadows` under the player.
+
+## Motion engine pass (2026-09-22)
+
+Measured with `npx tsx scripts/motion-report.ts` (240 fps, through the studio runtime). Causes found and fixed:
+
+| Problem | Cause | Fix |
+| --- | --- | --- |
+| Forearm folding flat onto the upper arm (inner elbow 8–13°) | two-bone IK had no joint limit | soft minimum inner angle of 38° (`MIN_JOINT_ANGLE`, exponential knee so the wrist never kinks) |
+| Elbow "snaps" straight at full extension | reach hard-clamped at 98.5 % | soft IK: the last 8 % of reach is eased exponentially (`SOFT_REACH`) |
+| Elbow whipping round (peaks of 4,750–27,000 m/s²) | bend plane undefined when the arm lines up with its pole vector | fallback pole blend + the elbow bend direction is baked per stroke at 240 Hz and smoothed with a zero-phase Gaussian (σ 40 ms) in `StrokeRuntime` |
+| Hand braking into every keyframe | Fritsch–Carlson tangents (harmonic mean, zeroed at extrema) on every channel | limited Bessel tangents for the upper body; monotone kept only for the feet and the left-hand attach blend |
+| Racket face twisting through edge-on | handle and face vectors interpolated component-wise | racket orientation interpolated as a quaternion (hemisphere-aligned Hermite) |
+
+Result, old → new: forehand peak elbow acceleration 236 → 159 m/s² and wrist jerk 2,738 → 1,853; tweener 27,199 → 89 m/s²; swing volley 4,750 → 493 m/s²; no stroke folds the elbow below 38°.
+
+**Athlete model.** `public/models/athlete.glb` (1.9 MB) is built by `npx tsx scripts/build-athlete.ts` from the Mixamo X Bot: same skeleton and bind pose, the robot materials replaced by one vertex-coloured material painted by anatomy (skin, hair, short-sleeved shirt, shorts, socks, shoes with sole), classified per vertex by its dominant bone and position along that bone. It is now the studio's default body; the capsule mannequin stays under More → Body. To go further, open the GLB in Blender, sculpt/retexture on the same armature and export over the file; the retargeting needs no change as long as the Mixamo bone names are kept.

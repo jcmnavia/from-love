@@ -329,7 +329,7 @@ const swingVolleyKeys = sequence()
     pelvis: [0.06, 0.9, 0.18],
     pelvisRot: [36, 11, 2],
     chestRot: [30, 8, -4],
-    rHand: [0.5, 1.2, -0.3],
+    rHand: [0.6, 1.18, -0.44],
     rPole: [0.85, -0.1, -0.5],
     lHand: [0.24, 1.3, 0.5],
     racketDir: [0.45, 0.2, -0.87],

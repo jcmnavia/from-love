@@ -1,4 +1,5 @@
-import type { Keyframe, Pose, PoseInput } from './types'
+import { Matrix4, Quaternion, Vector3 } from 'three'
+import type { Keyframe, Pose, PoseInput, V3 } from './types'
 
 export const READY: Pose = {
   pelvis: [0, 0.9, 0],
@@ -99,15 +100,67 @@ export function emptyPose(): Pose {
   return JSON.parse(JSON.stringify(READY)) as Pose
 }
 
+/** channel offsets inside a flattened pose (see `flatten`) */
+const CH_L_ATTACH = 18
+const CH_FEET = 28 // lFoot + rFoot, 28..37
+
 /**
- * Monotone cubic (Fritsch–Carlson) sampler over a keyframe list. Monotone so a
- * planted foot never drifts between two identical keys, and every local
- * extremum (top of the backswing, end of the follow-through) eases naturally.
+ * Channels that must never overshoot: the feet (a planted foot may not drift
+ * between two identical keys, a heel may not dip below the floor) and the
+ * left-hand attach blend (0..2). Everything else uses limited Bessel tangents so
+ * the hands and trunk keep their speed through a key instead of braking into it.
+ */
+const isMonotone = (c: number) => c === CH_L_ATTACH || c >= CH_FEET
+
+/** author-frame racket orientation as a quaternion [x, y, z, w]: y = handle → tip, z = string face */
+function racketQuat(dir: V3, normal: V3, out: Float64Array, o: number) {
+  const d = new Vector3(...dir).normalize()
+  const n = new Vector3(...normal)
+  n.addScaledVector(d, -n.dot(d))
+  if (n.lengthSq() < 1e-8) n.set(0, 0, 1).addScaledVector(d, -d.z)
+  n.normalize()
+  const x = new Vector3().crossVectors(d, n)
+  const q = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(x, d, n))
+  out[o] = q.x
+  out[o + 1] = q.y
+  out[o + 2] = q.z
+  out[o + 3] = q.w
+}
+
+/**
+ * Bessel tangent (the slope of the parabola through three neighbouring keys,
+ * which stays accurate when keys are unevenly spaced) limited to three times
+ * the smaller adjacent slope so the hand cannot overshoot next to a cluster of
+ * close keys. Unlike a monotone tangent it is not zeroed at an extremum, so
+ * the hand keeps moving through the top of the backswing instead of stopping.
+ */
+function besselLimited(vals: Float64Array, stride: number, c: number, i: number, h0: number, h1: number) {
+  const d0 = (vals[i * stride + c] - vals[(i - 1) * stride + c]) / h0
+  const d1 = (vals[(i + 1) * stride + c] - vals[i * stride + c]) / h1
+  let m = (h1 * d0 + h0 * d1) / (h0 + h1)
+  if (d0 * d1 > 0) {
+    const lim = 3 * Math.min(Math.abs(d0), Math.abs(d1))
+    if (Math.abs(m) > lim) m = Math.sign(m) * lim
+  }
+  return m
+}
+
+const qTmp = new Quaternion()
+const vTmp = new Vector3()
+
+/**
+ * Keyframe sampler. Cubic Hermite per channel: limited Bessel tangents for the
+ * upper body (Bessel, see `besselLimited`: C1-continuous speed, arcs instead of polylines), Fritsch–Carlson
+ * monotone tangents for the feet. The racket's orientation is interpolated as a
+ * quaternion, so the face turns along the shortest arc and never collapses or
+ * flips when the handle and face vectors pass close to each other.
  */
 export class PoseTrack {
   readonly times: number[]
   private values: Float64Array
   private tangents: Float64Array
+  private quats: Float64Array
+  private qTangents: Float64Array
   private scratch = new Float64Array(N)
 
   constructor(keys: Keyframe[]) {
@@ -115,13 +168,28 @@ export class PoseTrack {
     this.times = keys.map((k) => k.t)
     this.values = new Float64Array(n * N)
     this.tangents = new Float64Array(n * N)
-    keys.forEach((k, i) => flatten(k.pose, this.values, i * N))
+    this.quats = new Float64Array(n * 4)
+    this.qTangents = new Float64Array(n * 4)
+    keys.forEach((k, i) => {
+      flatten(k.pose, this.values, i * N)
+      racketQuat(k.pose.racketDir, k.pose.racketNormal, this.quats, i * 4)
+      // keep consecutive quaternions in the same hemisphere so interpolation takes the short way round
+      if (i > 0) {
+        let dot = 0
+        for (let j = 0; j < 4; j++) dot += this.quats[i * 4 + j] * this.quats[(i - 1) * 4 + j]
+        if (dot < 0) for (let j = 0; j < 4; j++) this.quats[i * 4 + j] *= -1
+      }
+    })
 
     const t = this.times
-    for (let c = 0; c < N; c++) {
-      for (let i = 1; i < n - 1; i++) {
-        const h0 = t[i] - t[i - 1]
-        const h1 = t[i + 1] - t[i]
+    for (let i = 1; i < n - 1; i++) {
+      const h0 = t[i] - t[i - 1]
+      const h1 = t[i + 1] - t[i]
+      for (let c = 0; c < N; c++) {
+        if (!isMonotone(c)) {
+          this.tangents[i * N + c] = besselLimited(this.values, N, c, i, h0, h1)
+          continue
+        }
         const d0 = (this.values[i * N + c] - this.values[(i - 1) * N + c]) / h0
         const d1 = (this.values[(i + 1) * N + c] - this.values[i * N + c]) / h1
         if (d0 * d1 <= 0) continue
@@ -129,6 +197,7 @@ export class PoseTrack {
         const w2 = h1 + 2 * h0
         this.tangents[i * N + c] = (w1 + w2) / (w1 / d0 + w2 / d1)
       }
+      for (let c = 0; c < 4; c++) this.qTangents[i * 4 + c] = besselLimited(this.quats, 4, c, i, h0, h1)
     }
   }
 
@@ -150,16 +219,20 @@ export class PoseTrack {
     const h10 = s3 - 2 * s2 + s
     const h01 = -2 * s3 + 3 * s2
     const h11 = s3 - s2
-    const a = i * N
-    const b = (i + 1) * N
-    for (let c = 0; c < N; c++) {
-      this.scratch[c] =
-        h00 * this.values[a + c] +
-        h10 * h * this.tangents[a + c] +
-        h01 * this.values[b + c] +
-        h11 * h * this.tangents[b + c]
-    }
+    const herm = (vals: Float64Array, tans: Float64Array, stride: number, c: number) =>
+      h00 * vals[i * stride + c] + h10 * h * tans[i * stride + c] + h01 * vals[(i + 1) * stride + c] + h11 * h * tans[(i + 1) * stride + c]
+    for (let c = 0; c < N; c++) this.scratch[c] = herm(this.values, this.tangents, N, c)
     unflatten(this.scratch, out)
+
+    qTmp.set(herm(this.quats, this.qTangents, 4, 0), herm(this.quats, this.qTangents, 4, 1), herm(this.quats, this.qTangents, 4, 2), herm(this.quats, this.qTangents, 4, 3)).normalize()
+    vTmp.set(0, 1, 0).applyQuaternion(qTmp)
+    out.racketDir[0] = vTmp.x
+    out.racketDir[1] = vTmp.y
+    out.racketDir[2] = vTmp.z
+    vTmp.set(0, 0, 1).applyQuaternion(qTmp)
+    out.racketNormal[0] = vTmp.x
+    out.racketNormal[1] = vTmp.y
+    out.racketNormal[2] = vTmp.z
     return out
   }
 }

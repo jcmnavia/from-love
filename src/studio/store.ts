@@ -50,7 +50,7 @@ export const useStudio = create<StudioState>((set) => ({
   showCoil: true,
   showBall: true,
   xray: false,
-  model: 'mannequin',
+  model: 'skinned',
   metrics: {
     shoulderTurn: 0, hipTurn: 0, separation: 0, kneeFront: 180, kneeBack: 180,
     headSpeed: 0, faceTilt: 0, handHeight: 0,

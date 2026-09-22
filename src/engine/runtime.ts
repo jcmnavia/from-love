@@ -1,11 +1,15 @@
 import { Vector3 } from 'three'
 import { PoseTrack, emptyPose } from './pose'
-import { createSolved, solve, toWorld, type Solved } from './solver'
+import { createSolved, solve, toWorld, type ArmBends, type Solved } from './solver'
 import type { Stroke } from './types'
 
 const G = 9.81
 const BALL_R = 0.033
 const TRAIL_SAMPLES = 240
+/** the elbow bend directions are baked at this rate and low-pass filtered */
+const BEND_HZ = 240
+/** standard deviation (s) of the zero-phase Gaussian applied to the elbow swivel */
+const BEND_SIGMA = 0.04
 /** coefficient of restitution of a tennis ball on a hard court, and the horizontal speed kept through a bounce */
 const BOUNCE_COR = 0.73
 const BOUNCE_SLIDE = 0.78
@@ -37,6 +41,10 @@ export class StrokeRuntime {
   private heldUntil = -1
   private pose = emptyPose()
   private gaze = new Vector3()
+  /** baked, smoothed elbow bend directions: 3 floats per sample per arm */
+  private bendR: Float32Array
+  private bendL: Float32Array
+  private bends: ArmBends = { r: new Vector3(), l: new Vector3() }
   private outDir = new Vector3(0, 0, -1)
   private bounceP = new Vector3()
   private bounceV = new Vector3()
@@ -47,9 +55,22 @@ export class StrokeRuntime {
     this.duration = stroke.duration
 
     const scratch = createSolved()
+    // pass 1: bake the raw elbow bend directions, then smooth them so the elbow swivels
+    // continuously instead of whipping round where the arm lines up with its pole
+    const nb = Math.max(2, Math.round(this.duration * BEND_HZ) + 1)
+    const rawR = new Float32Array(nb * 3)
+    const rawL = new Float32Array(nb * 3)
+    for (let i = 0; i < nb; i++) {
+      solve(this.track.sample((i / (nb - 1)) * this.duration, this.pose), scratch)
+      rawR.set([scratch.bendR.x, scratch.bendR.y, scratch.bendR.z], i * 3)
+      rawL.set([scratch.bendL.x, scratch.bendL.y, scratch.bendL.z], i * 3)
+    }
+    this.bendR = gaussian3(rawR, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
+    this.bendL = gaussian3(rawL, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
+
     for (let i = 0; i < TRAIL_SAMPLES; i++) {
       const t = (i / (TRAIL_SAMPLES - 1)) * this.duration
-      solve(this.track.sample(t, this.pose), scratch)
+      solve(this.track.sample(t, this.pose), scratch, null, this.bendsAt(t))
       this.trail.push(scratch.racketTip.clone())
       this.handTrail.push(scratch.wristR.clone())
       this.trailTimes.push(t)
@@ -72,11 +93,11 @@ export class StrokeRuntime {
 
     const ball = stroke.ball
     if (ball) {
-      solve(this.track.sample(ball.contactT, this.pose), scratch)
+      solve(this.track.sample(ball.contactT, this.pose), scratch, null, this.bendsAt(ball.contactT))
       this.contact = scratch.racketHead.clone()
       const points: { t: number; p: Vector3 }[] = ball.waypoints.map((w) => {
         if (w.p === 'lHand') {
-          solve(this.track.sample(w.t, this.pose), scratch)
+          solve(this.track.sample(w.t, this.pose), scratch, null, this.bendsAt(w.t))
           this.heldUntil = w.t
           return { t: w.t, p: scratch.wristL.clone().add(new Vector3(0, 0.06, 0)) }
         }
@@ -129,12 +150,29 @@ export class StrokeRuntime {
         gaze.y = this.contact.y + (this.contact.y > 1.6 ? -0.4 : 0.6) * s
       }
     }
-    solve(this.pose, out, gaze)
+    solve(this.pose, out, gaze, this.bendsAt(t))
     if (spec && this.heldUntil >= 0 && t < this.heldUntil) {
       ballOut.copy(out.wristL).y += 0.06
       return { ballVisible: true }
     }
     return { ballVisible }
+  }
+
+  /** smoothed elbow bend directions at time `t` (linear between baked samples) */
+  private bendsAt(t: number): ArmBends {
+    const n = this.bendR.length / 3
+    const f = Math.min(Math.max(t / this.duration, 0), 1) * (n - 1)
+    const i = Math.min(Math.floor(f), n - 2)
+    const u = f - i
+    const read = (a: Float32Array, out: Vector3) =>
+      out.set(
+        a[i * 3] * (1 - u) + a[i * 3 + 3] * u,
+        a[i * 3 + 1] * (1 - u) + a[i * 3 + 4] * u,
+        a[i * 3 + 2] * (1 - u) + a[i * 3 + 5] * u,
+      )
+    read(this.bendR, this.bends.r)
+    read(this.bendL, this.bends.l)
+    return this.bends
   }
 
   private ballAt(t: number, out: Vector3): boolean {
@@ -196,4 +234,27 @@ export class StrokeRuntime {
 const smooth = (x: number) => {
   const s = Math.min(Math.max(x, 0), 1)
   return s * s * (3 - 2 * s)
+}
+
+/** zero-phase Gaussian low-pass over a series of 3-vectors (edges clamped); `sigma` is in samples */
+function gaussian3(src: Float32Array, n: number, sigma: number): Float32Array {
+  const out = new Float32Array(src.length)
+  const r = Math.max(1, Math.ceil(sigma * 3))
+  const w: number[] = []
+  for (let k = -r; k <= r; k++) w.push(Math.exp(-(k * k) / (2 * sigma * sigma)))
+  for (let i = 0; i < n; i++) {
+    let x = 0, y = 0, z = 0, sum = 0
+    for (let k = -r; k <= r; k++) {
+      const j = Math.min(Math.max(i + k, 0), n - 1)
+      const wk = w[k + r]
+      x += src[j * 3] * wk
+      y += src[j * 3 + 1] * wk
+      z += src[j * 3 + 2] * wk
+      sum += wk
+    }
+    out[i * 3] = x / sum
+    out[i * 3 + 1] = y / sum
+    out[i * 3 + 2] = z / sum
+  }
+  return out
 }

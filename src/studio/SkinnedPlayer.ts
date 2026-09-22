@@ -22,7 +22,8 @@ import { KIT, buildRacket } from './PlayerRig'
  * scene's left-handed mirror (scale.x = -1) keeps working.
  */
 
-const MODEL_URL = '/models/Xbot.glb'
+/** built by scripts/build-athlete.ts from the Mixamo X Bot: same skeleton, painted as a tennis player */
+const MODEL_URL = '/models/athlete.glb'
 const TARGET_HEIGHT = 1.83
 /** the character rests facing +Z; our player faces -Z */
 const FACE = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI)
@@ -170,16 +171,16 @@ export class SkinnedPlayer {
   }
 
   private setup(scene: Group) {
-    const surface = new MeshStandardMaterial({ color: KIT.shirt, roughness: 0.62, metalness: 0.0 })
-    const joints = new MeshStandardMaterial({ color: KIT.shorts, roughness: 0.5, metalness: 0.05 })
-    this.mats.push(surface, joints)
+    // one vertex-coloured material: skin, kit and shoes are painted into the model
+    const body = new MeshStandardMaterial({ vertexColors: true, roughness: 0.66, metalness: 0.0 })
+    this.mats.push(body)
     scene.traverse((o) => {
       if ((o as SkinnedMesh).isSkinnedMesh) {
         const sm = o as SkinnedMesh
         sm.castShadow = true
         sm.receiveShadow = true
         sm.frustumCulled = false
-        sm.material = /joint/i.test(sm.name) ? joints : surface
+        sm.material = body
         this.meshes.push(sm)
       }
     })

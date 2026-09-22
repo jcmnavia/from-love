@@ -63,6 +63,9 @@ export interface Solved {
   /** hand orientations: y = wrist → fingers, z = palm normal (the racket hand follows the racket face) */
   handQR: Quaternion
   handQL: Quaternion
+  /** unit bend directions of the elbows (from the shoulder–wrist line toward the elbow) */
+  bendR: Vector3
+  bendL: Vector3
   /** -1 = all weight on the left foot, +1 = all on the right, derived from where the pelvis sits between the feet */
   weight: number
 }
@@ -77,7 +80,7 @@ export function createSolved(): Solved {
     hipL: v(), hipR: v(), kneeL: v(), kneeR: v(), ankleL: v(), ankleR: v(),
     footQL: q(), footQR: q(), racketQ: q(),
     racketHead: v(), racketTip: v(), racketDir: v(), racketNormal: v(),
-    handQR: q(), handQL: q(), weight: 0,
+    handQR: q(), handQL: q(), bendR: v(), bendL: v(), weight: 0,
   }
 }
 
@@ -102,8 +105,27 @@ const tmpD = new Vector3()
 const tmpQ = new Quaternion()
 const basis = new Matrix4()
 
-/** Analytic two-bone IK. Writes the mid joint and the (reach-clamped) end joint. */
-function ik2(root: Vector3, target: Vector3, l1: number, l2: number, pole: Vector3, mid: Vector3, end: Vector3) {
+/** inner elbow/knee angle below which the joint cannot fold (a real elbow stops at ~35–40°) */
+const MIN_JOINT_ANGLE = 38 * DEG
+/** fraction of the full reach over which soft IK starts easing the limb straight */
+const SOFT_REACH = 0.08
+
+/**
+ * Analytic two-bone IK with the two fixes that stop a limb looking mechanical:
+ *
+ * - Soft reach: the last few percent of extension is eased exponentially
+ *   instead of hard-clamped, so the elbow never snaps straight and the joint
+ *   decelerates into full extension the way a real arm does.
+ * - A stable bend plane: the authored pole is blended with a fallback pole as
+ *   the limb lines up with it, so the elbow cannot flip sides mid-swing.
+ *
+ * Also enforces a minimum inner joint angle so the forearm cannot fold flat
+ * onto the upper arm. Writes the mid joint and the (reach-limited) end joint.
+ */
+function ik2(
+  root: Vector3, target: Vector3, l1: number, l2: number, pole: Vector3, mid: Vector3, end: Vector3,
+  fallback?: Vector3, bendIn?: Vector3 | null, bendOut?: Vector3,
+) {
   const dir = tmpA.copy(target).sub(root)
   let d = dir.length()
   if (d < 1e-5) {
@@ -111,16 +133,31 @@ function ik2(root: Vector3, target: Vector3, l1: number, l2: number, pole: Vecto
     d = 1e-5
   }
   dir.divideScalar(d)
-  // never lock the joint dead straight: a real elbow or knee keeps a few degrees of flexion at full reach
-  const max = (l1 + l2) * 0.985
-  const min = Math.abs(l1 - l2) + 0.02
-  const dc = Math.min(Math.max(d, min), max)
+  const full = l1 + l2
+  const soft = full * SOFT_REACH
+  const dSoft = full - soft
+  if (d > dSoft) d = dSoft + soft * (1 - Math.exp(-(d - dSoft) / soft))
+  // soft floor as well: approaching the fold limit eases in exponentially, so the wrist never kinks
+  const min = Math.sqrt(l1 * l1 + l2 * l2 - 2 * l1 * l2 * Math.cos(MIN_JOINT_ANGLE))
+  const knee = full * SOFT_REACH * 0.6
+  const dc = d > min + knee ? d : min + knee * Math.exp((d - min - knee) / knee)
   end.copy(root).addScaledVector(dir, dc)
   const a = (l1 * l1 - l2 * l2 + dc * dc) / (2 * dc)
   const h = Math.sqrt(Math.max(l1 * l1 - a * a, 0))
-  const perp = tmpB.copy(pole).addScaledVector(dir, -pole.dot(dir))
+
+  const pn = tmpD.copy(bendIn ?? pole).normalize()
+  const perp = tmpB.copy(pn).addScaledVector(dir, -pn.dot(dir))
+  // as the limb points along its pole the bend plane becomes undefined; hand over to the fallback smoothly
+  const along = Math.abs(pn.dot(dir))
+  if (!bendIn && fallback && along > 0.75) {
+    const w = Math.min((along - 0.75) / 0.2, 1)
+    const fb = tmpC.copy(fallback).normalize()
+    fb.addScaledVector(dir, -fb.dot(dir))
+    perp.lerp(fb, w * w * (3 - 2 * w))
+  }
   if (perp.lengthSq() < 1e-8) perp.set(0, 0, 1).addScaledVector(dir, -dir.z)
   perp.normalize()
+  bendOut?.copy(perp)
   mid.copy(root).addScaledVector(dir, a).addScaledVector(perp, h)
 }
 
@@ -143,14 +180,20 @@ function solveLeg(
   target.z -= Math.cos(yaw) * (1 - Math.cos(heel)) * 0.12
   const pole = tmpD.set(Math.sin(yaw), 0.15, -Math.cos(yaw)).multiplyScalar(0.65)
   pole.add(tmpA.set(side * 0.18, 0, -0.35).applyQuaternion(pelvisQ))
-  ik2(hip, target, BODY.thigh, BODY.shin, pole, knee, ankle)
+  const fallback = new Vector3(Math.sin(yaw), 0, -Math.cos(yaw))
+  ik2(hip, target.clone(), BODY.thigh, BODY.shin, pole.clone(), knee, ankle, fallback)
 }
 
 /**
  * Pose (targets in the author frame) → world-space joint positions and
  * orientations. `gaze` is a world-space point for the head to track.
  */
-export function solve(pose: Pose, out: Solved, gaze?: Vector3 | null): Solved {
+export interface ArmBends {
+  r: Vector3
+  l: Vector3
+}
+
+export function solve(pose: Pose, out: Solved, gaze?: Vector3 | null, bends?: ArmBends | null): Solved {
   bodyQuat(pose.pelvisRot, out.pelvisQ)
   bodyQuat(pose.chestRot, tmpQ)
   out.chestQ.copy(out.pelvisQ).multiply(tmpQ)
@@ -201,7 +244,8 @@ export function solve(pose: Pose, out: Solved, gaze?: Vector3 | null): Solved {
   out.shoulderR.copy(out.chestBase).add(tmpA.set(BODY.shoulderHalf, shoulderY, 0).applyQuaternion(out.chestQ))
   out.shoulderR.add(tmpA.copy(rTarget).sub(out.shoulderR).normalize().multiplyScalar(0.035))
   const rPole = toWorld(pose.rPole, tmpD)
-  ik2(out.shoulderR, rTarget.clone(), BODY.upperArm, BODY.forearm, rPole.clone(), out.elbowR, out.wristR)
+  const rFallback = new Vector3(0.45, -0.85, 0.25).applyQuaternion(out.chestQ)
+  ik2(out.shoulderR, rTarget.clone(), BODY.upperArm, BODY.forearm, rPole.clone(), out.elbowR, out.wristR, rFallback, bends?.r, out.bendR)
 
   out.racketHead.copy(out.wristR).addScaledVector(out.racketDir, RACKET.sweet)
   out.racketTip.copy(out.wristR).addScaledVector(out.racketDir, RACKET.length - RACKET.butt)
@@ -217,7 +261,8 @@ export function solve(pose: Pose, out: Solved, gaze?: Vector3 | null): Solved {
   out.shoulderL.copy(out.chestBase).add(tmpA.set(-BODY.shoulderHalf, shoulderY, 0).applyQuaternion(out.chestQ))
   out.shoulderL.add(tmpA.copy(lTarget).sub(out.shoulderL).normalize().multiplyScalar(0.035))
   const lPole = toWorld(pose.lPole, new Vector3())
-  ik2(out.shoulderL, lTarget.clone(), BODY.upperArm, BODY.forearm, lPole, out.elbowL, out.wristL)
+  const lFallback = new Vector3(-0.45, -0.85, 0.25).applyQuaternion(out.chestQ)
+  ik2(out.shoulderL, lTarget.clone(), BODY.upperArm, BODY.forearm, lPole, out.elbowL, out.wristL, lFallback, bends?.l, out.bendL)
 
   // hands: the racket hand's palm follows the string face, knuckles across the handle; the free
   // hand hangs off its forearm with the palm turned toward the body
