@@ -22,8 +22,12 @@ import { KIT, buildRacket } from './PlayerRig'
  * scene's left-handed mirror (scale.x = -1) keeps working.
  */
 
-/** built by scripts/build-athlete.ts from the Mixamo X Bot: same skeleton, painted as a tennis player */
-const MODEL_URL = '/models/athlete.glb'
+export type SkinnedKind = 'player' | 'athlete'
+/**
+ * player: Microsoft Rocketbox Sports_Male_04 (MIT, see public/models/LICENSE-rocketbox.txt), bones renamed to Mixamo's.
+ * athlete: built by scripts/build-athlete.ts from the Mixamo X Bot, painted as a tennis player.
+ */
+const MODEL_URL: Record<SkinnedKind, string> = { player: '/models/player.glb', athlete: '/models/athlete.glb' }
 const TARGET_HEIGHT = 1.83
 /** the character rests facing +Z; our player faces -Z */
 const FACE = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI)
@@ -63,12 +67,12 @@ interface BoneInfo {
 
 // scratch: tX/qX for the public methods, sX for the private helpers, ikX for ik2
 /** one download shared by every scene on the page (the contact sheet mounts several) */
-let modelPromise: Promise<Group> | null = null
-function loadModel() {
-  modelPromise ??= new Promise((resolve, reject) => {
-    new GLTFLoader().load(MODEL_URL, (gltf) => resolve(gltf.scene), undefined, reject)
+const modelPromises: Partial<Record<SkinnedKind, Promise<Group>>> = {}
+function loadModel(kind: SkinnedKind) {
+  modelPromises[kind] ??= new Promise((resolve, reject) => {
+    new GLTFLoader().load(MODEL_URL[kind], (gltf) => resolve(gltf.scene), undefined, reject)
   })
-  return modelPromise.then((scene) => SkeletonUtils.clone(scene) as Group)
+  return modelPromises[kind].then((scene) => SkeletonUtils.clone(scene) as Group)
 }
 
 /** finger curl (degrees) for the three joints of each finger: racket hand grips, free hand relaxes */
@@ -117,6 +121,7 @@ function twistAbout(q: Quaternion, axis: Vector3, out: Quaternion) {
 }
 
 export class SkinnedPlayer {
+  readonly kind: SkinnedKind
   group = new Group()
   racket: Group
   ready = false
@@ -134,7 +139,8 @@ export class SkinnedPlayer {
   private gripInv = new Quaternion()
   private disposed = false
 
-  constructor() {
+  constructor(kind: SkinnedKind = 'player') {
+    this.kind = kind
     const mat = (color: string, roughness: number) => {
       const m = new MeshStandardMaterial({ color, roughness, metalness: 0.02 })
       this.mats.push(m)
@@ -162,25 +168,35 @@ export class SkinnedPlayer {
     this.grip.multiply(qA.setFromAxisAngle(new Vector3(0, 1, 0), 0.6))
     this.gripInv.copy(this.grip).invert()
 
-    loadModel().then(
+    loadModel(kind).then(
       (scene) => {
         if (!this.disposed) this.setup(scene)
       },
-      (err) => console.error('[SkinnedPlayer] failed to load', MODEL_URL, err),
+      (err) => console.error('[SkinnedPlayer] failed to load', MODEL_URL[kind], err),
     )
   }
 
   private setup(scene: Group) {
-    // one vertex-coloured material: skin, kit and shoes are painted into the model
-    const body = new MeshStandardMaterial({ vertexColors: true, roughness: 0.66, metalness: 0.0 })
-    this.mats.push(body)
+    // athlete: one vertex-coloured material painted into the model; player: keep the model's own
+    // textured materials (cloned per instance so x-ray can make one scene transparent)
+    const painted = this.kind === 'athlete' ? new MeshStandardMaterial({ vertexColors: true, roughness: 0.66, metalness: 0.0 }) : null
+    if (painted) this.mats.push(painted)
     scene.traverse((o) => {
       if ((o as SkinnedMesh).isSkinnedMesh) {
         const sm = o as SkinnedMesh
         sm.castShadow = true
         sm.receiveShadow = true
         sm.frustumCulled = false
-        sm.material = body
+        if (painted) sm.material = painted
+        else {
+          const own = (Array.isArray(sm.material) ? sm.material : [sm.material]).map((m) => {
+            const c = m.clone() as MeshStandardMaterial
+            c.metalness = 0
+            this.mats.push(c)
+            return c
+          })
+          sm.material = own.length === 1 ? own[0] : own
+        }
         this.meshes.push(sm)
       }
     })

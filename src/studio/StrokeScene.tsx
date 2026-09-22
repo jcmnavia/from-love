@@ -108,7 +108,6 @@ function CameraRig({ solved, preset }: { solved: Solved; preset?: CamPreset }) {
 function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAdvance: boolean; fixedT?: number; preset?: CamPreset }) {
   const runtime = useMemo(() => new StrokeRuntime(stroke), [stroke])
   const rig = useMemo(() => new PlayerRig(), [])
-  const skinned = useMemo(() => new SkinnedPlayer(), [])
   const solved = useMemo(() => createSolved(), [])
   const ballPos = useMemo(() => new Vector3(), [])
   const mirror = useRef<Group>(null)
@@ -123,12 +122,14 @@ function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAd
   const xray = useStudio((s) => s.xray)
   const surface = useStudio((s) => s.surface)
   const model = useStudio((s) => s.model)
+  // one skinned body at a time; switching bodies downloads the other model on demand
+  const skinned = useMemo(() => (model === 'mannequin' ? null : new SkinnedPlayer(model)), [model])
 
   useEffect(() => {
     rig.setXray(xray)
-    skinned.setXray(xray)
+    skinned?.setXray(xray)
   }, [rig, skinned, xray])
-  useEffect(() => () => skinned.dispose(), [skinned])
+  useEffect(() => () => skinned?.dispose(), [skinned])
 
   const trailColors = useMemo(() => {
     const slow = new Color('#7fb4ff')
@@ -148,9 +149,9 @@ function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAd
     }
     const tt = Math.min(t, runtime.duration)
     const { ballVisible } = runtime.evaluate(tt, solved, ballPos)
-    const useSkinned = st.model === 'skinned' && skinned.ready
+    const useSkinned = !!skinned?.ready
     rig.group.visible = !useSkinned
-    skinned.group.visible = useSkinned
+    if (skinned) skinned.group.visible = useSkinned
     if (useSkinned) skinned.update(solved)
     else rig.update(solved)
     if (contactShadow.current) contactShadow.current.position.set(solved.pelvis.x, 0.002, solved.pelvis.z)
@@ -211,7 +212,7 @@ function Stage({ stroke, autoAdvance, fixedT, preset }: { stroke: Stroke; autoAd
       <group ref={mirror}>
         <Court surface={surface} origin={stroke.origin} />
         <primitive object={rig.group} />
-        <primitive object={skinned.group} visible={model === 'skinned'} />
+        {skinned && <primitive object={skinned.group} />}
         <ContactShadows ref={contactShadow} opacity={0.45} scale={3} blur={2.2} far={1.4} resolution={512} frames={Infinity} color="#0a1626" />
         <mesh ref={ball} castShadow>
           <sphereGeometry args={[0.033, 20, 16]} />

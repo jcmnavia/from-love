@@ -20,7 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 const CAMS: CamPreset[] = ['three-quarter', 'side', 'front', 'behind', 'top']
 const FOCI: FocusId[] = ['body', 'shoulders', 'hips', 'racket', 'feet', 'head']
 const SURFACES: SurfaceId[] = ['hard', 'clay', 'grass', 'indoor']
-const MODELS: PlayerModel[] = ['mannequin', 'skinned']
+const MODELS: PlayerModel[] = ['player', 'athlete', 'mannequin']
 
 /** Compact toolbar under the canvas: camera, zoom target, zoom, and a "More" menu for overlays. */
 export function StudioToolbar({ hasBall }: { hasBall: boolean }) {

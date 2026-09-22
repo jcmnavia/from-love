@@ -3,8 +3,13 @@ import type { FocusId } from '../engine/types'
 
 export type CamPreset = 'side' | 'front' | 'behind' | 'top' | 'three-quarter'
 export type SurfaceId = 'hard' | 'clay' | 'grass' | 'indoor'
-/** which body to render: the procedural mannequin or a skinned humanoid mesh */
-export type PlayerModel = 'mannequin' | 'skinned'
+/**
+ * Which body to render: `player` = Microsoft Rocketbox athlete (MIT, public/models/player.glb),
+ * `athlete` = the painted Mixamo X Bot (public/models/athlete.glb), `mannequin` = capsules.
+ */
+export type PlayerModel = 'player' | 'athlete' | 'mannequin'
+export const PLAYER_MODELS: PlayerModel[] = ['player', 'athlete', 'mannequin']
+export const isPlayerModel = (v: unknown): v is PlayerModel => PLAYER_MODELS.includes(v as PlayerModel)
 
 export interface Metrics {
   shoulderTurn: number
@@ -50,7 +55,7 @@ export const useStudio = create<StudioState>((set) => ({
   showCoil: true,
   showBall: true,
   xray: false,
-  model: 'skinned',
+  model: 'player',
   metrics: {
     shoulderTurn: 0, hipTurn: 0, separation: 0, kneeFront: 180, kneeBack: 180,
     headSpeed: 0, faceTilt: 0, handHeight: 0,

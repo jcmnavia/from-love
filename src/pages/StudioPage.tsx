@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { StrokeScene } from '@/studio/StrokeScene'
-import { useStudio, type CamPreset } from '@/studio/store'
+import { isPlayerModel, useStudio, type CamPreset } from '@/studio/store'
 import type { FocusId } from '@/engine/types'
 import { useContent } from '@/i18n/content'
 import { useT } from '@/i18n'
@@ -32,7 +32,7 @@ export function StudioPage() {
     if (focus) patch.focus = focus
     if (params.get('lefty')) patch.leftHanded = true
     const model = params.get('model')
-    if (model === 'skinned' || model === 'mannequin') patch.model = model
+    if (isPlayerModel(model)) patch.model = model
     set(patch)
     if (cam) setCam(cam)
   }, [params, set, setCam, strokeId])

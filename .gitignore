@@ -27,3 +27,6 @@ dist-ssr
 .playwright-mcp
 .vercel
 .env*
+
+# raw mocap takes (scripts/mocap/fetch.sh)
+data/mocap-raw
