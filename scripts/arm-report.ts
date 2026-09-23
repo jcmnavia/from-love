@@ -2,7 +2,7 @@
  * Prints the right arm of a mocap clip in anatomical terms (engine/rig/arm.ts) over time, optionally
  * with a stroke's arm warp applied, so a pro's reference positions can be keyed against it.
  *
- *   npx -y tsx scripts/arm-report.ts forehand [--warp] [--times 0,0.5,...] [--check]
+ *   npx -y tsx scripts/arm-report.ts forehand [--warp] [--left] [--times 0,0.5,...] [--check]
  */
 import { readFileSync } from 'node:fs'
 import { Quaternion, Vector3 } from 'three'
@@ -21,13 +21,15 @@ const clip = JSON.parse(readFileSync(`public/motion/${stroke.clip ?? id}.json`, 
 const rig = new Rig()
 const track = new ClipTrack(clip, rig)
 const grip = makeGrip(rig, stroke.grips[0]?.id ?? 'semi-western')
-const arm = new Arm(rig)
+const side = process.argv.includes('--left') ? 'Left' : 'Right'
+const arm = new Arm(rig, side)
 const useWarp = process.argv.includes('--warp')
 const base = (t: number) => {
   track.apply(rig, t)
   if (useWarp && stroke.trunkYaw?.length) turnTrunk(rig, keyed(stroke.trunkYaw, t - clip.events.contact))
 }
 const warp = useWarp && stroke.armKeys ? new ArmWarp(rig, base, clip.events.contact, grip, stroke.armKeys) : null
+const leftWarp = useWarp && stroke.leftArmKeys ? new ArmWarp(rig, base, clip.events.contact, null, stroke.leftArmKeys, 'Left') : null
 const D = 180 / Math.PI
 const c = clip.events.contact
 const times = arg('--times')?.split(',').map(Number) ?? Array.from({ length: Math.floor(track.duration / 0.05) + 1 }, (_, i) => i * 0.05)
@@ -41,6 +43,7 @@ const p = emptyArmPose()
 let worst = 0
 for (const t of times) {
   base(t)
+  leftWarp?.apply(rig, t)
   if (warp) warp.apply(rig, t)
   arm.measure(rig, p)
   if (process.argv.includes('--check')) {
@@ -52,7 +55,7 @@ for (const t of times) {
   const hq = rig.quat[rig.find('RightHand')]
   const rq = hq.clone().multiply(grip.q)
   const dir = new Vector3(0, 1, 0).applyQuaternion(rq), nrm = new Vector3(0, 0, 1).applyQuaternion(rq)
-  const hc = P('RightHand').clone().sub(P('RightArm')), ec = P('RightForeArm').clone().sub(P('RightArm'))
+  const hc = P(side + 'Hand').clone().sub(P(side + 'Arm')), ec = P(side + 'ForeArm').clone().sub(P(side + 'Arm'))
   console.log(`${f(t, 5, 3)} ${f(t - c, 6, 3)} | ${f(yaw(P('LeftUpLeg'), P('RightUpLeg')), 4)} ${f(yaw(P('LeftArm'), P('RightArm')), 4)} | ${f(p.hand.x, 5, 2)} ${f(p.hand.y, 5, 2)} ${f(p.hand.z, 5, 2)} | ${f(hc.x, 5, 2)} ${f(hc.y, 5, 2)} ${f(-hc.z, 5, 2)} | ${f(ec.x, 5, 2)} ${f(ec.y, 5, 2)} ${f(-ec.z, 5, 2)} | ${f(p.flex * D)} ${f(p.swivel * D)} ${f(p.pron * D)} ${f(p.ext * D)} ${f(p.dev * D)} | ${f(dir.x, 5, 2)} ${f(dir.y, 5, 2)} ${f(-dir.z, 5, 2)}  ${f(nrm.x, 5, 2)} ${f(nrm.y, 5, 2)} ${f(-nrm.z, 5, 2)}`)
 }
 if (process.argv.includes('--check')) console.log(`round trip worst error: ${worst.toFixed(3)} (deg or mm)`)

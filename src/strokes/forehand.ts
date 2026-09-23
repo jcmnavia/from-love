@@ -208,6 +208,24 @@ export const forehand: Stroke = {
   // the capture over-turns the shoulders (126° against 92–106° measured on pros): ease it back to ~105°
   trunkYaw: [[-1.46, 0], [-1.2, -5], [-0.9, -10], [-0.7, -12], [-0.55, -18], [-0.4, -22], [-0.3, -18], [-0.2, -10], [-0.12, -2], [-0.08, 0]],
   armKeys: FOREHAND_ARM_KEYS,
+  // Left arm from the same Sinner frames: on the throat at the ready and through the start of the turn,
+  // then stretched across toward the side fence at shoulder height, pulled in to the chest as the trunk
+  // fires, and back on the racket to catch it after the finish (the clip loops on the ready position).
+  leftGrip: [[-1.46, 1], [-0.95, 1], [-0.75, 0], [0.3, 0], [0.54, 1]],
+  leftGripAt: 0.2,
+  leftArmKeys: [
+    { t: -0.73, hand: [0.27, -0.19, 0.03] },
+    { t: -0.6, hand: [0.39, -0.09, -0.08] },
+    { t: -0.5, hand: [0.42, -0.09, -0.17] },
+    { t: -0.4, hand: [0.4, -0.12, -0.2] },
+    { t: -0.3, hand: [0.43, -0.2, -0.06] },
+    { t: -0.2, hand: [0.34, -0.25, 0.2] },
+    { t: -0.1, hand: [-0.04, -0.18, 0.18] },
+    { t: 0, hand: [-0.1, -0.05, 0.14] },
+    { t: 0.1, hand: [-0.09, -0.06, 0.19] },
+    { t: 0.2, hand: [-0.11, -0.14, 0.2] },
+    { t: 0.35, hand: [-0.14, -0.22, 0.18] },
+  ],
   name: 'Forehand drive',
   aka: 'Topspin forehand',
   category: 'groundstroke',
