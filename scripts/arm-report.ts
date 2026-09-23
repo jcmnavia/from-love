@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs'
 import { Quaternion, Vector3 } from 'three'
 import { Rig } from '../src/engine/rig/rig'
 import { ClipTrack, type ClipData } from '../src/engine/rig/clip'
-import { emptyArmPose, RightArm } from '../src/engine/rig/arm'
+import { emptyArmPose, Arm } from '../src/engine/rig/arm'
 import { makeGrip } from '../src/engine/rig/solved'
 import { ArmWarp } from '../src/engine/rig/warp'
 import { keyed, turnTrunk } from '../src/engine/rig/trunk'
@@ -21,7 +21,7 @@ const stroke = STROKES.find((s) => s.id === id)!
 const rig = new Rig()
 const track = new ClipTrack(clip, rig)
 const grip = makeGrip(rig, stroke.grips[0]?.id ?? 'semi-western')
-const arm = new RightArm(rig)
+const arm = new Arm(rig)
 const useWarp = process.argv.includes('--warp')
 const base = (t: number) => {
   track.apply(rig, t)

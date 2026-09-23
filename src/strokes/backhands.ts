@@ -169,6 +169,7 @@ export const backhandTwoHanded: Stroke = {
   id: 'backhand-two-handed',
   clip: 'backhand-two-handed',
   contactRacket: { dir: [-0.95, -0.15, 0.25], normal: [0.25, -0.06, 0.97] },
+  leftGrip: [[-2, 1]],
   name: 'Two-handed backhand',
   category: 'groundstroke',
   level: 'beginner',

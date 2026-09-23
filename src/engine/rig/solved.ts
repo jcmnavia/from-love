@@ -30,6 +30,22 @@ export const BEVEL_OFFSET: Record<string, number> = {
   'two-handed-backhand': -1,
 }
 
+/**
+ * How far the handle leans from perpendicular-to-the-forearm toward the fingers, degrees: the more the
+ * hand sits on top of the handle (continental, the "hammer" grip) the more the racket continues the forearm;
+ * the further under (semi-western, western) the more it runs straight across the palm.
+ */
+export const GRIP_LEAN: Record<string, number> = {
+  continental: 38,
+  'eastern-backhand': 35,
+  'extreme-eastern-backhand': 32,
+  'two-handed-backhand': 38,
+  'eastern-forehand': 22,
+  eastern: 22,
+  'semi-western': 15,
+  western: 10,
+}
+
 export function makeGrip(rig: Rig, gripId: string): Grip {
   rig.resetLocal()
   rig.pose(null)
@@ -43,7 +59,7 @@ export function makeGrip(rig: Rig, gripId: string): Grip {
   let n = f.clone().cross(across).normalize()
   const toBody = P('Hips').clone().setY(hand.y).sub(hand)
   if (n.dot(toBody) < 0) n.negate()
-  const dir = across.clone().addScaledVector(f, 0.27).normalize()
+  const dir = across.clone().addScaledVector(f, Math.tan(((GRIP_LEAN[gripId] ?? 15) * Math.PI) / 180)).normalize()
   n.addScaledVector(dir, -n.dot(dir)).normalize()
   // turn the face about the handle by the grip's bevel offset; the studio world is mirrored (z away from
   // the net), so a turn that closes the face in the author frame is negative here

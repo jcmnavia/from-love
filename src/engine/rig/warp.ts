@@ -1,6 +1,6 @@
 import { Matrix4, Quaternion, Vector3 } from 'three'
 import type { ArmKey, V3 } from '../types'
-import { emptyArmPose, RightArm, type ArmPose } from './arm'
+import { emptyArmPose, Arm, type ArmPose } from './arm'
 import type { Rig } from './rig'
 import type { Grip } from './solved'
 
@@ -66,7 +66,7 @@ export function handForRacket(dir: V3, normal: V3, grip: Grip, out: Quaternion) 
  * the angles that reach them at that instant.
  */
 export class ArmWarp {
-  readonly arm: RightArm
+  readonly arm: Arm
   private dx: Curve
   private dy: Curve
   private dz: Curve
@@ -82,7 +82,7 @@ export class ArmWarp {
    * `contact` is the clip's contact time the keys are relative to.
    */
   constructor(rig: Rig, base: (t: number) => void, contact: number, grip: Grip, keys: ArmKey[]) {
-    this.arm = new RightArm(rig)
+    this.arm = new Arm(rig)
     const at = (k: ArmKey) => contact + k.t
     const sorted = [...keys].sort((a, b) => a.t - b.t)
     const measured = (t: number) => {
@@ -130,30 +130,28 @@ export class ArmWarp {
     )
     // wrist: explicit angles, or the angles that reach a racket orientation with the warped arm at that time
     const wk = sorted.filter((k) => k.wrist || k.racket)
+    let prev: { pron: number; ext: number; dev: number } | null = null
     const angles = wk.map((k) => {
-      if (k.wrist) return k.wrist.map((a) => a * DEG) as V3
-      const t = at(k)
-      base(t)
-      const p = this.warped(rig, t, false)
-      let hand: Quaternion
-      if (k.racket!.normal) hand = handForRacket(k.racket!.dir, k.racket!.normal, grip, new Quaternion())
-      else {
-        // direction only: turn a relaxed wrist the shortest way until the racket points there
-        this.arm.apply(rig, { ...p, hand: p.hand.clone(), pron: 0, ext: 10 * DEG, dev: 0 })
-        const h0 = rig.quat[rig.find('RightHand')].clone()
-        const d0 = new Vector3(0, 1, 0).applyQuaternion(h0.clone().multiply(grip.q))
-        const d = new Vector3(k.racket!.dir[0], k.racket!.dir[1], -k.racket!.dir[2]).normalize()
-        hand = new Quaternion().setFromUnitVectors(d0, d).multiply(h0)
-        base(t)
-        this.warped(rig, t, false)
-      }
-      this.arm.apply(rig, p, hand)
-      return [p.pron, p.ext, p.dev] as V3
+      const a = this.keyAngles(k, rig, base, at(k), grip, prev)
+      prev = { pron: a[0], ext: a[1], dev: a[2] }
+      return a
     })
     const wt = wk.map(at)
     this.pron = new Curve(wt, angles.map((a) => a[0]))
     this.ext = new Curve(wt, angles.map((a) => a[1]))
     this.dev = new Curve(wt, angles.map((a) => a[2]))
+  }
+
+  /** a key's wrist angles: given outright, or the reachable angles closest to its racket orientation */
+  private keyAngles(k: ArmKey, rig: Rig, base: (t: number) => void, t: number, grip: Grip, near: { pron: number; ext: number; dev: number } | null): V3 {
+    if (k.wrist) return k.wrist.map((a) => a * DEG) as V3
+    base(t)
+    const p = this.warped(rig, t, false)
+    const dir = new Vector3(k.racket!.dir[0], k.racket!.dir[1], -k.racket!.dir[2]).normalize()
+    const nk = k.racket!.normal
+    const normal = nk ? new Vector3(nk[0], nk[1], -nk[2]).addScaledVector(dir, -new Vector3(nk[0], nk[1], -nk[2]).dot(dir)).normalize() : null
+    this.arm.apply(rig, p, { dir, normal, grip, near })
+    return [p.pron, p.ext, p.dev] as V3
   }
 
   /** the capture's arm at `t` (rig already posed by the clip) plus the hand and swivel offsets */

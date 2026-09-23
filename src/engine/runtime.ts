@@ -1,4 +1,4 @@
-import { Vector3 } from 'three'
+import { Quaternion, Vector3 } from 'three'
 import { PoseTrack, emptyPose } from './pose'
 import { createSolved, solve, toWorld, type ArmBends, type Solved } from './solver'
 import type { Stroke } from './types'
@@ -7,6 +7,7 @@ import { Rig } from './rig/rig'
 import { ArmWarp } from './rig/warp'
 import { keyed, turnTrunk } from './rig/trunk'
 import { FingerCurl } from './rig/hand'
+import { LeftHandOnGrip } from './rig/twohand'
 import { calibrateGrip, makeGrip, rigToSolved, type Grip } from './rig/solved'
 
 const G = 9.81
@@ -58,6 +59,9 @@ export class StrokeRuntime {
   /** pro arm keys warping the clip's right arm */
   private warp: ArmWarp | null = null
   private fingers: { right: FingerCurl; left: FingerCurl } | null = null
+  private leftGrip: LeftHandOnGrip | null = null
+  private qTmp = new Quaternion()
+  private vTmp = new Vector3()
   /** bones the mesh copies from the rig: the clip's plus the fingers this runtime curls */
   readonly animated: string[] = []
   private outDir = new Vector3(0, 0, -1)
@@ -76,6 +80,7 @@ export class StrokeRuntime {
       const want = stroke.contactRacket
       this.fingers = { right: new FingerCurl(this.rig, 'Right'), left: new FingerCurl(this.rig, 'Left') }
       this.animated = [...clip.bones, ...this.fingers.right.bones, ...this.fingers.left.bones]
+      if (stroke.leftGrip?.length) this.leftGrip = new LeftHandOnGrip(this.rig)
       if (stroke.armKeys?.length)
         this.warp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, this.grip, stroke.armKeys)
       else if (want) {
@@ -190,9 +195,18 @@ export class StrokeRuntime {
         const roll = this.rollAt(t)
         if (roll) this.rig.twistLocal(this.rig.find('RightHand'), roll)
       }
+      // two-handers: the left hand closes on the handle just above the right
+      let onGrip = 0
+      if (this.leftGrip) {
+        onGrip = keyed(this.stroke.leftGrip!, t - this.clip.data.events.contact)
+        const hq = this.rig.quat[this.rig.find('RightHand')]
+        const racket = this.qTmp.copy(hq).multiply(this.grip.q)
+        const centre = this.vTmp.copy(this.grip.p).applyQuaternion(hq).add(this.rig.pos[this.rig.find('RightHand')])
+        this.leftGrip.apply(this.rig, racket, centre, onGrip)
+      }
       // the capture has no fingers: close the racket hand on the handle, relax the other
       this.fingers!.right.apply(this.rig, 1)
-      this.fingers!.left.apply(this.rig, 0.35)
+      this.fingers!.left.apply(this.rig, 0.35 + 0.65 * onGrip)
       rigToSolved(this.rig, this.grip, out)
     } else {
       solve(this.track.sample(t, this.pose), out, null, this.bendsAt(t))

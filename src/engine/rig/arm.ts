@@ -2,14 +2,14 @@ import { Matrix4, Quaternion, Vector3 } from 'three'
 import type { Rig } from './rig'
 
 /**
- * An anatomical model of the right arm on the rig: the elbow is a hinge, the forearm
+ * An anatomical model of one arm on the rig: the elbow is a hinge, the forearm
  * pronates about its own axis and the wrist flexes/extends and deviates. It reads those
  * angles off any posed rig and writes an arm back from them, so a mocap arm can be bent
  * toward a pro's positions without ever leaving the joints' real ranges.
  *
  * Conventions (all angles in radians):
  *  - chest frame: the Spine2 bone's orientation with author axes (x = player's right, y up, z forward)
- *  - hand: the wrist (RightHand bone) relative to the shoulder (RightArm bone), chest frame, metres
+ *  - hand: the wrist (Hand bone) relative to the shoulder (Arm bone), chest frame, metres
  *  - swivel: where the elbow points around the shoulder→wrist line; 0 = toward the chest's down
  *    direction, + = turning about that line (right-hand rule)
  *  - pron: forearm pronation, 0 = thumb up with the elbow flexed 90°, + = thumb turning in
@@ -22,6 +22,15 @@ export interface ArmPose {
   pron: number
   ext: number
   dev: number
+}
+
+/** a racket orientation to reach (world directions; `normal` optional) with the hand's grip */
+export interface RacketAim {
+  dir: Vector3
+  normal: Vector3 | null
+  grip: { q: Quaternion }
+  /** wrist angles to stay close to (the previous key's), so consecutive keys do not flip the forearm */
+  near?: { pron: number; ext: number; dev: number } | null
 }
 
 export const emptyArmPose = (): ArmPose => ({ hand: new Vector3(), swivel: 0, flex: 0, pron: 0, ext: 0, dev: 0 })
@@ -60,7 +69,10 @@ function fromChest(chest: Quaternion, v: Vector3, out: Vector3) {
   return out.set(v.x, v.y, -v.z).applyQuaternion(chest)
 }
 
-export class RightArm {
+export type Side = 'Left' | 'Right'
+
+export class Arm {
+  readonly side: Side
   readonly l1: number
   readonly l2: number
   private iChest: number
@@ -81,18 +93,22 @@ export class RightArm {
   private pC = new Vector3()
   /** hinge axis in the upper arm's local frame (fallback when the elbow is straight) */
   private hingeLocal = new Vector3()
+  /** +1 for the right arm, −1 for the left: pronation turns the thumb toward the body on either side */
+  private sgn: number
   private chest = new Quaternion()
   private tmpA = new Quaternion()
   private tmpF = new Quaternion()
   private tmpH = new Quaternion()
 
-  constructor(rig: Rig) {
+  constructor(rig: Rig, side: Side = 'Right') {
+    this.side = side
+    this.sgn = side === 'Right' ? 1 : -1
     this.iChest = rig.find('Spine2')
-    this.iArm = rig.find('RightArm')
-    this.iFore = rig.find('RightForeArm')
-    this.iHand = rig.find('RightHand')
-    this.iIndex = rig.find('RightHandIndex1')
-    this.iPinky = rig.find('RightHandPinky1')
+    this.iArm = rig.find(side + 'Arm')
+    this.iFore = rig.find(side + 'ForeArm')
+    this.iHand = rig.find(side + 'Hand')
+    this.iIndex = rig.find(side + 'HandIndex1')
+    this.iPinky = rig.find(side + 'HandPinky1')
     rig.resetLocal()
     rig.pose(null)
     const S = rig.pos[this.iArm], E = rig.pos[this.iFore], W = rig.pos[this.iHand]
@@ -115,10 +131,70 @@ export class RightArm {
     const neutral = n.clone().cross(uF).normalize()
     const r = rig.pos[this.iIndex].clone().sub(rig.pos[this.iPinky])
     r.addScaledVector(uF, -r.dot(uF)).normalize()
-    this.pRest = Math.atan2(-r.dot(n), r.dot(neutral))
+    // pronation turns the thumb toward the body: −n on the right (n points out), +n on the left
+    this.pRest = Math.atan2(-this.sgn * r.dot(n), r.dot(neutral))
     // radial and palm axes of the rest hand, in canonical forearm coordinates (e1 = neutral, e2 = along the forearm)
-    this.rC.copy(E1).applyAxisAngle(E2, -this.pRest)
-    this.pC.copy(this.rC).cross(E2).normalize()
+    this.rC.copy(E1).applyAxisAngle(E2, -this.sgn * this.pRest)
+    this.pC.copy(this.rC).cross(E2).multiplyScalar(this.sgn).normalize()
+  }
+
+  /** a world point relative to this arm's shoulder, in the chest frame (the `hand` convention) */
+  fromShoulder(rig: Rig, world: Vector3, out: Vector3) {
+    return toChest(this.chestQ(rig, this.chest), v1.copy(world).sub(rig.pos[this.iArm]), out)
+  }
+
+  /** the hand bone's world orientation on the posed rig */
+  handQ(rig: Rig) {
+    return rig.quat[this.iHand]
+  }
+
+  /**
+   * The wrist angles, within the joint limits, that bring the racket closest to `aim` (direction first,
+   * face second) for a forearm frame `B`: a coarse grid over pronation × extension × deviation refined twice,
+   * with a light pull toward a relaxed wrist so equally good answers resolve to the natural one.
+   */
+  private aim(B: Quaternion, aim: RacketAim, pose: ArmPose) {
+    const dirT = aim.dir, nT = aim.normal
+    const gq = aim.grip.q
+    const h = new Quaternion(), r = new Quaternion(), d = new Vector3(), nv = new Vector3()
+    const cost = (pr: number, ex: number, dv: number) => {
+      r.copy(B).multiply(this.compose(pr, ex, dv, h)).multiply(gq)
+      const ed = Math.acos(Math.min(Math.max(d.set(0, 1, 0).applyQuaternion(r).dot(dirT), -1), 1))
+      let c = ed * ed
+      if (nT) {
+        const en = Math.acos(Math.min(Math.max(nv.set(0, 0, 1).applyQuaternion(r).dot(nT), -1), 1))
+        c += 0.5 * en * en
+      }
+      c += 0.03 * (ex * ex + dv * dv) + 0.01 * pr * pr
+      const nr = aim.near
+      if (nr) c += 0.15 * ((pr - nr.pron) ** 2 + 0.3 * (ex - nr.ext) ** 2 + 0.3 * (dv - nr.dev) ** 2)
+      return c
+    }
+    const L = ARM_LIMITS
+    let best = { pr: 0, ex: 0, dv: 0, c: Infinity }
+    const scan = (pr0: number, pr1: number, ex0: number, ex1: number, dv0: number, dv1: number, n: number) => {
+      for (let i = 0; i <= n; i++) {
+        const pr = pr0 + ((pr1 - pr0) * i) / n
+        for (let j = 0; j <= n; j++) {
+          const ex = ex0 + ((ex1 - ex0) * j) / n
+          for (let k = 0; k <= n; k++) {
+            const dv = dv0 + ((dv1 - dv0) * k) / n
+            const c = cost(pr, ex, dv)
+            if (c < best.c) best = { pr, ex, dv, c }
+          }
+        }
+      }
+    }
+    scan(L.pron[0], L.pron[1], L.ext[0], L.ext[1], L.dev[0], L.dev[1], 16)
+    for (const span of [12 * DEG, 3 * DEG]) {
+      const b = best
+      const lim = (x: number, [lo, hi]: readonly [number, number]) => [Math.max(lo, x - span), Math.min(hi, x + span)] as const
+      const [p0, p1] = lim(b.pr, L.pron), [e0, e1] = lim(b.ex, L.ext), [d0, d1] = lim(b.dv, L.dev)
+      scan(p0, p1, e0, e1, d0, d1, 8)
+    }
+    pose.pron = best.pr
+    pose.ext = best.ex
+    pose.dev = best.dv
   }
 
   /** anatomical upper-arm frame: x = hinge axis, y = along the bone, z = x × y */
@@ -200,7 +276,7 @@ export class RightArm {
     const theta = -2 * Math.atan2(tw.y, tw.w) // T = tw⁻¹, rotation about e2 by theta
     const S = sw.invert()
     const d = v1.copy(E2).applyQuaternion(S)
-    let pron = this.pRest - theta
+    let pron = this.pRest - this.sgn * theta
     while (pron > Math.PI) pron -= 2 * Math.PI
     while (pron < -Math.PI) pron += 2 * Math.PI
     return {
@@ -214,7 +290,7 @@ export class RightArm {
   private compose(pron: number, ext: number, dev: number, out: Quaternion) {
     const d = v1.copy(E2).addScaledVector(this.rC, Math.tan(dev)).addScaledVector(this.pC, -Math.tan(ext)).normalize()
     const S = q2.setFromUnitVectors(E2, d)
-    return out.setFromAxisAngle(E2, this.pRest - pron).multiply(S).multiply(this.hRest)
+    return out.setFromAxisAngle(E2, this.sgn * (this.pRest - pron)).multiply(S).multiply(this.hRest)
   }
 
   /**
@@ -223,7 +299,7 @@ export class RightArm {
    * to that world orientation as the wrist's limits allow (the reached angles are written back to `pose`).
    * Re-poses the rig.
    */
-  apply(rig: Rig, pose: ArmPose, handWorld?: Quaternion | null) {
+  apply(rig: Rig, pose: ArmPose, handWorld?: Quaternion | RacketAim | null) {
     const S = rig.pos[this.iArm].clone()
     const chest = this.chestQ(rig, this.chest)
     const reach = this.l1 + this.l2
@@ -251,19 +327,20 @@ export class RightArm {
     const A = this.armBasis(uA, nA, this.tmpA)
     const qArm = A.clone().multiply(this.kArm)
     const B = this.foreBasis(uF, nF, this.tmpF)
-    if (handWorld) {
+    if (handWorld instanceof Quaternion) {
+      // an exact hand orientation: decompose, then the limits below clamp what the wrist cannot do
       const { pron, ext, dev } = this.decompose(q1.copy(B).invert().multiply(handWorld))
       pose.pron = pron
       pose.ext = ext
       pose.dev = dev
-    }
+    } else if (handWorld) this.aim(B, handWorld, pose)
     const clamp = (x: number, [lo, hi]: readonly [number, number]) => Math.min(Math.max(x, lo), hi)
     pose.pron = clamp(pose.pron, ARM_LIMITS.pron)
     pose.ext = clamp(pose.ext, ARM_LIMITS.ext)
     pose.dev = clamp(pose.dev, ARM_LIMITS.dev)
     const qHand = B.clone().multiply(this.compose(pose.pron, pose.ext, pose.dev, this.tmpH))
     const qFore = B.clone()
-      .multiply(q1.setFromAxisAngle(E2, (this.pRest - pose.pron) * FOREARM_TWIST_SHARE))
+      .multiply(q1.setFromAxisAngle(E2, this.sgn * (this.pRest - pose.pron) * FOREARM_TWIST_SHARE))
       .multiply(this.kFore)
 
     const parent = rig.quat[rig.parent[this.iArm]]

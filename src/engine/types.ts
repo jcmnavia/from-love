@@ -142,4 +142,6 @@ export interface Stroke {
    * seconds relative to contact and spread over the three spine bones; the head keeps its direction.
    */
   trunkYaw?: [number, number][]
+  /** left hand on the handle above the right (two-handed strokes): weight keys [t from contact, 0..1] */
+  leftGrip?: [number, number][]
 }
