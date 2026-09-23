@@ -67,10 +67,23 @@ how each key was checked for reachability before rendering.
 | Serve | trophy with the elbow at shoulder height and the racket tip up; racket drop down the back; full reach at contact (elbow ~6°); arm across afterwards | Sinner side view |
 | Smash | the serve's arm with an abbreviated start (straight up into the trophy) | serve reference |
 | Two-handed backhand | left hand locked on the handle for the whole stroke | Sinner front view |
-| Volleys | head above the wrist throughout, open face, short punch that stops in front | coaching model (no footage yet) |
+| Volleys | head above the wrist throughout, open face, short punch that stops in front | coaching model; Federer at court level (real speed) |
 | One-handed backhand | now on the two-hander's captured body: left hand on the throat until the forward swing, racket up behind the left shoulder, dropped late, straight-arm contact in front, arms opening like wings | Federer, side-front slow motion |
 | Slice, drop shot | same body; high take-back with the left hand on the throat, forward-and-down swing nearly level through an open face; the drop shot opens the face more and absorbs with a short finish | coaching model + biomechanics |
 | Return, swing volley | the forehand's body and Sinner keys: the return with the loop kept in front (half backswing), the swing volley with the whole forward swing lifted to a chest-height contact (`handShift` keys) | derived from the forehand |
 
-Still procedural: the backhand smash, the tweener and the footwork patterns (no capture of them exists in the dataset).
-Open items: the forehand's left arm (hand on the throat at the ready, catch at the finish).
+| Forehand left arm | on the throat at the ready, stretched across at the load, pulled in at contact, catching the racket after the finish | Sinner front and side |
+| Tweener | hand-keyed, reshaped after Federer's 2009 US Open tweener: wide base, trunk bent over the ball, left arm out | Federer broadcast slow motion |
+| Split step, footwork | athletic ready stance (hips ~12 cm lower, trunk ~24° forward) and a 6 cm hop, matching the captured players' 4–7 cm hops | Tennis-MoCap takes |
+
+Still hand-keyed (no capture exists in the dataset): the backhand smash, the tweener and the footwork patterns. The
+backhand smash follows the coaching model; the broadcast compilations found only show it from far away.
+
+## Quality checks
+
+- `scripts/smoothness.ts` samples every stroke at 240 Hz and flags racket, hand and left-elbow speed spikes. It found and
+  fixed: a left-grip orientation ~150° off (two-hander), a forced throat grip (one-hander, slice, drop shot), an unstable
+  elbow swivel through straight-arm contacts (smash), and an out-of-reach preparation key (tweener). All strokes now scan
+  clean; the peak racket angular speed falls at contact in every stroke.
+- The body mesh's limb IK used last frame's hip and shoulder positions; fixed (it showed on paused frames, e.g. the
+  tweener rendered in the splits).
