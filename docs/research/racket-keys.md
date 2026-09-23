@@ -76,8 +76,10 @@ how each key was checked for reachability before rendering.
 | Tweener | hand-keyed, reshaped after Federer's 2009 US Open tweener: wide base, trunk bent over the ball, left arm out | Federer broadcast slow motion |
 | Split step, footwork | athletic ready stance (hips ~12 cm lower, trunk ~24° forward) and a 6 cm hop, matching the captured players' 4–7 cm hops | Tennis-MoCap takes |
 
-Still hand-keyed (no capture exists in the dataset): the backhand smash, the tweener and the footwork patterns. The
-backhand smash follows the coaching model; the broadcast compilations found only show it from far away.
+| Backhand smash | hand-keyed, checked against a close-up slow-motion coaching demo filmed from the net: take-off into a scissor jump at contact, arm fully up, the arm staying high and out to the right through the landing, still turned away from the net, free arm low | coaching demo (Topspin Tennis) |
+
+Still hand-keyed (no capture exists in the dataset): the backhand smash, the tweener and the footwork patterns, each
+now checked against footage or the captured players' measurements as listed above.
 
 ## Quality checks
 

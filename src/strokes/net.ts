@@ -800,55 +800,56 @@ const backSmashKeys = sequence(NET_READY)
   })
   // arm extending fast, tip whipping up, legs pushing (late, so the racket whips through ~90° in 70 ms)
   .key(1.08, {
-    pelvis: [-0.03, 0.95, -0.08],
+    pelvis: [-0.03, 1.0, -0.08],
     pelvisRot: [-72, -3, -10],
     chestRot: [-42, -8, -14],
     rHand: [-0.1, 1.8, -0.2],
     rPole: [0.3, 0.8, -0.5],
-    lHand: [-0.34, 1.0, -0.14],
+    lHand: [-0.42, 0.98, -0.1],
     racketDir: [0.2, 0.1, -0.98],
     racketNormal: [0.9, 0.2, 0.2],
-    lFoot: { heel: 40 },
-    rFoot: { heel: 40 },
+    lFoot: { heel: 45 },
+    rFoot: { heel: 45 },
   })
   // contact: arm straight up, knuckles leading the face over the top of the ball
+  // (a coaching demo filmed from the net: the player takes off into a scissor jump, arm fully up at contact)
   .key(1.15, {
-    pelvis: [-0.02, 0.98, -0.05],
+    pelvis: [-0.02, 1.08, -0.05],
     pelvisRot: [-70, -5, -10],
     chestRot: [-40, -10, -15],
     rHand: [0.04, 2.02, -0.14],
     rPole: [0.3, 0.8, -0.5],
-    lHand: [-0.3, 1.02, -0.16],
+    lHand: [-0.46, 1.0, -0.06],
     racketDir: [0.4, 0.9, 0.1],
     racketNormal: [0.35, -0.25, 0.9],
-    lFoot: { heel: 45 },
-    rFoot: { heel: 45 },
+    lFoot: { p: [-0.35, 0.12, -0.3], heel: 30 },
+    rFoot: { p: [0.18, 0.08, 0.2], heel: 50 },
   })
   // snap: the face comes over the ball, racket out to the right
   .key(1.28, {
-    pelvis: [-0.01, 0.95, -0.02],
+    pelvis: [-0.01, 1.04, -0.02],
     pelvisRot: [-64, 2, -6],
     chestRot: [-34, -4, -8],
-    rHand: [0.3, 1.72, 0.14],
+    rHand: [0.28, 1.92, 0.08],
     rPole: [0.9, 0.4, 0.0],
-    lHand: [-0.35, 1.02, -0.14],
-    racketDir: [0.8, 0.35, 0.48],
-    racketNormal: [0.4, -0.75, 0.5],
-    lFoot: { heel: 20 },
-    rFoot: { heel: 15 },
+    lHand: [-0.46, 0.98, -0.08],
+    racketDir: [0.55, 0.8, 0.25],
+    racketNormal: [0.4, -0.5, 0.75],
+    lFoot: { p: [-0.35, 0.06, -0.3], heel: 20 },
+    rFoot: { p: [0.18, 0.1, 0.2], heel: 40 },
   })
-  // short finish to the right side, low
+  // land with the arm still up and out to the right, racket upright, face toward the net
   .key(1.5, {
-    pelvis: [0.0, 0.93, 0.0],
-    pelvisRot: [-56, 6, -3],
-    chestRot: [-28, 2, -4],
-    rHand: [0.42, 1.24, 0.22],
+    pelvis: [0.0, 0.9, 0.0],
+    pelvisRot: [-68, 6, -3],
+    chestRot: [-38, 2, -4],
+    rHand: [0.45, 1.72, 0.2],
     rPole: [0.9, -0.2, 0.2],
-    lHand: [-0.34, 1.05, -0.08],
-    racketDir: [0.72, -0.3, 0.62],
-    racketNormal: [0.3, -0.7, 0.65],
-    lFoot: { heel: 8 },
-    rFoot: { heel: 10 },
+    lHand: [-0.42, 1.0, -0.06],
+    racketDir: [0.55, 0.8, 0.25],
+    racketNormal: [0.3, -0.45, 0.85],
+    lFoot: { p: [-0.35, 0, -0.3], heel: 8 },
+    rFoot: { p: [0.2, 0, 0.22], heel: 10 },
   })
   // unwind toward the net, racket coming back to the front
   .key(1.8, {
