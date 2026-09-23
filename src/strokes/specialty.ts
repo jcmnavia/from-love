@@ -54,34 +54,36 @@ const tweenerKeys = sequence()
     lHand: [0.3, 1.0, -0.2],
     racketDir: [0.1, 0.95, -0.3],
     racketNormal: [0.9, 0, 0.35],
-    lFoot: { p: [0.22, 0, -0.78], turn: 180, heel: 0 },
-    rFoot: { p: [-0.24, 0, -0.18], turn: 180, heel: 15 },
+    lFoot: { p: [0.36, 0, -0.66], turn: 170, heel: 0 },
+    rFoot: { p: [-0.36, 0, -0.3], turn: 190, heel: 10 },
   })
   // pendulum down: racket swings straight down in front, face turning to point back at the net
+  // (Federer, US Open 2009: a wide base, the trunk bent well forward over the ball, the left arm out for balance)
   .key(1.08, {
-    pelvis: [0, 0.86, -0.45],
-    pelvisRot: [180, 22, 0],
-    chestRot: [0, 32, 0],
-    rHand: [-0.16, 0.92, -0.7],
+    pelvis: [0, 0.8, -0.45],
+    pelvisRot: [180, 30, 0],
+    chestRot: [0, 42, 0],
+    rHand: [-0.16, 0.9, -0.7],
     rPole: [-0.8, -0.2, -0.2],
-    lHand: [0.3, 0.9, -0.36],
+    lHand: [0.62, 1.02, -0.4],
     racketDir: [0.05, -0.6, -0.8],
     racketNormal: [0.0, -0.8, 0.6],
   })
   .key(1.17, {
-    pelvis: [0, 0.84, -0.45],
-    pelvisRot: [180, 24, 0],
-    chestRot: [0, 36, 0],
-    rHand: [-0.1, 0.78, -0.62],
+    pelvis: [0, 0.78, -0.45],
+    pelvisRot: [180, 32, 0],
+    chestRot: [0, 46, 0],
+    rHand: [-0.1, 0.74, -0.62],
     rPole: [-0.8, -0.3, -0.2],
-    lHand: [0.3, 0.9, -0.36],
+    lHand: [0.64, 0.98, -0.36],
     racketDir: [0.05, -0.98, 0.15],
     racketNormal: [0.05, 0.15, 0.98],
   })
   // contact: knee height between the legs, wrist flicking the tip up and back toward the net
   .key(1.25, {
-    pelvis: [0, 0.84, -0.45],
-    rHand: [-0.06, 0.8, -0.44],
+    pelvis: [0, 0.79, -0.45],
+    lHand: [0.64, 1.0, -0.34],
+    rHand: [-0.06, 0.76, -0.44],
     rPole: [-0.8, -0.4, -0.2],
     racketDir: [0.05, -0.8, 0.6],
     racketNormal: [0.05, 0.6, 0.8],
@@ -93,7 +95,7 @@ const tweenerKeys = sequence()
     chestRot: [-20, 2, 0],
     rHand: [-0.02, 0.96, -0.12],
     rPole: [-0.7, -0.5, 0.3],
-    lHand: [0.3, 1.0, -0.4],
+    lHand: [0.5, 1.05, -0.4],
     racketDir: [0.1, -0.3, 0.95],
     racketNormal: [0.1, 0.95, 0.3],
   })
