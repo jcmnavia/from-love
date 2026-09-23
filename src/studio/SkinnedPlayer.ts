@@ -425,6 +425,8 @@ export class SkinnedPlayer {
       target.sub(fist)
     }
 
+    // the shoulder joint moved with the chest and clavicle this frame: refresh it before solving from it
+    this.commit(arm)
     const mid = new Vector3()
     const end = new Vector3()
     ik2(arm.p, target, arm.length, fore.length, elbow, mid, end)
@@ -447,6 +449,8 @@ export class SkinnedPlayer {
     const up = this.bones[`upLeg${side}`]
     const leg = this.bones[`leg${side}`]
     if (!up || !leg) return
+    // the hip joint moved with the pelvis this frame: refresh it before solving from it
+    this.commit(up)
     const mid = new Vector3()
     const end = new Vector3()
     ik2(up.p, ankle, up.length, leg.length, knee, mid, end)
