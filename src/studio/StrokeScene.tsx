@@ -35,7 +35,7 @@ function focusPoint(focus: FocusId, s: Solved, out: Vector3) {
   }
 }
 
-function CameraRig({ solved, preset }: { solved: Solved; preset?: CamPreset }) {
+function CameraRig({ solved, preset, camOffset }: { solved: Solved; preset?: CamPreset; camOffset?: [number, number, number] }) {
   const controls = useRef<OrbitControlsImpl>(null)
   const { camera } = useThree()
   const desired = useRef<Vector3 | null>(null)
@@ -67,12 +67,12 @@ function CameraRig({ solved, preset }: { solved: Solved; preset?: CamPreset }) {
       seen.current.cam = st.cam.nonce
       seen.current.focus = st.focus
       const name = preset ?? st.cam.preset
-      const p = PRESETS[name]
+      const p = camOffset ?? PRESETS[name]
       const dir = presetChanged
         ? new Vector3(p[0] * flip, p[1], p[2])
         : camera.position.clone().sub(target.current)
-      const base = new Vector3(...PRESETS[name]).length()
-      dir.setLength(base * FOCUS_SCALE[st.focus])
+      const base = new Vector3(...p).length()
+      dir.setLength(base * (camOffset ? 1 : FOCUS_SCALE[st.focus]))
       desired.current = target.current.clone().add(dir)
       if (first) {
         camera.position.copy(desired.current)
@@ -107,7 +107,7 @@ function CameraRig({ solved, preset }: { solved: Solved; preset?: CamPreset }) {
   )
 }
 
-function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; clip: ClipData | null; autoAdvance: boolean; fixedT?: number; preset?: CamPreset }) {
+function Stage({ stroke, clip, autoAdvance, fixedT, preset, camOffset, clean }: { stroke: Stroke; clip: ClipData | null; autoAdvance: boolean; fixedT?: number; preset?: CamPreset; camOffset?: [number, number, number]; clean?: boolean }) {
   const runtime = useMemo(() => new StrokeRuntime(stroke, clip), [stroke, clip])
   const rig = useMemo(() => new PlayerRig(), [])
   const solved = useMemo(() => createSolved(), [])
@@ -154,7 +154,7 @@ function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; 
     const useSkinned = !!skinned?.ready
     rig.group.visible = !useSkinned
     if (skinned) skinned.group.visible = useSkinned
-    if (useSkinned && runtime.clip && runtime.rig) skinned.updateFromRig(runtime.rig, runtime.clip.data.bones, solved)
+    if (useSkinned && runtime.clip && runtime.rig) skinned.updateFromRig(runtime.rig, runtime.animated, solved)
     else if (useSkinned) skinned.update(solved)
     else rig.update(solved)
     if (contactShadow.current) contactShadow.current.position.set(solved.pelvis.x, 0.002, solved.pelvis.z)
@@ -170,7 +170,7 @@ function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; 
       ballShadow.current.scale.setScalar(sh)
     }
     if (trail.current) {
-      trail.current.visible = st.showTrail
+      trail.current.visible = st.showTrail && !clean
       const n = Math.floor((tt / runtime.duration) * (runtime.trail.length - 1))
       trail.current.geometry.instanceCount = Math.max(n, 0)
     }
@@ -185,7 +185,7 @@ function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; 
     const hip = lineTurn(solved.hipL, solved.hipR)
     const sho = lineTurn(solved.shoulderL, solved.shoulderR)
     if (dial.current && hipNeedle.current && shoulderNeedle.current) {
-      dial.current.visible = st.showCoil
+      dial.current.visible = st.showCoil && !clean
       dial.current.position.set(solved.pelvis.x, 0.006, solved.pelvis.z)
       hipNeedle.current.rotation.z = -hip * MathUtils.DEG2RAD
       shoulderNeedle.current.rotation.z = -sho * MathUtils.DEG2RAD
@@ -211,7 +211,7 @@ function Stage({ stroke, clip, autoAdvance, fixedT, preset }: { stroke: Stroke; 
 
   return (
     <>
-      <CameraRig solved={solved} preset={preset} />
+      <CameraRig solved={solved} preset={preset} camOffset={camOffset} />
       <group ref={mirror}>
         <Court surface={surface} origin={stroke.origin} />
         <primitive object={rig.group} />
@@ -287,12 +287,18 @@ export function StrokeScene({
   autoAdvance = true,
   fixedT,
   preset,
+  camOffset,
+  clean,
 }: {
   stroke: Stroke
   autoAdvance?: boolean
   /** freeze the animation at this instant (used by lesson thumbnails and contact sheets) */
   fixedT?: number
   preset?: CamPreset
+  /** camera position relative to the followed point (world metres); overrides `preset` (used to match reference footage) */
+  camOffset?: [number, number, number]
+  /** hide the swing trail and hip/shoulder dial (for side-by-side comparisons with video) */
+  clean?: boolean
 }) {
   const { stroke, clip, ready } = useMotion(authored)
   return (
@@ -321,7 +327,7 @@ export function StrokeScene({
         shadow-radius={4}
       />
       <directionalLight position={[-5, 4, 6]} intensity={0.35} color="#cfdcff" />
-      {ready && <Stage stroke={stroke} clip={clip} autoAdvance={autoAdvance} fixedT={fixedT} preset={preset} />}
+      {ready && <Stage stroke={stroke} clip={clip} autoAdvance={autoAdvance} fixedT={fixedT} preset={preset} camOffset={camOffset} clean={clean} />}
     </Canvas>
   )
 }

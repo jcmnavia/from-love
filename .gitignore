@@ -30,3 +30,7 @@ dist-ssr
 
 # raw mocap takes (scripts/mocap/fetch.sh)
 data/mocap-raw
+
+# downloaded reference footage and extracted frames (analysis only, never published)
+data/video-raw
+data/video-frames

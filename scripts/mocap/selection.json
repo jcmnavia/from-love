@@ -4,16 +4,16 @@
     "file": "jarua_Derecha_18seg.bvh",
     "player": "jarua",
     "peak": 608,
-    "contact": 6.115,
+    "contact": 6.16,
     "window": [
-      5.14,
-      7.16
+      4.7,
+      6.72
     ],
     "net": [
       -0.01707,
       0.99985
     ],
-    "netMethod": "mean contact-hand direction over jarua_Derecha_18seg.bvh (-1°)",
+    "netMethod": "mean contact-hand direction over jarua_Derecha_18seg.bvh (-1\u00b0)",
     "mirror": false,
     "vPeak": 9.58,
     "score": 3.04
@@ -32,7 +32,7 @@
       -0.35991,
       0.93299
     ],
-    "netMethod": "mean contact-hand direction over jarua_Reves.bvh (-21°)",
+    "netMethod": "mean contact-hand direction over jarua_Reves.bvh (-21\u00b0)",
     "mirror": false,
     "vPeak": 7.75,
     "score": 2.2
@@ -51,7 +51,7 @@
       -0.15327,
       0.98818
     ],
-    "netMethod": "mean contact-hand direction over jarua_Servicio.bvh (-9°)",
+    "netMethod": "mean contact-hand direction over jarua_Servicio.bvh (-9\u00b0)",
     "mirror": false,
     "vPeak": 10.85,
     "score": 3.05
@@ -70,7 +70,7 @@
       -0.30412,
       0.95263
     ],
-    "netMethod": "mean contact-hand direction over jduribe_Remate.bvh (-18°)",
+    "netMethod": "mean contact-hand direction over jduribe_Remate.bvh (-18\u00b0)",
     "mirror": false,
     "vPeak": 9,
     "score": 2.05
@@ -89,7 +89,7 @@
       -0.15359,
       0.98814
     ],
-    "netMethod": "mean of jarua_VDerecha.bvh (24°) and jarua_VReves.bvh (-42°) contact-hand directions",
+    "netMethod": "mean of jarua_VDerecha.bvh (24\u00b0) and jarua_VReves.bvh (-42\u00b0) contact-hand directions",
     "mirror": false,
     "vPeak": 5.51,
     "score": 3.36
@@ -108,7 +108,7 @@
       -0.15359,
       0.98814
     ],
-    "netMethod": "mean of jarua_VReves.bvh (-42°) and jarua_VDerecha.bvh (24°) contact-hand directions",
+    "netMethod": "mean of jarua_VReves.bvh (-42\u00b0) and jarua_VDerecha.bvh (24\u00b0) contact-hand directions",
     "mirror": false,
     "vPeak": 5.76,
     "score": 3.11

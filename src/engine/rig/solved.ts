@@ -5,9 +5,10 @@ import type { Rig } from './rig'
 /**
  * Where the racket sits in the right hand, derived once from the rest
  * skeleton's knuckles so it follows the real hand of the model:
- * the handle runs across the palm from the heel of the hand toward the index
- * knuckle, tilted ~20° up from perpendicular to the forearm (a neutral wrist
- * with a racket), and the strings are parallel to the palm for an eastern
+ * the handle runs diagonally across the palm from the heel of the hand toward
+ * the index knuckle, so with a neutral wrist the racket leans ~15° from
+ * perpendicular toward the fingers (measured on Sinner's ready and contact
+ * frames), and the strings are parallel to the palm for an eastern
  * forehand grip. Other grips turn the racket about its handle by whole bevels
  * (45° each): continental −1, semi-western +1, western +2.
  */
@@ -42,11 +43,12 @@ export function makeGrip(rig: Rig, gripId: string): Grip {
   let n = f.clone().cross(across).normalize()
   const toBody = P('Hips').clone().setY(hand.y).sub(hand)
   if (n.dot(toBody) < 0) n.negate()
-  const dir = across.clone().addScaledVector(f, -0.36).normalize()
+  const dir = across.clone().addScaledVector(f, 0.27).normalize()
   n.addScaledVector(dir, -n.dot(dir)).normalize()
-  // turn the face about the handle by the grip's bevel offset
+  // turn the face about the handle by the grip's bevel offset; the studio world is mirrored (z away from
+  // the net), so a turn that closes the face in the author frame is negative here
   const bevels = BEVEL_OFFSET[gripId] ?? 0
-  n = n.applyAxisAngle(dir, (bevels * Math.PI) / 4)
+  n = n.applyAxisAngle(dir, (-bevels * Math.PI) / 4)
   const x = dir.clone().cross(n)
   const racketWorld = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(x, dir, n))
   const handQ = rig.quat[rig.find('RightHand')]

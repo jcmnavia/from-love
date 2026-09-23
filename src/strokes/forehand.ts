@@ -169,8 +169,37 @@ const keys = sequence()
 export const forehand: Stroke = {
   id: 'forehand',
   clip: 'forehand',
-  forearmRoll: [[-0.05, 0], [0, 0], [0.2, 80], [0.45, 105]],
-  contactRacket: { dir: [0.95, -0.15, 0.25], normal: [-0.25, -0.06, 0.97] },
+  // Racket keyed frame by frame from Sinner's forehand (front and side practice footage, contact = 0);
+  // the capture's hand path already matches his within ~10 cm, so the hand is left to the clip.
+  // the capture over-turns the shoulders (126° against 92–106° measured on pros): ease it back to ~105°
+  trunkYaw: [[-1.46, 0], [-1.2, -5], [-0.9, -10], [-0.7, -12], [-0.55, -18], [-0.4, -22], [-0.3, -18], [-0.2, -10], [-0.12, -2], [-0.08, 0]],
+  armKeys: [
+    { t: -1.46, racket: { dir: [-0.1, 0.65, 0.75] } },
+    { t: -1.3, racket: { dir: [-0.15, 0.6, 0.78] } },
+    { t: -1.0, hand: 'clip', racket: { dir: [0.05, 0.9, 0.4] } },
+    // compact loop: elbow bent and high, hand beside the head, racket up (Sinner, chest frame)
+    { t: -0.75, frame: 'chest', hand: [0.1, -0.25, 0.2], elbow: [0.15, -0.22, -0.1], racket: { dir: [0.4, 0.8, 0.45] } },
+    { t: -0.6, frame: 'chest', hand: [0.2, -0.17, 0.15], elbow: [0.18, -0.19, -0.07], racket: { dir: [0.15, 0.85, 0.5] } },
+    // the hand goes back while the head stays up over the head, then the tip falls back over the top
+    { t: -0.5, frame: 'chest', hand: [0.33, -0.13, 0.17], elbow: [0.21, -0.16, 0], racket: { dir: [0.1, 0.75, 0.65] } },
+    { t: -0.4, frame: 'chest', hand: [0.45, -0.12, 0.15], elbow: [0.24, -0.12, 0.01], racket: { dir: [0.15, 0.97, 0.1] } },
+    { t: -0.33, racket: { dir: [0.25, 0.7, -0.65] } },
+    { t: -0.27, hand: 'clip', racket: { dir: [0.4, 0.25, -0.88], normal: [0, -0.95, -0.3] } },
+    { t: -0.2, racket: { dir: [0.45, -0.1, -0.88], normal: [0.1, -0.98, 0.15] } },
+    { t: -0.09, racket: { dir: [0.35, -0.15, -0.92], normal: [0.45, -0.85, 0.2] } },
+    { t: -0.055, racket: { dir: [0.4, -0.2, -0.9], normal: [0.6, -0.5, 0.6] } },
+    { t: -0.035, racket: { dir: [0.55, -0.5, -0.65], normal: [0.55, -0.2, 0.8] } },
+    { t: -0.018, racket: { dir: [0.75, -0.55, -0.2], normal: [0.2, -0.1, 0.97] } },
+    { t: 0, racket: { dir: [0.92, -0.25, 0.3], normal: [-0.25, -0.06, 0.97] } },
+    { t: 0.015, racket: { dir: [0.8, 0.35, 0.45], normal: [-0.45, -0.25, 0.85] } },
+    { t: 0.04, racket: { dir: [0.4, 0.65, 0.65], normal: [-0.6, -0.45, 0.65] } },
+    { t: 0.08, racket: { dir: [-0.1, 0.75, 0.65], normal: [-0.95, -0.2, 0.1] } },
+    { t: 0.14, racket: { dir: [-0.9, 0.2, -0.3] } },
+    { t: 0.2, racket: { dir: [0.05, -0.7, -0.7] } },
+    { t: 0.3, racket: { dir: [0.45, -0.55, -0.7] } },
+    { t: 0.42, racket: { dir: [-0.1, 0.95, 0.3] } },
+    { t: 0.557, racket: { dir: [-0.1, 0.65, 0.75] } },
+  ],
   name: 'Forehand drive',
   aka: 'Topspin forehand',
   category: 'groundstroke',

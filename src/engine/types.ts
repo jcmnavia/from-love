@@ -74,6 +74,34 @@ export interface GripRef {
   note: string
 }
 
+/**
+ * A pro's right-arm position at one instant of a mocap stroke. The clip's arm is warped through these
+ * (hand and elbow as smooth offsets on top of the capture, the wrist as interpolated joint angles), so
+ * the capture keeps its timing and texture while the racket goes where a pro's goes.
+ */
+export interface ArmKey {
+  /** seconds relative to contact */
+  t: number
+  /**
+   * wrist relative to the right shoulder, court frame (x = right, y = up, z = toward the net), metres;
+   * 'clip' pins the capture's own hand here (no offset)
+   */
+  hand?: V3 | 'clip'
+  /** elbow relative to the right shoulder (same frame as `hand`); sets where the elbow points, not the reach */
+  elbow?: V3
+  /** frame of `hand` and `elbow`: the court (default) or the chest (x = right, y = up, z = the way the chest faces) */
+  frame?: 'court' | 'chest'
+  /** where the elbow points around the shoulder→wrist line, degrees (0 = down, see engine/rig/arm.ts) */
+  swivel?: number
+  /** forearm pronation, wrist extension, radial deviation, degrees */
+  wrist?: V3
+  /**
+   * or a racket orientation (court frame, handle → tip and string face) the wrist reaches for within its
+   * limits; without `normal` a relaxed wrist turns the shortest way to point the racket along `dir`
+   */
+  racket?: { dir: V3; normal?: V3 }
+}
+
 export interface Stroke {
   id: string
   name: string
@@ -107,4 +135,11 @@ export interface Stroke {
    * finish and the serve's pronation; this restores it on top of the captured motion.
    */
   forearmRoll?: [number, number][]
+  /** pro arm and racket positions the clip's right arm is warped through (replaces contactRacket / forearmRoll) */
+  armKeys?: ArmKey[]
+  /**
+   * Shoulder-turn correction for a mocap clip, degrees (+ = more turned toward the right side), keyed in
+   * seconds relative to contact and spread over the three spine bones; the head keeps its direction.
+   */
+  trunkYaw?: [number, number][]
 }

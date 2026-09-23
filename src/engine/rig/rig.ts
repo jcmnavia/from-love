@@ -104,6 +104,11 @@ export class Rig {
     }
   }
 
+  /** forward kinematics again after `local` changed, keeping the last hips position */
+  repose() {
+    this.pose(this.lastHips)
+  }
+
   /**
    * Rotates bone `i` about its own bone axis (toward its first child) by `angle` radians, in its
    * local frame, then re-poses. Used for forearm pronation that the capture does not contain.

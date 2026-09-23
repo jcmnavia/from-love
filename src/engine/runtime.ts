@@ -4,6 +4,9 @@ import { createSolved, solve, toWorld, type ArmBends, type Solved } from './solv
 import type { Stroke } from './types'
 import { ClipTrack, type ClipData } from './rig/clip'
 import { Rig } from './rig/rig'
+import { ArmWarp } from './rig/warp'
+import { keyed, turnTrunk } from './rig/trunk'
+import { FingerCurl } from './rig/hand'
 import { calibrateGrip, makeGrip, rigToSolved, type Grip } from './rig/solved'
 
 const G = 9.81
@@ -52,6 +55,11 @@ export class StrokeRuntime {
   readonly clip: ClipTrack | null = null
   readonly rig: Rig | null = null
   private grip: Grip | null = null
+  /** pro arm keys warping the clip's right arm */
+  private warp: ArmWarp | null = null
+  private fingers: { right: FingerCurl; left: FingerCurl } | null = null
+  /** bones the mesh copies from the rig: the clip's plus the fingers this runtime curls */
+  readonly animated: string[] = []
   private outDir = new Vector3(0, 0, -1)
   private bounceP = new Vector3()
   private bounceV = new Vector3()
@@ -66,7 +74,11 @@ export class StrokeRuntime {
       this.grip = makeGrip(this.rig, stroke.grips[0]?.id ?? 'semi-western')
       this.duration = this.clip.duration
       const want = stroke.contactRacket
-      if (want) {
+      this.fingers = { right: new FingerCurl(this.rig, 'Right'), left: new FingerCurl(this.rig, 'Left') }
+      this.animated = [...clip.bones, ...this.fingers.right.bones, ...this.fingers.left.bones]
+      if (stroke.armKeys?.length)
+        this.warp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, this.grip, stroke.armKeys)
+      else if (want) {
         const hand = this.rig.find('RightHand')
         const qs = [-0.02, -0.01, 0, 0.01, 0.02].map((dt) => {
           this.clip!.apply(this.rig!, clip.events.contact + dt)
@@ -145,6 +157,13 @@ export class StrokeRuntime {
     }
   }
 
+  /** the clip at `t` with the stroke's trunk correction, before the arm warp */
+  private basePose(t: number) {
+    this.clip!.apply(this.rig!, t)
+    const yaw = this.stroke.trunkYaw
+    if (yaw?.length) turnTrunk(this.rig!, keyed(yaw, t - this.clip!.data.events.contact))
+  }
+
   /** forearm roll (radians) added at `t` on top of the clip, smoothstep between keys */
   private rollAt(t: number) {
     const keys = this.stroke.forearmRoll
@@ -165,9 +184,15 @@ export class StrokeRuntime {
   /** the body at `t` without gaze: from the clip on the real skeleton, or from the keyframes */
   private solveAt(t: number, out: Solved) {
     if (this.clip && this.rig && this.grip) {
-      this.clip.apply(this.rig, t)
-      const roll = this.rollAt(t)
-      if (roll) this.rig.twistLocal(this.rig.find('RightHand'), roll)
+      this.basePose(t)
+      if (this.warp) this.warp.apply(this.rig, t)
+      else {
+        const roll = this.rollAt(t)
+        if (roll) this.rig.twistLocal(this.rig.find('RightHand'), roll)
+      }
+      // the capture has no fingers: close the racket hand on the handle, relax the other
+      this.fingers!.right.apply(this.rig, 1)
+      this.fingers!.left.apply(this.rig, 0.35)
       rigToSolved(this.rig, this.grip, out)
     } else {
       solve(this.track.sample(t, this.pose), out, null, this.bendsAt(t))
