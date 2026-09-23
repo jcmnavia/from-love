@@ -1,6 +1,6 @@
 import { Matrix4, Quaternion, Vector3 } from 'three'
 import type { ArmKey, V3 } from '../types'
-import { emptyArmPose, Arm, type ArmPose } from './arm'
+import { emptyArmPose, Arm, type ArmPose, type Side } from './arm'
 import type { Rig } from './rig'
 import type { Grip } from './solved'
 
@@ -81,8 +81,8 @@ export class ArmWarp {
    * `base` poses the rig at clip time `t` with everything but the arm warp (the clip, trunk corrections);
    * `contact` is the clip's contact time the keys are relative to.
    */
-  constructor(rig: Rig, base: (t: number) => void, contact: number, grip: Grip, keys: ArmKey[]) {
-    this.arm = new Arm(rig)
+  constructor(rig: Rig, base: (t: number) => void, contact: number, grip: Grip | null, keys: ArmKey[], side: Side = 'Right') {
+    this.arm = new Arm(rig, side)
     const at = (k: ArmKey) => contact + k.t
     const sorted = [...keys].sort((a, b) => a.t - b.t)
     const measured = (t: number) => {
@@ -129,7 +129,8 @@ export class ArmWarp {
       }),
     )
     // wrist: explicit angles, or the angles that reach a racket orientation with the warped arm at that time
-    const wk = sorted.filter((k) => k.wrist || k.racket)
+    // racket keys need the racket hand's grip; the free hand only takes explicit wrist angles
+    const wk = sorted.filter((k) => k.wrist || (k.racket && grip))
     let prev: { pron: number; ext: number; dev: number } | null = null
     const angles = wk.map((k) => {
       const a = this.keyAngles(k, rig, base, at(k), grip, prev)
@@ -143,14 +144,20 @@ export class ArmWarp {
   }
 
   /** a key's wrist angles: given outright, or the reachable angles closest to its racket orientation */
-  private keyAngles(k: ArmKey, rig: Rig, base: (t: number) => void, t: number, grip: Grip, near: { pron: number; ext: number; dev: number } | null): V3 {
+  private keyAngles(k: ArmKey, rig: Rig, base: (t: number) => void, t: number, grip: Grip | null, near: { pron: number; ext: number; dev: number } | null): V3 {
     if (k.wrist) return k.wrist.map((a) => a * DEG) as V3
     base(t)
     const p = this.warped(rig, t, false)
-    const dir = new Vector3(k.racket!.dir[0], k.racket!.dir[1], -k.racket!.dir[2]).normalize()
+    // court (author) or chest frame → world
+    const chest = k.frame === 'chest' ? this.arm.chestQ(rig, new Quaternion()) : null
+    const world = (v: V3) => {
+      const w = new Vector3(v[0], v[1], -v[2])
+      return chest ? w.applyQuaternion(chest) : w
+    }
+    const dir = world(k.racket!.dir).normalize()
     const nk = k.racket!.normal
-    const normal = nk ? new Vector3(nk[0], nk[1], -nk[2]).addScaledVector(dir, -new Vector3(nk[0], nk[1], -nk[2]).dot(dir)).normalize() : null
-    this.arm.apply(rig, p, { dir, normal, grip, near })
+    const normal = nk ? world(nk).addScaledVector(dir, -world(nk).dot(dir)).normalize() : null
+    this.arm.apply(rig, p, { dir, normal, grip: grip!, near })
     return [p.pron, p.ext, p.dev] as V3
   }
 

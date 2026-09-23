@@ -16,8 +16,8 @@ import { STROKES } from '../src/strokes'
 
 const id = process.argv[2] ?? 'forehand'
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined }
-const clip = JSON.parse(readFileSync(`public/motion/${id}.json`, 'utf8')) as ClipData
 const stroke = STROKES.find((s) => s.id === id)!
+const clip = JSON.parse(readFileSync(`public/motion/${stroke.clip ?? id}.json`, 'utf8')) as ClipData
 const rig = new Rig()
 const track = new ClipTrack(clip, rig)
 const grip = makeGrip(rig, stroke.grips[0]?.id ?? 'semi-western')

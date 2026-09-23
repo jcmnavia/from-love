@@ -167,7 +167,7 @@ export class Arm {
       }
       c += 0.03 * (ex * ex + dv * dv) + 0.01 * pr * pr
       const nr = aim.near
-      if (nr) c += 0.15 * ((pr - nr.pron) ** 2 + 0.3 * (ex - nr.ext) ** 2 + 0.3 * (dv - nr.dev) ** 2)
+      if (nr) c += 0.05 * ((pr - nr.pron) ** 2 + 0.3 * (ex - nr.ext) ** 2 + 0.3 * (dv - nr.dev) ** 2)
       return c
     }
     const L = ARM_LIMITS

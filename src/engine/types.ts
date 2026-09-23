@@ -89,7 +89,7 @@ export interface ArmKey {
   hand?: V3 | 'clip'
   /** elbow relative to the right shoulder (same frame as `hand`); sets where the elbow points, not the reach */
   elbow?: V3
-  /** frame of `hand` and `elbow`: the court (default) or the chest (x = right, y = up, z = the way the chest faces) */
+  /** frame of `hand`, `elbow` and `racket`: the court (default) or the chest (x = right, y = up, z = the way the chest faces) */
   frame?: 'court' | 'chest'
   /** where the elbow points around the shoulder→wrist line, degrees (0 = down, see engine/rig/arm.ts) */
   swivel?: number
@@ -143,6 +143,10 @@ export interface Stroke {
    * seconds relative to contact and spread over the three spine bones; the head keeps its direction.
    */
   trunkYaw?: [number, number][]
+  /** the free (left) arm's keys: hand and elbow positions (and optional wrist angles), warped like `armKeys` */
+  leftArmKeys?: ArmKey[]
   /** left hand on the handle above the right (two-handed strokes): weight keys [t from contact, 0..1] */
   leftGrip?: [number, number][]
+  /** where the left hand holds, metres up the shaft from the right hand's grip (default: touching, 0.095) */
+  leftGripAt?: number
 }

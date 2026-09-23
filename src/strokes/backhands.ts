@@ -170,6 +170,8 @@ export const backhandTwoHanded: Stroke = {
   clip: 'backhand-two-handed',
   contactRacket: { dir: [-0.95, -0.15, 0.25], normal: [0.25, -0.06, 0.97] },
   leftGrip: [[-2, 1]],
+  // the capture coils the shoulders to ~148°; ease the peak to ~118°
+  trunkYaw: [[-1.4, 0], [-0.95, 0], [-0.75, 10], [-0.55, 20], [-0.4, 28], [-0.3, 28], [-0.2, 18], [-0.1, 6], [-0.03, 0]],
   name: 'Two-handed backhand',
   category: 'groundstroke',
   level: 'beginner',
@@ -364,6 +366,39 @@ const oneHandedKeys = sequence()
 
 export const backhandOneHanded: Stroke = {
   id: 'backhand-one-handed',
+  // The two-hander's captured body with a one-handed arm keyed from Federer's backhand (slow-motion
+  // practice footage, mapped by phase): the left hand cradles the throat through the coil and lets go as
+  // the forward swing starts, the right arm straightens into a contact well in front, and the arms open
+  // like wings with the chest still sideways.
+  clip: 'backhand-two-handed',
+  leftGrip: [[-1.4, 1], [-0.24, 1], [-0.16, 0]],
+  leftGripAt: 0.21,
+  trunkYaw: [[-1.4, 0], [-0.1, 0], [-0.03, -15], [0.05, -35], [0.2, -42], [0.45, -30]],
+  armKeys: [
+    { t: -1.4, racket: { dir: [-0.1, 0.8, 0.6] } },
+    // racket vertical in front of the face with both hands on it, then carried up behind the left shoulder
+    { t: -1.0, frame: 'chest', hand: [-0.25, -0.25, 0.3], racket: { dir: [0, 1, 0.1] } },
+    { t: -0.7, frame: 'chest', hand: [-0.35, -0.2, 0.25], racket: { dir: [0.05, 0.98, -0.1] } },
+    { t: -0.45, frame: 'chest', hand: [-0.42, -0.1, 0.15], racket: { dir: [0.1, 0.95, -0.25] } },
+    // the head stays up until ~0.27 s before contact, then drops behind as the hand falls to the hip
+    { t: -0.27, frame: 'chest', hand: [-0.4, -0.15, 0.15] },
+    { t: -0.27, racket: { dir: [-0.1, 0.8, -0.6] } },
+    { t: -0.17, frame: 'chest', hand: [-0.3, -0.4, 0.25] },
+    { t: -0.17, racket: { dir: [-0.2, -0.65, -0.73] } },
+    { t: -0.07, hand: [-0.3, -0.5, 0.2], racket: { dir: [-0.3, -0.75, -0.55] } },
+    { t: 0, hand: [-0.19, -0.33, 0.4], elbow: [-0.06, -0.13, 0.19], racket: { dir: [-0.9, -0.25, 0.35], normal: [-0.3, 0.1, -0.95] } },
+    { t: 0.08, hand: [-0.02, -0.1, 0.5], racket: { dir: [-0.2, 0.7, 0.7] } },
+    { t: 0.2, hand: [0.15, 0.3, 0.4], racket: { dir: [0.1, 0.95, 0.3] } },
+    { t: 0.35, hand: [0.15, 0.3, 0.4], racket: { dir: [0.1, 0.95, 0.3] } },
+    { t: 0.45, hand: [0.05, 0, 0.35], racket: { dir: [-0.1, 0.9, 0.4] } },
+  ],
+  leftArmKeys: [
+    { t: -0.1, hand: 'clip' },
+    { t: 0, hand: [-0.2, -0.3, -0.4] },
+    { t: 0.2, hand: [-0.28, -0.35, -0.42] },
+    { t: 0.35, hand: [-0.28, -0.38, -0.4] },
+    { t: 0.45, hand: [-0.1, -0.35, -0.1] },
+  ],
   name: 'One-handed backhand',
   category: 'groundstroke',
   level: 'intermediate',

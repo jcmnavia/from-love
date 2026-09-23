@@ -58,6 +58,7 @@ export class StrokeRuntime {
   private grip: Grip | null = null
   /** pro arm keys warping the clip's right arm */
   private warp: ArmWarp | null = null
+  private leftWarp: ArmWarp | null = null
   private fingers: { right: FingerCurl; left: FingerCurl } | null = null
   private leftGrip: LeftHandOnGrip | null = null
   private qTmp = new Quaternion()
@@ -81,6 +82,8 @@ export class StrokeRuntime {
       this.fingers = { right: new FingerCurl(this.rig, 'Right'), left: new FingerCurl(this.rig, 'Left') }
       this.animated = [...clip.bones, ...this.fingers.right.bones, ...this.fingers.left.bones]
       if (stroke.leftGrip?.length) this.leftGrip = new LeftHandOnGrip(this.rig)
+      if (stroke.leftArmKeys?.length)
+        this.leftWarp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, null, stroke.leftArmKeys, 'Left')
       if (stroke.armKeys?.length)
         this.warp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, this.grip, stroke.armKeys)
       else if (want) {
@@ -190,6 +193,7 @@ export class StrokeRuntime {
   private solveAt(t: number, out: Solved) {
     if (this.clip && this.rig && this.grip) {
       this.basePose(t)
+      this.leftWarp?.apply(this.rig, t)
       if (this.warp) this.warp.apply(this.rig, t)
       else {
         const roll = this.rollAt(t)
@@ -202,7 +206,7 @@ export class StrokeRuntime {
         const hq = this.rig.quat[this.rig.find('RightHand')]
         const racket = this.qTmp.copy(hq).multiply(this.grip.q)
         const centre = this.vTmp.copy(this.grip.p).applyQuaternion(hq).add(this.rig.pos[this.rig.find('RightHand')])
-        this.leftGrip.apply(this.rig, racket, centre, onGrip)
+        this.leftGrip.apply(this.rig, racket, centre, onGrip, this.stroke.leftGripAt)
       }
       // the capture has no fingers: close the racket hand on the handle, relax the other
       this.fingers!.right.apply(this.rig, 1)

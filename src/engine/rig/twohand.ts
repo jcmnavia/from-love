@@ -50,13 +50,14 @@ export class LeftHandOnGrip {
 
   /**
    * `racketQ` is the racket's world orientation and `rightCentre` the right hand's grip centre (world);
-   * `weight` 0 keeps the capture's left arm, 1 closes the hand on the handle.
+   * `weight` 0 keeps the capture's left arm, 1 closes the hand on the handle `gap` metres above the right
+   * hand (a hand width for two-handers, ~0.2 m to cradle the throat before a one-handed swing).
    */
-  apply(rig: Rig, racketQ: Quaternion, rightCentre: Vector3, weight: number) {
+  apply(rig: Rig, racketQ: Quaternion, rightCentre: Vector3, weight: number, gap = HAND_GAP) {
     if (weight <= 0) return
     const b = this.arm.measure(rig, this.base)
     const p = this.pose
-    this.centre.copy(rightCentre).addScaledVector(this.v.set(0, 1, 0).applyQuaternion(racketQ), HAND_GAP)
+    this.centre.copy(rightCentre).addScaledVector(this.v.set(0, 1, 0).applyQuaternion(racketQ), gap)
     this.target.copy(racketQ).multiply(this.grip.q.clone().invert())
     // two passes: the wrist may not reach the exact orientation, so place the hand for the one it reached
     let hand: Quaternion = this.target
