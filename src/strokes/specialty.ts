@@ -49,7 +49,7 @@ const tweenerKeys = sequence()
     pelvis: [0, 0.9, -0.45],
     pelvisRot: [180, 12, 0],
     chestRot: [-5, 10, 0],
-    rHand: [-0.24, 1.52, -0.98],
+    rHand: [-0.24, 1.3, -0.82],
     rPole: [-0.8, 0.1, -0.3],
     lHand: [0.3, 1.0, -0.2],
     racketDir: [0.1, 0.95, -0.3],

@@ -798,8 +798,8 @@ const backSmashKeys = sequence(NET_READY)
     racketNormal: [0.9, 0.1, -0.4],
     lFoot: { heel: 10 },
   })
-  // arm extending fast, tip whipping up, legs pushing
-  .key(1.05, {
+  // arm extending fast, tip whipping up, legs pushing (late, so the racket whips through ~90° in 70 ms)
+  .key(1.08, {
     pelvis: [-0.03, 0.95, -0.08],
     pelvisRot: [-72, -3, -10],
     chestRot: [-42, -8, -14],
