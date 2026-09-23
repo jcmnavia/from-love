@@ -96,8 +96,9 @@ export interface ArmKey {
   /** forearm pronation, wrist extension, radial deviation, degrees */
   wrist?: V3
   /**
-   * or a racket orientation (court frame, handle → tip and string face) the wrist reaches for within its
-   * limits; without `normal` a relaxed wrist turns the shortest way to point the racket along `dir`
+   * or a racket orientation (court frame: handle → tip, and the normal of the palm-side string face, which on
+   * backhands faces away from the ball) the wrist reaches for within its limits; without `normal` the racket
+   * only has to point along `dir`
    */
   racket?: { dir: V3; normal?: V3 }
 }

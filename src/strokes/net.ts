@@ -110,6 +110,20 @@ export const forehandVolley: Stroke = {
   id: 'forehand-volley',
   clip: 'forehand-volley',
   contactRacket: { dir: [0.55, 0.65, 0.35], normal: [-0.35, 0.25, 0.9] },
+  // A volley, not a small groundstroke: the head stays above the wrist from the ready position through the
+  // short take-back beside the shoulder, the face open to the ball, then a punch toward the target that stops
+  // in front instead of wrapping across the body.
+  armKeys: [
+    { t: -1.23, racket: { dir: [-0.25, 0.75, 0.6] } },
+    { t: -0.73, racket: { dir: [0.1, 0.9, 0.4] } },
+    { t: -0.3, hand: 'clip', racket: { dir: [0.3, 0.85, -0.2], normal: [-0.3, 0.35, 0.88] } },
+    { t: -0.13, racket: { dir: [0.4, 0.8, 0.1], normal: [-0.35, 0.3, 0.88] } },
+    { t: 0, hand: 'clip', racket: { dir: [0.55, 0.65, 0.35], normal: [-0.35, 0.25, 0.9] } },
+    { t: 0.12, hand: [0.2, -0.2, 0.5], racket: { dir: [0.45, 0.6, 0.65], normal: [-0.35, 0.4, 0.85] } },
+    { t: 0.3, hand: [0.1, -0.28, 0.4], racket: { dir: [0.1, 0.8, 0.6] } },
+    { t: 0.6, hand: 'clip' },
+    { t: 0.95, racket: { dir: [-0.25, 0.75, 0.6] } },
+  ],
   name: 'Forehand volley',
   category: 'net',
   level: 'beginner',
@@ -240,7 +254,20 @@ const backhandVolleyKeys = sequence(NET_READY)
 export const backhandVolley: Stroke = {
   id: 'backhand-volley',
   clip: 'backhand-volley',
-  contactRacket: { dir: [-0.55, 0.65, 0.35], normal: [0.35, 0.25, 0.9] },
+  contactRacket: { dir: [-0.55, 0.65, 0.35], normal: [-0.35, -0.25, -0.9] },
+  // (racket normals are the palm-side face, which on a backhand faces away from the ball)
+  // Head up throughout: take-back to the left shoulder with the face open, contact in front, a short punch
+  // toward the target (the capture swept the arm down and across to the right after contact).
+  armKeys: [
+    { t: -0.97, hand: [-0.18, -0.35, 0.3], racket: { dir: [-0.2, 0.75, 0.6] } },
+    { t: -0.5, hand: [-0.3, -0.25, 0.2], racket: { dir: [-0.3, 0.85, 0.3] } },
+    { t: -0.2, hand: 'clip', racket: { dir: [-0.35, 0.85, -0.3], normal: [-0.3, -0.3, -0.9] } },
+    { t: -0.07, racket: { dir: [-0.45, 0.8, 0.1], normal: [-0.35, -0.3, -0.88] } },
+    { t: 0, hand: 'clip', racket: { dir: [-0.55, 0.65, 0.35], normal: [-0.35, -0.25, -0.9] } },
+    { t: 0.12, hand: [-0.3, -0.25, 0.42], racket: { dir: [-0.45, 0.6, 0.65], normal: [-0.35, -0.4, -0.85] } },
+    { t: 0.3, hand: [-0.2, -0.3, 0.38], racket: { dir: [-0.1, 0.8, 0.6] } },
+    { t: 0.78, hand: [-0.18, -0.35, 0.3], racket: { dir: [-0.2, 0.75, 0.6] } },
+  ],
   name: 'Backhand volley',
   category: 'net',
   level: 'beginner',
@@ -639,6 +666,24 @@ export const smash: Stroke = {
   id: 'smash',
   clip: 'smash',
   contactRacket: { dir: [0.1, 0.97, 0.2], normal: [0, -0.35, 0.94] },
+  // The serve's arm (keyed from Sinner) with the smash's abbreviated start: the racket goes straight up into
+  // the trophy instead of swinging down first, then drops down the back and reaches up to contact.
+  armKeys: [
+    { t: -1.4, racket: { dir: [-0.1, 0.7, 0.7] } },
+    { t: -1.0, hand: 'clip', racket: { dir: [0.1, 0.9, 0.3] } },
+    { t: -0.7, hand: [0.25, 0.15, -0.2], elbow: [0.25, 0, -0.08], racket: { dir: [0.1, 0.9, 0.3] } },
+    { t: -0.45, hand: [0.28, 0.19, -0.29], elbow: [0.25, 0, -0.1], racket: { dir: [0.1, 0.9, 0.3] } },
+    { t: -0.3, hand: [0.22, 0.12, -0.22], elbow: [0.25, 0.04, -0.05], racket: { dir: [0, 0.1, -1] } },
+    { t: -0.2, hand: [0.23, -0.06, -0.18], elbow: [0.26, 0.06, 0.06], racket: { dir: [-0.2, -0.95, 0.1] } },
+    { t: -0.12, hand: [0.22, 0.2, -0.15], elbow: [0.2, 0.18, 0.1], racket: { dir: [0, -0.6, -0.8] } },
+    { t: -0.07, hand: [0.18, 0.45, -0.05], elbow: [0.16, 0.24, 0.07], racket: { dir: [-0.1, 0.3, -0.95] } },
+    { t: -0.03, hand: [0.13, 0.52, 0.08], elbow: [0.12, 0.27, 0.05], racket: { dir: [-0.5, 0.65, -0.55] } },
+    { t: 0, hand: [0.14, 0.55, 0.14], elbow: [0.07, 0.28, 0.06], racket: { dir: [0.1, 0.97, 0.2], normal: [0, -0.35, 0.94] } },
+    { t: 0.05, hand: 'clip', racket: { dir: [0.3, 0.55, 0.78] } },
+    { t: 0.12, racket: { dir: [-0.3, -0.3, 0.9] } },
+    { t: 0.25, racket: { dir: [-0.5, -0.8, 0.3] } },
+    { t: 0.93, racket: { dir: [-0.1, 0.7, 0.7] } },
+  ],
   name: 'Overhead smash',
   category: 'net',
   level: 'intermediate',
