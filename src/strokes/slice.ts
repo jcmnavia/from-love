@@ -1,5 +1,5 @@
 import { sequence } from '../engine/pose'
-import type { Stroke } from '../engine/types'
+import type { ArmKey, Stroke } from '../engine/types'
 
 /**
  * Shared body of the backhand slice; the drop shot is the same swing until the forward swing, then
@@ -188,8 +188,40 @@ function sliceKeys(soft: boolean) {
   return seq.done()
 }
 
+/** Slice racket arm: high take-back by the left ear, forward and down, nearly level through an open-faced contact, long finish. */
+export const SLICE_ARM_KEYS: ArmKey[] = [
+  { t: -1.4, racket: { dir: [-0.1, 0.8, 0.6] } },
+  { t: -0.9, frame: 'chest', hand: [-0.28, -0.22, 0.28], racket: { dir: [-0.05, 0.95, 0.3] } },
+  { t: -0.45, frame: 'chest', hand: [-0.36, 0, 0.15] },
+  { t: -0.45, racket: { dir: [0.1, 0.75, -0.65] } },
+  { t: -0.2, frame: 'chest', hand: [-0.38, -0.04, 0.18] },
+  { t: -0.2, racket: { dir: [0.05, 0.7, -0.7] } },
+  { t: -0.08, hand: [-0.3, -0.2, 0.22], racket: { dir: [-0.45, 0.55, -0.7] } },
+  { t: 0, hand: [-0.2, -0.3, 0.4], elbow: [-0.07, -0.13, 0.19], racket: { dir: [-0.85, 0.3, 0.42], normal: [-0.1, -0.34, -0.93] } },
+  { t: 0.12, hand: [-0.03, -0.28, 0.55], racket: { dir: [-0.4, 0.2, 0.9], normal: [-0.1, -0.95, 0.2] } },
+  { t: 0.3, hand: [0.1, -0.12, 0.5], racket: { dir: [0, 0.55, 0.83], normal: [0, -0.83, 0.55] } },
+  { t: 0.45, hand: [0, -0.2, 0.4], racket: { dir: [-0.1, 0.8, 0.6] } },
+]
+
+/** the free arm lets go of the throat as the forward swing starts and stretches back to keep the shoulders closed */
+export const SLICE_LEFT_ARM_KEYS: ArmKey[] = [
+  { t: -0.14, hand: 'clip' },
+  { t: 0, hand: [-0.2, -0.3, -0.35] },
+  { t: 0.25, hand: [-0.3, -0.3, -0.45] },
+  { t: 0.45, hand: [-0.15, -0.35, -0.1] },
+]
+
 export const slice: Stroke = {
   id: 'slice',
+  // The captured backhand body with a slicer's arm: high take-back by the left ear with the face open and the
+  // left hand on the throat, a forward-and-down swing that is nearly level through contact (face open ~20°),
+  // and a long finish toward the target with the face still open while the shoulders stay sideways.
+  clip: 'backhand-two-handed',
+  leftGrip: [[-1.4, 1], [-0.2, 1], [-0.12, 0]],
+  leftGripAt: 0.21,
+  trunkYaw: [[-1.4, 0], [-0.05, 0], [0.05, -25], [0.2, -35], [0.45, -25]],
+  armKeys: SLICE_ARM_KEYS,
+  leftArmKeys: SLICE_LEFT_ARM_KEYS,
   name: 'Backhand slice',
   category: 'groundstroke',
   level: 'intermediate',
@@ -244,6 +276,19 @@ export const slice: Stroke = {
 
 export const dropShot: Stroke = {
   id: 'drop-shot',
+  // the slice's preparation unchanged (disguise), then a more open face and a short, absorbing finish
+  clip: 'backhand-two-handed',
+  leftGrip: [[-1.4, 1], [-0.2, 1], [-0.12, 0]],
+  leftGripAt: 0.21,
+  trunkYaw: [[-1.4, 0], [-0.05, 0], [0.05, -25], [0.2, -35], [0.45, -25]],
+  armKeys: [
+    ...SLICE_ARM_KEYS.filter((k) => k.t < 0),
+    { t: 0, hand: [-0.2, -0.3, 0.38], elbow: [-0.07, -0.13, 0.19], racket: { dir: [-0.85, 0.35, 0.4], normal: [-0.15, -0.6, -0.78] } },
+    { t: 0.12, hand: [-0.12, -0.3, 0.44], racket: { dir: [-0.6, 0.35, 0.72], normal: [-0.2, -0.93, 0.28] } },
+    { t: 0.3, hand: [-0.08, -0.28, 0.44], racket: { dir: [-0.45, 0.45, 0.77], normal: [-0.15, -0.9, 0.42] } },
+    { t: 0.45, hand: [-0.05, -0.25, 0.4], racket: { dir: [-0.1, 0.8, 0.6] } },
+  ],
+  leftArmKeys: SLICE_LEFT_ARM_KEYS,
   name: 'Drop shot',
   category: 'specialty',
   level: 'advanced',

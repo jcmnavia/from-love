@@ -1,5 +1,6 @@
 import { READY, mergePose, sequence } from '../engine/pose'
 import type { PoseInput, Stroke } from '../engine/types'
+import { FOREHAND_ARM_KEYS } from './forehand'
 
 /** Ready position at the net: racket head higher, hands further out. */
 const NET_READY = mergePose(READY, {
@@ -454,6 +455,19 @@ const swingVolleyKeys = sequence()
 
 export const swingVolley: Stroke = {
   id: 'swing-volley',
+  // the forehand's captured body and Sinner-keyed arm with the whole forward swing lifted: contact at chest
+  // height in front of the body instead of at the hip
+  clip: 'forehand',
+  trunkYaw: [[-1.46, 0], [-1.2, -5], [-0.9, -10], [-0.7, -12], [-0.55, -18], [-0.4, -22], [-0.3, -18], [-0.2, -10], [-0.12, -2], [-0.08, 0]],
+  armKeys: [
+    ...FOREHAND_ARM_KEYS.filter((k) => !(k.t >= -0.28 && k.t <= 0.1 && k.hand === 'clip')),
+    { t: -0.45, handShift: [0, 0, 0] },
+    { t: -0.27, handShift: [0, 0.12, 0] },
+    { t: -0.1, handShift: [0, 0.22, 0] },
+    { t: 0, handShift: [0, 0.3, 0.02] },
+    { t: 0.1, handShift: [0, 0.2, 0] },
+    { t: 0.3, handShift: [0, 0, 0] },
+  ],
   name: 'Swing volley',
   aka: 'Drive volley',
   category: 'net',

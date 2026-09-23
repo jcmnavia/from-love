@@ -97,10 +97,15 @@ export class ArmWarp {
       c.z = -c.z
       return c
     }
-    const hk = sorted.filter((k) => k.hand)
+    const hk = sorted.filter((k) => k.hand || k.handShift)
     const hOff = hk.map((k) => {
       const m = measured(at(k))
       if (k.hand === 'clip') return [0, 0, 0]
+      if (k.handShift) {
+        // a direction in the court frame, turned into the chest frame (no shoulder offset)
+        const d = new Vector3(k.handShift[0], k.handShift[1], -k.handShift[2]).applyQuaternion(chestAt().invert())
+        return [d.x, d.y, -d.z]
+      }
       const c = inChest(k, k.hand!)
       return [c.x - m.hand.x, c.y - m.hand.y, c.z - m.hand.z]
     })

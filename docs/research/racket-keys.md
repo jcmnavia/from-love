@@ -68,6 +68,9 @@ how each key was checked for reachability before rendering.
 | Smash | the serve's arm with an abbreviated start (straight up into the trophy) | serve reference |
 | Two-handed backhand | left hand locked on the handle for the whole stroke | Sinner front view |
 | Volleys | head above the wrist throughout, open face, short punch that stops in front | coaching model (no footage yet) |
+| One-handed backhand | now on the two-hander's captured body: left hand on the throat until the forward swing, racket up behind the left shoulder, dropped late, straight-arm contact in front, arms opening like wings | Federer, side-front slow motion |
+| Slice, drop shot | same body; high take-back with the left hand on the throat, forward-and-down swing nearly level through an open face; the drop shot opens the face more and absorbs with a short finish | coaching model + biomechanics |
+| Return, swing volley | the forehand's body and Sinner keys: the return with the loop kept in front (half backswing), the swing volley with the whole forward swing lifted to a chest-height contact (`handShift` keys) | derived from the forehand |
 
-Open items: the forehand's left arm (hand on the throat at the ready, catch at the finish), the ready stance of the
-forehand clip (the capture starts turning immediately), and the strokes that are still procedural.
+Still procedural: the backhand smash, the tweener and the footwork patterns (no capture of them exists in the dataset).
+Open items: the forehand's left arm (hand on the throat at the ready, catch at the finish).

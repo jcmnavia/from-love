@@ -87,6 +87,8 @@ export interface ArmKey {
    * 'clip' pins the capture's own hand here (no offset)
    */
   hand?: V3 | 'clip'
+  /** or a shift of the capture's own wrist (court frame, metres), e.g. to raise a contact point */
+  handShift?: V3
   /** elbow relative to the right shoulder (same frame as `hand`); sets where the elbow points, not the reach */
   elbow?: V3
   /** frame of `hand`, `elbow` and `racket`: the court (default) or the chest (x = right, y = up, z = the way the chest faces) */

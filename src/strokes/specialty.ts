@@ -1,5 +1,6 @@
 import { sequence } from '../engine/pose'
-import type { Stroke } from '../engine/types'
+import type { Stroke, V3 } from '../engine/types'
+import { FOREHAND_ARM_KEYS } from './forehand'
 
 // The player runs away from the net (turn 180) chasing a lob that has bounced behind them.
 // Sprint, plant wide with the ball dropping between the feet, racket up in front, then a straight
@@ -312,6 +313,15 @@ const returnKeys = sequence()
 
 export const returnOfServe: Stroke = {
   id: 'return',
+  // the forehand's captured body and Sinner-keyed arm with half the backswing: the loop stays in front of
+  // the body (full shoulder turn, short arm), and the finish is compact
+  clip: 'forehand',
+  trunkYaw: [[-1.46, 0], [-1.2, -5], [-0.9, -10], [-0.7, -12], [-0.55, -18], [-0.4, -22], [-0.3, -18], [-0.2, -10], [-0.12, -2], [-0.08, 0]],
+  armKeys: FOREHAND_ARM_KEYS.map((k) =>
+    k.frame === 'chest' && Array.isArray(k.hand)
+      ? { ...k, hand: [k.hand[0] * 0.6, k.hand[1], k.hand[2] + 0.12] as V3, elbow: k.elbow && ([k.elbow[0] * 0.7, k.elbow[1], k.elbow[2] + 0.06] as V3) }
+      : k,
+  ),
   name: 'Return of serve',
   category: 'groundstroke',
   level: 'intermediate',
