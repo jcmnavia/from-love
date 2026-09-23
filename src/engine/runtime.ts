@@ -7,7 +7,7 @@ import { Rig } from './rig/rig'
 import { ArmWarp } from './rig/warp'
 import { keyed, turnTrunk } from './rig/trunk'
 import { FingerCurl } from './rig/hand'
-import { LeftHandOnGrip } from './rig/twohand'
+import { LeftHandOnGrip, captureLeftGrip, makeLeftGrip } from './rig/twohand'
 import { calibrateGrip, makeGrip, rigToSolved, type Grip } from './rig/solved'
 
 const G = 9.81
@@ -81,11 +81,10 @@ export class StrokeRuntime {
       const want = stroke.contactRacket
       this.fingers = { right: new FingerCurl(this.rig, 'Right'), left: new FingerCurl(this.rig, 'Left') }
       this.animated = [...clip.bones, ...this.fingers.right.bones, ...this.fingers.left.bones]
-      if (stroke.leftGrip?.length) this.leftGrip = new LeftHandOnGrip(this.rig)
       if (stroke.leftArmKeys?.length)
-        this.leftWarp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, null, stroke.leftArmKeys, 'Left')
+        this.leftWarp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, null, stroke.leftArmKeys, 'Left', this.duration)
       if (stroke.armKeys?.length)
-        this.warp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, this.grip, stroke.armKeys)
+        this.warp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, this.grip, stroke.armKeys, 'Right', this.duration)
       else if (want) {
         const hand = this.rig.find('RightHand')
         const qs = [-0.02, -0.01, 0, 0.01, 0.02].map((dt) => {
@@ -93,6 +92,18 @@ export class StrokeRuntime {
           return this.rig!.quat[hand].clone()
         })
         this.grip = calibrateGrip(this.grip, qs, want.dir, want.normal)
+      }
+      if (stroke.leftGrip?.length) {
+        // the left hand holds the handle the way the capture's left hand holds it, sampled where the stroke
+        // keeps both hands on the racket
+        const rig = this.rig, contact = clip.events.contact
+        const pose = (t: number) => {
+          this.basePose(t)
+          this.warp?.apply(rig, t)
+        }
+        const samples: number[] = []
+        for (let t = 0; t <= this.duration; t += 0.05) if (keyed(stroke.leftGrip, t - contact) > 0.99) samples.push(t)
+        this.leftGrip = new LeftHandOnGrip(rig, captureLeftGrip(rig, this.grip, pose, samples, makeLeftGrip(rig)))
       }
     }
 

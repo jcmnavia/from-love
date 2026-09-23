@@ -28,8 +28,8 @@ const base = (t: number) => {
   track.apply(rig, t)
   if (useWarp && stroke.trunkYaw?.length) turnTrunk(rig, keyed(stroke.trunkYaw, t - clip.events.contact))
 }
-const warp = useWarp && stroke.armKeys ? new ArmWarp(rig, base, clip.events.contact, grip, stroke.armKeys) : null
-const leftWarp = useWarp && stroke.leftArmKeys ? new ArmWarp(rig, base, clip.events.contact, null, stroke.leftArmKeys, 'Left') : null
+const warp = useWarp && stroke.armKeys ? new ArmWarp(rig, base, clip.events.contact, grip, stroke.armKeys, 'Right', track.duration) : null
+const leftWarp = useWarp && stroke.leftArmKeys ? new ArmWarp(rig, base, clip.events.contact, null, stroke.leftArmKeys, 'Left', track.duration) : null
 const D = 180 / Math.PI
 const c = clip.events.contact
 const times = arg('--times')?.split(',').map(Number) ?? Array.from({ length: Math.floor(track.duration / 0.05) + 1 }, (_, i) => i * 0.05)

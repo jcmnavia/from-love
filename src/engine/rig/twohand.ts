@@ -32,6 +32,29 @@ export function makeLeftGrip(rig: Rig): Grip {
   return { q: inv.clone().multiply(racketWorld), p: centre.sub(hand).applyQuaternion(inv) }
 }
 
+/**
+ * The left hand's orientation on the handle as the capture itself holds it: the captured left hand relative to
+ * the racket, averaged over `samples` (moments when both hands are on the handle). Optical capture has no hand
+ * markers, but its forearms are right, and this keeps the left wrist in its natural range where a grip built
+ * from the hand's geometry alone did not.
+ */
+export function captureLeftGrip(rig: Rig, rightGrip: Grip, pose: (t: number) => void, samples: number[], fallback: Grip): Grip {
+  if (!samples.length) return fallback
+  const acc = new Quaternion(0, 0, 0, 0)
+  const r = rig.find('RightHand'), l = rig.find('LeftHand')
+  for (const t of samples) {
+    pose(t)
+    const rel = rig.quat[l].clone().invert().multiply(rig.quat[r]).multiply(rightGrip.q)
+    const sgn = acc.x * rel.x + acc.y * rel.y + acc.z * rel.z + acc.w * rel.w < 0 ? -1 : 1
+    acc.set(acc.x + sgn * rel.x, acc.y + sgn * rel.y, acc.z + sgn * rel.z, acc.w + sgn * rel.w)
+  }
+  return { q: acc.normalize(), p: fallback.p.clone() }
+}
+
+const DEG = Math.PI / 180
+/** swivel offsets tried around the capture's elbow, coarse then fine */
+const SWIVEL_COARSE = Array.from({ length: 13 }, (_, i) => (i - 6) * 10 * DEG)
+
 /** Puts the left hand on the handle just above the right hand (two-handed strokes), blending from the capture. */
 export class LeftHandOnGrip {
   readonly arm: Arm
@@ -43,9 +66,27 @@ export class LeftHandOnGrip {
   private wrist = new Vector3()
   private v = new Vector3()
 
-  constructor(rig: Rig) {
+  constructor(rig: Rig, grip?: Grip) {
     this.arm = new Arm(rig, 'Left')
-    this.grip = makeLeftGrip(rig)
+    this.grip = grip ?? makeLeftGrip(rig)
+  }
+
+  /**
+   * The elbow swivel near the capture's that lets the wrist reach the grip with the least clamping: the elbow
+   * is free to turn around the shoulder–wrist line, the wrist is not free to bend past its limits.
+   */
+  private bestSwivel(rig: Rig, p: ArmPose, base: number) {
+    let best = base, cost = Infinity
+    const tryAt = (sw: number) => {
+      p.swivel = sw
+      this.arm.apply(rig, p, this.target, true)
+      const c = this.arm.wristExcess() + 0.15 * Math.abs(sw - base)
+      if (c < cost) { cost = c; best = sw }
+    }
+    for (const d of SWIVEL_COARSE) tryAt(base + d)
+    const c0 = best
+    for (let d = -8; d <= 8; d += 2) tryAt(c0 + d * DEG)
+    return best
   }
 
   /**
@@ -59,12 +100,25 @@ export class LeftHandOnGrip {
     const p = this.pose
     this.centre.copy(rightCentre).addScaledVector(this.v.set(0, 1, 0).applyQuaternion(racketQ), gap)
     this.target.copy(racketQ).multiply(this.grip.q.clone().invert())
+    if (gap > 0.15) {
+      // cradling the throat (one-handers): the fingers only support the racket, so the hand goes to the throat
+      // with the capture's own elbow and wrist instead of forcing a grip orientation
+      this.wrist.copy(this.centre).sub(this.v.copy(this.grip.p).applyQuaternion(this.arm.handQ(rig)))
+      this.arm.fromShoulder(rig, this.wrist, p.hand)
+      p.hand.lerpVectors(b.hand, p.hand, weight)
+      p.swivel = b.swivel
+      p.pron = b.pron
+      p.ext = b.ext
+      p.dev = b.dev
+      this.arm.apply(rig, p)
+      return
+    }
     // two passes: the wrist may not reach the exact orientation, so place the hand for the one it reached
     let hand: Quaternion = this.target
     for (let pass = 0; pass < 2; pass++) {
       this.wrist.copy(this.centre).sub(this.v.copy(this.grip.p).applyQuaternion(hand))
       this.arm.fromShoulder(rig, this.wrist, p.hand)
-      p.swivel = b.swivel
+      p.swivel = pass === 0 ? this.bestSwivel(rig, p, b.swivel) : p.swivel
       if (pass === 0) {
         p.pron = b.pron
         p.ext = b.ext
@@ -76,7 +130,7 @@ export class LeftHandOnGrip {
     if (weight < 1) {
       const w = weight
       p.hand.lerpVectors(b.hand, p.hand, w)
-      p.swivel = b.swivel
+      p.swivel = b.swivel + (p.swivel - b.swivel) * w
       p.pron = b.pron + (p.pron - b.pron) * w
       p.ext = b.ext + (p.ext - b.ext) * w
       p.dev = b.dev + (p.dev - b.dev) * w

@@ -299,7 +299,16 @@ export class Arm {
    * to that world orientation as the wrist's limits allow (the reached angles are written back to `pose`).
    * Re-poses the rig.
    */
-  apply(rig: Rig, pose: ArmPose, handWorld?: Quaternion | RacketAim | null) {
+  /** wrist angles an exact hand orientation asked for before clamping (set by `apply`) */
+  readonly raw = { pron: 0, ext: 0, dev: 0 }
+
+  /** how far (radians, summed) the last `apply` had to clamp the wrist to reach an exact hand orientation */
+  wristExcess() {
+    const over = (x: number, [lo, hi]: readonly [number, number]) => Math.max(0, x - hi, lo - x)
+    return over(this.raw.pron, ARM_LIMITS.pron) + over(this.raw.ext, ARM_LIMITS.ext) + over(this.raw.dev, ARM_LIMITS.dev)
+  }
+
+  apply(rig: Rig, pose: ArmPose, handWorld?: Quaternion | RacketAim | null, dry = false) {
     const S = rig.pos[this.iArm].clone()
     const chest = this.chestQ(rig, this.chest)
     const reach = this.l1 + this.l2
@@ -330,9 +339,10 @@ export class Arm {
     if (handWorld instanceof Quaternion) {
       // an exact hand orientation: decompose, then the limits below clamp what the wrist cannot do
       const { pron, ext, dev } = this.decompose(q1.copy(B).invert().multiply(handWorld))
-      pose.pron = pron
-      pose.ext = ext
-      pose.dev = dev
+      pose.pron = this.raw.pron = pron
+      pose.ext = this.raw.ext = ext
+      pose.dev = this.raw.dev = dev
+      if (dry) return pose
     } else if (handWorld) this.aim(B, handWorld, pose)
     const clamp = (x: number, [lo, hi]: readonly [number, number]) => Math.min(Math.max(x, lo), hi)
     pose.pron = clamp(pose.pron, ARM_LIMITS.pron)

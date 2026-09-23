@@ -41,8 +41,13 @@ export class Curve {
     if (!n) return 0
     if (x <= t[0]) return v[0]
     if (x >= t[n - 1]) return v[n - 1]
-    let i = 0
-    while (x > t[i + 1]) i++
+    let lo = 0, hi = n - 1
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1
+      if (t[mid] <= x) lo = mid
+      else hi = mid
+    }
+    const i = lo
     const h = t[i + 1] - t[i]
     const s = (x - t[i]) / h
     const s2 = s * s, s3 = s2 * s
@@ -76,18 +81,22 @@ export class ArmWarp {
   private dev: Curve
   private pose: ArmPose = emptyArmPose()
   private base: ArmPose = emptyArmPose()
+  private baseSwivel: Curve | null = null
 
   /**
    * `base` poses the rig at clip time `t` with everything but the arm warp (the clip, trunk corrections);
    * `contact` is the clip's contact time the keys are relative to.
    */
-  constructor(rig: Rig, base: (t: number) => void, contact: number, grip: Grip | null, keys: ArmKey[], side: Side = 'Right') {
+  constructor(rig: Rig, base: (t: number) => void, contact: number, grip: Grip | null, keys: ArmKey[], side: Side = 'Right', duration = 0) {
     this.arm = new Arm(rig, side)
     const at = (k: ArmKey) => contact + k.t
     const sorted = [...keys].sort((a, b) => a.t - b.t)
+    if (duration > 0) this.baseSwivel = this.smoothSwivel(rig, base, duration)
     const measured = (t: number) => {
       base(t)
-      return this.arm.measure(rig, emptyArmPose())
+      const m = this.arm.measure(rig, emptyArmPose())
+      if (this.baseSwivel) m.swivel = this.baseSwivel.at(t)
+      return m
     }
     const chestAt = () => this.arm.chestQ(rig, new Quaternion())
     /** a key's hand/elbow vector in the chest frame of the rig as posed now */
@@ -166,12 +175,49 @@ export class ArmWarp {
     return [p.pron, p.ext, p.dev] as V3
   }
 
+  /**
+   * The capture's elbow swivel over the clip, unwrapped and smoothed. The swivel is only well defined while
+   * the elbow is bent: with a nearly straight arm it jumps between the bone's hinge and the geometric bend, and
+   * following it frame by frame spins the forearm (and the racket) through a straight-arm contact. Frames are
+   * weighted by how bent the elbow is, so straight-arm moments inherit the swivel from either side.
+   */
+  private smoothSwivel(rig: Rig, base: (t: number) => void, duration: number) {
+    const HZ = 120, SIGMA = 0.025
+    const n = Math.floor(duration * HZ) + 1
+    const ts: number[] = [], sw: number[] = [], w: number[] = []
+    const m = emptyArmPose()
+    for (let i = 0; i < n; i++) {
+      const t = Math.min(i / HZ, duration)
+      base(t)
+      this.arm.measure(rig, m)
+      let v = m.swivel
+      if (i > 0) {
+        while (v - sw[i - 1] > Math.PI) v -= 2 * Math.PI
+        while (v - sw[i - 1] < -Math.PI) v += 2 * Math.PI
+      }
+      ts.push(t)
+      sw.push(v)
+      w.push(Math.min(Math.max((m.flex - 12 * DEG) / (25 * DEG), 0), 1) ** 2 + 1e-3)
+    }
+    const r = Math.ceil(3 * SIGMA * HZ)
+    const out = sw.map((_, i) => {
+      let a = 0, b = 0
+      for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+        const g = Math.exp(-(((j - i) / HZ) ** 2) / (2 * SIGMA * SIGMA)) * w[j]
+        a += g * sw[j]
+        b += g
+      }
+      return a / b
+    })
+    return new Curve(ts, out)
+  }
+
   /** the capture's arm at `t` (rig already posed by the clip) plus the hand and swivel offsets */
   private warped(rig: Rig, t: number, wrist: boolean) {
     const b = this.arm.measure(rig, this.base)
     const p = this.pose
     p.hand.set(b.hand.x + this.dx.at(t), b.hand.y + this.dy.at(t), b.hand.z + this.dz.at(t))
-    p.swivel = b.swivel + this.dSwivel.at(t)
+    p.swivel = (this.baseSwivel ? this.baseSwivel.at(t) : b.swivel) + this.dSwivel.at(t)
     p.pron = wrist && !this.pron.empty ? this.pron.at(t) : b.pron
     p.ext = wrist && !this.ext.empty ? this.ext.at(t) : b.ext
     p.dev = wrist && !this.dev.empty ? this.dev.at(t) : b.dev
