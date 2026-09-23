@@ -24,40 +24,41 @@ function carried(pelvis: V3, turn: number): PoseInput {
 
 const splitStepKeys = sequence()
   .key(0.0)
-  .key(0.2, { pelvis: [0, 0.86, 0], lFoot: { heel: 25 }, rFoot: { heel: 25 } })
+  // a small hop (the captured players leave the ground for 0.1–0.25 s and 4–7 cm), landing wider and lower
+  .key(0.2, { pelvis: [0, 0.83, 0], lFoot: { heel: 25 }, rFoot: { heel: 25 } })
   .key(0.4, {
-    ...carried([0, 1.0, 0.02], 0),
-    pelvis: [0, 1.0, 0.02],
-    lFoot: { p: [-0.33, 0.12, 0.03], heel: 35 },
-    rFoot: { p: [0.33, 0.12, 0.03], heel: 35 },
+    ...carried([0, 0.95, 0.02], 0),
+    pelvis: [0, 0.95, 0.02],
+    lFoot: { p: [-0.35, 0.06, 0.03], heel: 30 },
+    rFoot: { p: [0.35, 0.06, 0.03], heel: 30 },
   })
   .key(0.58, {
-    ...carried([0, 0.85, 0.02], 0),
-    pelvis: [0, 0.85, 0.02],
-    pelvisRot: [0, 10, 0],
+    ...carried([0, 0.8, 0.02], 0),
+    pelvis: [0, 0.8, 0.02],
+    pelvisRot: [0, 14, 0],
     chestRot: [0, 16, 0],
-    lFoot: { p: [-0.38, 0, 0.03], turn: -10, heel: 5 },
-    rFoot: { p: [0.38, 0, 0.03], turn: 12, heel: 5 },
+    lFoot: { p: [-0.42, 0, 0.03], turn: -10, heel: 5 },
+    rFoot: { p: [0.42, 0, 0.03], turn: 12, heel: 5 },
   })
   .key(0.85, {
-    ...carried([0.2, 0.87, 0.02], 25),
-    pelvis: [0.2, 0.87, 0.02],
+    ...carried([0.2, 0.83, 0.02], 25),
+    pelvis: [0.2, 0.83, 0.02],
     pelvisRot: [25, 10, 0],
     chestRot: [15, 14, 0],
     lFoot: { p: [-0.3, 0.02, 0.03], turn: 20, heel: 40 },
     rFoot: { p: [0.78, 0, -0.02], turn: 60, heel: 0 },
   })
   .key(1.15, {
-    ...carried([0.5, 0.88, 0.0], 10),
-    pelvis: [0.5, 0.88, 0.0],
+    ...carried([0.5, 0.84, 0.0], 10),
+    pelvis: [0.5, 0.84, 0.0],
     pelvisRot: [10, 8, 0],
     chestRot: [5, 14, 0],
     lFoot: { p: [0.2, 0, 0.02], turn: 0, heel: 8 },
     rFoot: { p: [0.8, 0, 0.0], turn: 15, heel: 8 },
   })
   .key(1.5, {
-    ...carried([0.25, 0.88, 0.0], -10),
-    pelvis: [0.25, 0.88, 0.0],
+    ...carried([0.25, 0.84, 0.0], -10),
+    pelvis: [0.25, 0.84, 0.0],
     pelvisRot: [-10, 8, 0],
     chestRot: [-5, 14, 0],
     lFoot: { p: [-0.1, 0, 0.02], turn: -30, heel: 0 },
@@ -108,44 +109,44 @@ export const splitStep: Stroke = {
 const shuffleKeys = sequence()
   .key(0.0)
   .key(0.25, {
-    ...carried([0.18, 0.9, 0], 0),
-    pelvis: [0.18, 0.9, 0],
+    ...carried([0.18, 0.86, 0], 0),
+    pelvis: [0.18, 0.86, 0],
     lFoot: { p: [-0.22, 0.02, 0.02], heel: 30 },
     rFoot: { p: [0.62, 0, 0.02], turn: 15, heel: 0 },
   })
   .key(0.5, {
-    ...carried([0.42, 0.9, 0], 0),
-    pelvis: [0.42, 0.9, 0],
+    ...carried([0.42, 0.86, 0], 0),
+    pelvis: [0.42, 0.86, 0],
     lFoot: { p: [0.12, 0, 0.02], turn: -10, heel: 5 },
     rFoot: { p: [0.72, 0.02, 0.02], turn: 15, heel: 30 },
   })
   .key(0.75, {
-    ...carried([0.65, 0.9, 0], 0),
-    pelvis: [0.65, 0.9, 0],
+    ...carried([0.65, 0.86, 0], 0),
+    pelvis: [0.65, 0.86, 0],
     lFoot: { p: [0.35, 0.02, 0.02], heel: 30 },
     rFoot: { p: [1.15, 0, 0.02], turn: 15, heel: 0 },
   })
   .key(1.0, {
-    ...carried([0.85, 0.88, 0], 0),
-    pelvis: [0.85, 0.88, 0],
+    ...carried([0.85, 0.84, 0], 0),
+    pelvis: [0.85, 0.84, 0],
     lFoot: { p: [0.55, 0, 0.02], turn: -10, heel: 5 },
     rFoot: { p: [1.15, 0, 0.02], turn: 15, heel: 5 },
   })
   .key(1.3, {
-    ...carried([0.7, 0.9, 0], 0),
-    pelvis: [0.7, 0.9, 0],
+    ...carried([0.7, 0.86, 0], 0),
+    pelvis: [0.7, 0.86, 0],
     lFoot: { p: [0.25, 0, 0.02], turn: -15, heel: 0 },
     rFoot: { p: [1.1, 0.02, 0.02], turn: 15, heel: 30 },
   })
   .key(1.55, {
-    ...carried([0.42, 0.9, 0], 0),
-    pelvis: [0.42, 0.9, 0],
+    ...carried([0.42, 0.86, 0], 0),
+    pelvis: [0.42, 0.86, 0],
     lFoot: { p: [0.05, 0.02, 0.02], heel: 30 },
     rFoot: { p: [0.72, 0, 0.02], turn: 10, heel: 0 },
   })
   .key(1.8, {
-    ...carried([0.15, 0.9, 0], 0),
-    pelvis: [0.15, 0.9, 0],
+    ...carried([0.15, 0.86, 0], 0),
+    pelvis: [0.15, 0.86, 0],
     lFoot: { p: [-0.25, 0, 0.02], turn: -12, heel: 5 },
     rFoot: { p: [0.45, 0.02, 0.02], turn: 12, heel: 30 },
   })
@@ -188,56 +189,56 @@ export const shuffle: Stroke = {
 const crossoverKeys = sequence()
   .key(0.0)
   .key(0.25, {
-    ...carried([0.15, 0.88, 0], 30),
-    pelvis: [0.15, 0.88, 0],
+    ...carried([0.15, 0.84, 0], 30),
+    pelvis: [0.15, 0.84, 0],
     pelvisRot: [30, 10, 0],
     chestRot: [10, 14, 0],
     lFoot: { p: [-0.25, 0.02, 0.02], turn: 30, heel: 40 },
     rFoot: { p: [0.65, 0, -0.02], turn: 75, heel: 0 },
   })
   .key(0.5, {
-    ...carried([0.55, 0.9, 0.02], 55),
-    pelvis: [0.55, 0.9, 0.02],
+    ...carried([0.55, 0.86, 0.02], 55),
+    pelvis: [0.55, 0.86, 0.02],
     pelvisRot: [55, 12, 0],
     chestRot: [0, 14, 0],
     lFoot: { p: [1.0, 0.06, 0.12], turn: 60, heel: 30 },
     rFoot: { p: [0.65, 0.02, -0.02], turn: 75, heel: 45 },
   })
   .key(0.75, {
-    ...carried([1.05, 0.88, 0.02], 45),
-    pelvis: [1.05, 0.88, 0.02],
+    ...carried([1.05, 0.84, 0.02], 45),
+    pelvis: [1.05, 0.84, 0.02],
     pelvisRot: [45, 12, 0],
     chestRot: [-5, 14, 0],
     lFoot: { p: [1.15, 0, 0.12], turn: 40, heel: 5 },
     rFoot: { p: [1.6, 0, -0.05], turn: 70, heel: 0 },
   })
   .key(1.0, {
-    ...carried([1.3, 0.88, 0.0], 10),
-    pelvis: [1.3, 0.88, 0.0],
+    ...carried([1.3, 0.84, 0.0], 10),
+    pelvis: [1.3, 0.84, 0.0],
     pelvisRot: [10, 10, 0],
     chestRot: [0, 14, 0],
     lFoot: { p: [1.0, 0, 0.02], turn: 0, heel: 5 },
     rFoot: { p: [1.65, 0, 0.0], turn: 15, heel: 5 },
   })
   .key(1.3, {
-    ...carried([1.05, 0.9, 0.0], -20),
-    pelvis: [1.05, 0.9, 0.0],
+    ...carried([1.05, 0.86, 0.0], -20),
+    pelvis: [1.05, 0.86, 0.0],
     pelvisRot: [-20, 10, 0],
     chestRot: [0, 14, 0],
     lFoot: { p: [0.6, 0, 0.02], turn: -25, heel: 0 },
     rFoot: { p: [1.5, 0.02, 0.0], turn: -5, heel: 35 },
   })
   .key(1.6, {
-    ...carried([0.6, 0.9, 0.0], -45),
-    pelvis: [0.6, 0.9, 0.0],
+    ...carried([0.6, 0.86, 0.0], -45),
+    pelvis: [0.6, 0.86, 0.0],
     pelvisRot: [-45, 10, 0],
     chestRot: [10, 14, 0],
     lFoot: { p: [0.1, 0, 0.02], turn: -60, heel: 0 },
     rFoot: { p: [0.4, 0.06, 0.15], turn: -50, heel: 35 },
   })
   .key(1.9, {
-    ...carried([0.15, 0.9, 0.0], -15),
-    pelvis: [0.15, 0.9, 0.0],
+    ...carried([0.15, 0.86, 0.0], -15),
+    pelvis: [0.15, 0.86, 0.0],
     pelvisRot: [-15, 8, 0],
     chestRot: [0, 14, 0],
     lFoot: { p: [-0.25, 0, 0.02], turn: -12, heel: 5 },

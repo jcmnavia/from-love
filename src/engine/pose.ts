@@ -1,9 +1,11 @@
 import { Matrix4, Quaternion, Vector3 } from 'three'
 import type { Keyframe, Pose, PoseInput, V3 } from './types'
 
+// athletic ready stance: feet wider than the shoulders, knees bent (hips ~12 cm below standing, as in the
+// captured players' recovery stance), trunk inclined ~24° forward
 export const READY: Pose = {
-  pelvis: [0, 0.9, 0],
-  pelvisRot: [0, 6, 0],
+  pelvis: [0, 0.86, 0],
+  pelvisRot: [0, 10, 0],
   chestRot: [0, 14, 0],
   rHand: [0.1, 1.02, 0.34],
   rPole: [0.5, -0.8, -0.3],
@@ -12,8 +14,8 @@ export const READY: Pose = {
   lPole: [-0.5, -0.8, -0.3],
   racketDir: [-0.25, 0.5, 0.83],
   racketNormal: [-0.95, 0, -0.3],
-  lFoot: { p: [-0.3, 0, 0.02], turn: -12, heel: 8 },
-  rFoot: { p: [0.3, 0, 0.02], turn: 12, heel: 8 },
+  lFoot: { p: [-0.35, 0, 0.02], turn: -12, heel: 8 },
+  rFoot: { p: [0.35, 0, 0.02], turn: 12, heel: 8 },
 }
 
 export function mergePose(base: Pose, o: PoseInput): Pose {
