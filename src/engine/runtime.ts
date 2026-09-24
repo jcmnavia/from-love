@@ -8,6 +8,9 @@ import { ArmWarp } from './rig/warp'
 import { keyed, turnTrunk } from './rig/trunk'
 import { FingerCurl } from './rig/hand'
 import { LeftHandOnGrip, captureLeftGrip, makeLeftGrip } from './rig/twohand'
+import { ArmClearance } from './rig/clearance'
+import { Arm } from './rig/arm'
+import { clearPose } from './clearPose'
 import { calibrateGrip, makeGrip, rigToSolved, type Grip } from './rig/solved'
 
 const G = 9.81
@@ -50,6 +53,9 @@ export class StrokeRuntime {
   private gaze = new Vector3()
   /** baked, smoothed elbow bend directions: 3 floats per sample per arm */
   private bendR: Float32Array
+  /** baked, smoothed hand offsets (author frame) that keep keyframed arms out of the trunk and head */
+  private clearR: Float32Array
+  private clearL: Float32Array
   private bendL: Float32Array
   private bends: ArmBends = { r: new Vector3(), l: new Vector3() }
   /** mocap mode: the clip drives the real skeleton; the keyframe track is unused */
@@ -61,8 +67,15 @@ export class StrokeRuntime {
   private leftWarp: ArmWarp | null = null
   private fingers: { right: FingerCurl; left: FingerCurl } | null = null
   private leftGrip: LeftHandOnGrip | null = null
+  /** keeps the arms out of the trunk (baked once the rest of the pose is set up) */
+  private clear: { right: ArmClearance; left: ArmClearance } | null = null
   private qTmp = new Quaternion()
   private vTmp = new Vector3()
+  private vA = new Vector3()
+  private vB = new Vector3()
+  private vC = new Vector3()
+  /** which way the left hand's (fingers × across) normal points relative to the palm */
+  private palmSign = 1
   /** bones the mesh copies from the rig: the clip's plus the fingers this runtime curls */
   readonly animated: string[] = []
   private outDir = new Vector3(0, 0, -1)
@@ -80,6 +93,16 @@ export class StrokeRuntime {
       this.duration = this.clip.duration
       const want = stroke.contactRacket
       this.fingers = { right: new FingerCurl(this.rig, 'Right'), left: new FingerCurl(this.rig, 'Left') }
+      {
+        // palm side of the left hand: the side facing the body in the rest pose
+        const rig = this.rig
+        rig.resetLocal()
+        rig.pose(null)
+        const P = (n: string) => rig.pos[rig.find(n)]
+        const hand = P('LeftHand')
+        const n = P('LeftHandMiddle1').clone().sub(hand).cross(P('LeftHandIndex1').clone().sub(P('LeftHandPinky1')))
+        this.palmSign = n.dot(P('Hips').clone().setY(hand.y).sub(hand)) >= 0 ? 1 : -1
+      }
       this.animated = [...clip.bones, ...this.fingers.right.bones, ...this.fingers.left.bones]
       if (stroke.leftArmKeys?.length)
         this.leftWarp = new ArmWarp(this.rig, (t) => this.basePose(t), clip.events.contact, null, stroke.leftArmKeys, 'Left', this.duration)
@@ -105,6 +128,14 @@ export class StrokeRuntime {
         for (let t = 0; t <= this.duration; t += 0.05) if (keyed(stroke.leftGrip, t - contact) > 0.99) samples.push(t)
         this.leftGrip = new LeftHandOnGrip(rig, captureLeftGrip(rig, this.grip, pose, samples, makeLeftGrip(rig)))
       }
+      {
+        const rig = this.rig
+        const clear = { right: new ArmClearance(new Arm(rig, 'Right')), left: new ArmClearance(new Arm(rig, 'Left')) }
+        clear.right.bake(rig, this.duration, (t) => this.armPose(t))
+        this.clear = { right: clear.right, left: new ArmClearance(new Arm(rig, 'Left')) }
+        clear.left.bake(rig, this.duration, (t) => this.armPose(t, true), (t) => this.onGripAt(t) > 0.5)
+        this.clear = clear
+      }
     }
 
     const scratch = createSolved()
@@ -113,13 +144,30 @@ export class StrokeRuntime {
     const nb = this.clip ? 2 : Math.max(2, Math.round(this.duration * BEND_HZ) + 1)
     const rawR = new Float32Array(nb * 3)
     const rawL = new Float32Array(nb * 3)
+    const rawDR = new Float32Array(nb * 3)
+    const rawDL = new Float32Array(nb * 3)
     for (let i = 0; i < nb; i++) {
-      if (!this.clip) solve(this.track.sample((i / (nb - 1)) * this.duration, this.pose), scratch)
+      if (!this.clip) {
+        // keep the arms out of the trunk and head: record how far the hands had to move, then bake the
+        // bends from the cleared pose (both are smoothed below, so corrections fade in and out)
+        const t = (i / (nb - 1)) * this.duration
+        const pose = this.track.sample(t, this.pose)
+        const r0 = [...pose.rHand], l0 = [...pose.lHand]
+        for (let k = 0; k < 3; k++) {
+          solve(pose, scratch)
+          if (!clearPose(pose, scratch)) break
+        }
+        rawDR.set([pose.rHand[0] - r0[0], pose.rHand[1] - r0[1], pose.rHand[2] - r0[2]], i * 3)
+        rawDL.set([pose.lHand[0] - l0[0], pose.lHand[1] - l0[1], pose.lHand[2] - l0[2]], i * 3)
+        solve(pose, scratch)
+      }
       rawR.set([scratch.bendR.x, scratch.bendR.y, scratch.bendR.z], i * 3)
       rawL.set([scratch.bendL.x, scratch.bendL.y, scratch.bendL.z], i * 3)
     }
     this.bendR = gaussian3(rawR, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
     this.bendL = gaussian3(rawL, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
+    this.clearR = gaussian3(rawDR, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
+    this.clearL = gaussian3(rawDL, nb, (BEND_SIGMA * (nb - 1)) / this.duration)
 
     for (let i = 0; i < TRAIL_SAMPLES; i++) {
       const t = (i / (TRAIL_SAMPLES - 1)) * this.duration
@@ -148,11 +196,14 @@ export class StrokeRuntime {
     if (ball) {
       this.solveAt(ball.contactT, scratch)
       this.contact = scratch.racketHead.clone()
-      const points: { t: number; p: Vector3 }[] = ball.waypoints.map((w) => {
+      const points: { t: number; p: Vector3 }[] = ball.waypoints.map((w, i) => {
         if (w.p === 'lHand') {
-          this.solveAt(w.t, scratch)
-          this.heldUntil = w.t
-          return { t: w.t, p: scratch.wristL.clone().add(new Vector3(0, 0.06, 0)) }
+          const next = ball.waypoints[i + 1]
+          const target = next && next.p !== 'lHand' ? { t: next.t, p: toWorld(next.p, new Vector3()) } : { t: ball.contactT, p: this.contact! }
+          const release = this.rig ? this.tossRelease(w.t, target) : w.t
+          this.solveAt(release, scratch)
+          this.heldUntil = release
+          return { t: release, p: this.heldBall(scratch, new Vector3()) }
         }
         return { t: w.t, p: toWorld(w.p, new Vector3()) }
       })
@@ -174,6 +225,48 @@ export class StrokeRuntime {
         v0: outV,
       })
     }
+  }
+
+  /**
+   * Where the ball sits while held in the left hand: in the fingers, just off the palm. Mocap: from the rig's hand
+   * bones (the palm's own normal); keyframed bodies: above the wrist.
+   */
+  private heldBall(s: Solved, out: Vector3) {
+    const rig = this.rig
+    if (!rig) return out.copy(s.wristL).setY(s.wristL.y + 0.06)
+    const P = (n: string) => rig.pos[rig.find(n)]
+    const hand = P('LeftHand')
+    const f = this.vA.copy(P('LeftHandMiddle1')).sub(hand)
+    const across = this.vB.copy(P('LeftHandIndex1')).sub(P('LeftHandPinky1'))
+    const n = this.vC.copy(f).cross(across).normalize().multiplyScalar(this.palmSign)
+    return out.copy(hand).addScaledVector(f, 0.95).addScaledVector(n, 0.045)
+  }
+
+  /**
+   * The toss's release: the moment near `nominal` when the hand's upward velocity best matches the velocity the
+   * ball needs to reach `target` on a ballistic path, so the ball leaves the fingers instead of jumping out of them.
+   */
+  private tossRelease(nominal: number, target: { t: number; p: Vector3 }) {
+    const s = createSolved()
+    const at = (t: number, out: Vector3) => {
+      this.solveAt(t, s)
+      return this.heldBall(s, out)
+    }
+    const a = new Vector3(), b = new Vector3()
+    let best = nominal, cost = Infinity
+    for (let t = nominal - 0.25; t <= nominal + 0.12; t += 1 / 120) {
+      const d = target.t - t
+      if (d < 0.4) break
+      at(t - 1 / 240, a)
+      at(t + 1 / 240, b)
+      const hand = b.clone().sub(a).multiplyScalar(120)
+      const p = a.add(b).multiplyScalar(0.5)
+      const need = target.p.clone().sub(p).divideScalar(d)
+      need.y += 0.5 * G * d
+      const c = need.distanceTo(hand)
+      if (c < cost) { cost = c; best = t }
+    }
+    return best
   }
 
   /** the clip at `t` with the stroke's trunk correction, before the arm warp */
@@ -201,47 +294,76 @@ export class StrokeRuntime {
   }
 
   /** the body at `t` without gaze: from the clip on the real skeleton, or from the keyframes */
+  /** how much the left hand is on the racket at clip time `t` (0..1) */
+  private onGripAt(t: number) {
+    return this.leftGrip && this.clip ? keyed(this.stroke.leftGrip!, t - this.clip.data.events.contact) : 0
+  }
+
+  /**
+   * Poses the rig's arms at clip time `t`: the capture, the arm warps and the right arm's clearance; with `left`,
+   * also the left hand on the grip (the left arm's clearance comes after).
+   */
+  private armPose(t: number, left = false) {
+    const rig = this.rig!
+    this.basePose(t)
+    this.leftWarp?.apply(rig, t)
+    if (this.warp) this.warp.apply(rig, t)
+    else {
+      const roll = this.rollAt(t)
+      if (roll) rig.twistLocal(rig.find('RightHand'), roll)
+    }
+    if (!left) return
+    this.clear?.right.apply(rig, t)
+    // two-handers: the left hand closes on the handle just above the right
+    if (this.leftGrip) {
+      const hq = rig.quat[rig.find('RightHand')]
+      const racket = this.qTmp.copy(hq).multiply(this.grip!.q)
+      const centre = this.vTmp.copy(this.grip!.p).applyQuaternion(hq).add(rig.pos[rig.find('RightHand')])
+      this.leftGrip.apply(rig, racket, centre, this.onGripAt(t), this.stroke.leftGripAt)
+    }
+  }
+
   private solveAt(t: number, out: Solved) {
     if (this.clip && this.rig && this.grip) {
-      this.basePose(t)
-      this.leftWarp?.apply(this.rig, t)
-      if (this.warp) this.warp.apply(this.rig, t)
-      else {
-        const roll = this.rollAt(t)
-        if (roll) this.rig.twistLocal(this.rig.find('RightHand'), roll)
-      }
-      // two-handers: the left hand closes on the handle just above the right
-      let onGrip = 0
-      if (this.leftGrip) {
-        onGrip = keyed(this.stroke.leftGrip!, t - this.clip.data.events.contact)
-        const hq = this.rig.quat[this.rig.find('RightHand')]
-        const racket = this.qTmp.copy(hq).multiply(this.grip.q)
-        const centre = this.vTmp.copy(this.grip.p).applyQuaternion(hq).add(this.rig.pos[this.rig.find('RightHand')])
-        this.leftGrip.apply(this.rig, racket, centre, onGrip, this.stroke.leftGripAt)
-      }
+      this.armPose(t, true)
+      const onGrip = this.onGripAt(t)
+      this.clear?.left.apply(this.rig, t, 1 - onGrip)
       // the capture has no fingers: close the racket hand on the handle, relax the other
       this.fingers!.right.apply(this.rig, 1)
       this.fingers!.left.apply(this.rig, 0.35 + 0.65 * onGrip)
       rigToSolved(this.rig, this.grip, out)
     } else {
-      solve(this.track.sample(t, this.pose), out, null, this.bendsAt(t))
+      solve(this.sampleCleared(t), out, null, this.bendsAt(t))
     }
     return out
   }
 
+  /** the keyframed pose at `t` with the baked hand offsets that keep the arms out of the trunk (see clearPose) */
+  private sampleCleared(t: number) {
+    const pose = this.track.sample(t, this.pose)
+    const n = this.clearR.length / 3
+    const f = Math.min(Math.max(t / this.duration, 0), 1) * (n - 1)
+    const i = Math.min(Math.floor(f), n - 2)
+    const u = f - i
+    const at = (a: Float32Array, c: number) => a[i * 3 + c] * (1 - u) + a[i * 3 + 3 + c] * u
+    pose.rHand = [pose.rHand[0] + at(this.clearR, 0), pose.rHand[1] + at(this.clearR, 1), pose.rHand[2] + at(this.clearR, 2)]
+    pose.lHand = [pose.lHand[0] + at(this.clearL, 0), pose.lHand[1] + at(this.clearL, 1), pose.lHand[2] + at(this.clearL, 2)]
+    return pose
+  }
+
   /** Samples the pose at `t`, resolves the head gaze against the ball, and returns the solved skeleton. */
-  evaluate(t: number, out: Solved, ballOut: Vector3): { ballVisible: boolean } {
+  evaluate(t: number, out: Solved, ballOut: Vector3): { ballVisible: boolean; held?: boolean } {
     const ballVisible = this.ballAt(t, ballOut)
     if (this.clip) {
       // captured motion already carries the player's real head and eye line
       this.solveAt(t, out)
       if (this.stroke.ball && this.heldUntil >= 0 && t < this.heldUntil) {
-        ballOut.copy(out.wristL).y += 0.06
-        return { ballVisible: true }
+        this.heldBall(out, ballOut)
+        return { ballVisible: true, held: true }
       }
       return { ballVisible }
     }
-    this.track.sample(t, this.pose)
+    this.sampleCleared(t)
     let gaze: Vector3 | null = null
     const spec = this.stroke.ball
     if (spec && this.contact) {
@@ -268,7 +390,7 @@ export class StrokeRuntime {
     solve(this.pose, out, gaze, this.bendsAt(t))
     if (spec && this.heldUntil >= 0 && t < this.heldUntil) {
       ballOut.copy(out.wristL).y += 0.06
-      return { ballVisible: true }
+      return { ballVisible: true, held: true }
     }
     return { ballVisible }
   }

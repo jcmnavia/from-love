@@ -102,3 +102,32 @@ now checked against footage or the captured players' measurements as listed abov
   clean; the peak racket angular speed falls at contact in every stroke.
 - The body mesh's limb IK used last frame's hip and shoulder positions; fixed (it showed on paused frames, e.g. the
   tweener rendered in the splits).
+- `scripts/body-collisions.ts` checks the body against itself at 120 Hz: arms against the trunk (an elliptical
+  cylinder, ~0.14 × 0.10 m half-axes), the head and the thighs, and the legs against each other.
+
+## Keeping the body out of itself
+
+Two layers, both baked over the whole stroke and smoothed so corrections fade in and out instead of popping:
+
+- **Captured strokes** (`engine/rig/clearance.ts`): where an arm goes into the trunk, the elbow turns around the
+  shoulder–wrist line (±100°, preferring small turns); if the hand is still inside, it is pushed straight out, keeping
+  the racket's orientation. While the left hand holds the racket only the elbow turns.
+- **Keyframed strokes** (`engine/clearPose.ts`): the same test on a trial solve; the hand moves out of the trunk and
+  away from the head, and an elbow inside turns its pole outward.
+
+Clearance only nudges; where keys put a limb deep inside the body the keys were wrong and were rewritten:
+
+| Stroke | Problem | Fix |
+|---|---|---|
+| Back smash | the racket arm's elbow was solved at the centre of the head (hand in front of the chin, pole straight up); the free arm, keyed across the body before the ~110° turn, pressed into the chest | elbow up in front of the face, hand in front of the left shoulder; free arm low at the left side |
+| Tweener | the recovery spun the wrong way, so the planted feet crossed | pivot on the left foot, the right foot swinging round on the net side; pelvis keeps turning the same way to 360° |
+| Slice, drop shot | the free arm went from behind the back straight to the throat (through the waist), and the capture's finish left it stretched across the chest | the free arm swings down past the hip and comes round in front; the racket returns to where the stroke starts |
+
+What remains flagged is the arm lying against the chest in the two- and one-handed take-back and finish (4–5 cm
+against a rigid trunk model, not visible on the mesh) and the tweener's arm passing under the belly between the legs.
+
+## The serve toss
+
+The ball sits in the fingers (the palm side of the middle knuckles on the skinned body, resting against the hand on
+the mannequin) and leaves at the instant the hand's upward speed matches the speed the ball needs to reach its toss
+peak, so it rises out of the fingers instead of jumping from the wrist. The toss arm lifts straight and faster.

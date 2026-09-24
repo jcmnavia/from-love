@@ -22,6 +22,8 @@ const PRESETS: Record<CamPreset, [number, number, number]> = {
   'three-quarter': [4.2, 1.1, -4.4],
 }
 
+/** mannequin hand radius + ball radius, a little less so the ball sits in the hand */
+const MANNEQUIN_GRIP = 0.07
 const FOCUS_SCALE: Record<FocusId, number> = { body: 1, shoulders: 0.4, hips: 0.4, racket: 0.36, feet: 0.45, head: 0.28 }
 
 function focusPoint(focus: FocusId, s: Solved, out: Vector3) {
@@ -150,8 +152,10 @@ function Stage({ stroke, clip, autoAdvance, fixedT, preset, camOffset, clean }: 
       if (t > runtime.duration + 0.35) t = 0
     }
     const tt = Math.min(t, runtime.duration)
-    const { ballVisible } = runtime.evaluate(tt, solved, ballPos)
+    const { ballVisible, held } = runtime.evaluate(tt, solved, ballPos)
     const useSkinned = !!skinned?.ready
+    // the ball is held in the skinned hand's fingers; the mannequin's hand is a ball at the wrist, so rest it there
+    if (held && !useSkinned) ballPos.sub(solved.wristL).setLength(MANNEQUIN_GRIP).add(solved.wristL)
     rig.group.visible = !useSkinned
     if (skinned) skinned.group.visible = useSkinned
     if (useSkinned && runtime.clip && runtime.rig) skinned.updateFromRig(runtime.rig, runtime.animated, solved)

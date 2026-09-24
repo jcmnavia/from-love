@@ -12,15 +12,17 @@ const STANCE = 0.11 // ground contact per step at a sprint
 const RUN_Z0 = -0.6 // hips when the sprint reaches speed (0.45 s)
 const RUN_V = 5 // m/s
 const runZ = (t: number) => RUN_Z0 - RUN_V * (t - 0.45)
+// facing away from the net the player's left is +x: left plants to the +x side of the hips' line, right to −x
+const RUN_X = -0.2
 const LEFT_PLANTS: Plant[] = [
-  [0.525, -0.35, runZ(0.525) - 0.05],
-  [0.965, -0.35, runZ(0.965) - 0.05],
-  [1.405, -0.3, runZ(1.405) - 0.05],
+  [0.525, RUN_X + 0.1, runZ(0.525) - 0.05],
+  [0.965, RUN_X + 0.1, runZ(0.965) - 0.05],
+  [1.405, RUN_X + 0.15, runZ(1.405) - 0.05],
 ]
 const RIGHT_PLANTS: Plant[] = [
-  [0.745, -0.55, runZ(0.745) - 0.05],
-  [1.185, -0.55, runZ(1.185) - 0.05],
-  [1.55, -0.38, -6.1], // braking step
+  [0.745, RUN_X - 0.1, runZ(0.745) - 0.05],
+  [1.185, RUN_X - 0.1, runZ(1.185) - 0.05],
+  [1.55, -0.34, -6.1], // braking step
 ]
 /** a foot on its plant, or swinging to the next one (lifted, heel up), at time `t` */
 function runFoot(plants: Plant[], t: number, from: [number, number], fromT: number, turn: number) {
@@ -41,19 +43,19 @@ const runPose = (t: number): PoseInput => {
   const z = runZ(t)
   const phase = Math.sin(((t - 0.525) / 0.44) * 2 * Math.PI) // +1 when the left foot is planted
   return {
-    pelvis: [-0.45, 0.9 - 0.03 * Math.abs(phase), z],
+    pelvis: [RUN_X, 0.9 - 0.03 * Math.abs(phase), z],
     pelvisRot: [180, 14, 0],
     chestRot: [8 * phase, 10, 0],
     // the racket carried up by the right shoulder, the left arm swinging against the legs
-    rHand: [-0.66, 1.26, z - 0.1],
+    rHand: [RUN_X - 0.21, 1.26, z - 0.1],
     rPole: [-0.6, -0.6, 0.3],
-    lHand: [-0.12, 1.02, z + 0.28 * phase],
+    lHand: [RUN_X + 0.33, 1.02, z + 0.28 * phase],
     lAttach: 0,
     lPole: [0.6, -0.6, 0.3],
     racketDir: [-0.15, 0.85, 0.5],
     racketNormal: [-0.95, 0, 0.3],
-    lFoot: runFoot(LEFT_PLANTS, t, [-0.35, 0.02], 0.3, 180),
-    rFoot: runFoot(RIGHT_PLANTS, t, [0.2, -0.35], 0.34, 180),
+    lFoot: runFoot(LEFT_PLANTS, t, [-0.05, 0.05], 0.34, 180),
+    rFoot: runFoot(RIGHT_PLANTS, t, [-0.28, -0.3], 0.34, 180),
   }
 }
 
@@ -85,17 +87,17 @@ const tweenerSeq = sequence()
     lAttach: 0,
     racketDir: [0.2, 0.95, -0.2],
     racketNormal: [0.2, 0, -0.98],
-    lFoot: { p: [-0.35, 0.02, 0.02], turn: 40, heel: 30 },
-    rFoot: { p: [0.2, 0, -0.35], turn: 120, heel: 0 },
+    lFoot: { p: [-0.05, 0, 0.05], turn: 60, heel: 30 },
+    rFoot: { p: [-0.28, 0, -0.3], turn: 150, heel: 0 },
   })
 // still turning: the racket stays out on the right side so it clears the body
 tweenerSeq.key(0.4, {
-  pelvis: [-0.3, 0.88, -0.4],
+  pelvis: [-0.18, 0.88, -0.4],
   pelvisRot: [140, 12, 0],
   chestRot: [10, 10, 0],
-  rHand: [-0.3, 1.26, -0.66],
+  rHand: [-0.18, 1.26, -0.66],
   rPole: [-0.3, -0.8, 0.5],
-  lHand: [-0.05, 1.05, -0.3],
+  lHand: [0.07, 1.05, -0.3],
   racketDir: [-0.1, 0.95, 0.2],
   racketNormal: [-0.7, 0, -0.7],
 })
@@ -104,13 +106,13 @@ for (const t of RUN_KEYS) tweenerSeq.key(Math.round(t * 1000) / 1000, runPose(t)
 const tweenerKeys = tweenerSeq
   // braking step on the right foot, then the left lands wide: the ball is about to drop just behind the feet
   .key(1.5, {
-    pelvis: [-0.3, 0.87, -5.75],
+    pelvis: [-0.15, 0.87, -5.75],
     pelvisRot: [180, 12, 0],
     chestRot: [0, 10, 0],
-    rHand: [-0.52, 1.26, -6.0],
-    lHand: [0.05, 1.02, -5.7],
-    lFoot: { p: [-0.1, 0.14, -5.7], turn: 180, heel: 55 },
-    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 0 },
+    rHand: [-0.37, 1.26, -6.0],
+    lHand: [0.18, 1.02, -5.7],
+    lFoot: { p: [0.0, 0.14, -5.7], turn: 180, heel: 55 },
+    rFoot: { p: [-0.34, 0, -6.1], turn: 190, heel: 0 },
   })
   .key(1.58, {
     pelvis: [-0.15, 0.84, -6.05],
@@ -122,7 +124,7 @@ const tweenerKeys = tweenerSeq
     racketDir: [0.1, 0.95, -0.3],
     racketNormal: [0.9, 0, 0.35],
     lFoot: { p: [0.2, 0.14, -6.35], turn: 175, heel: 40 },
-    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 5 },
+    rFoot: { p: [-0.34, 0, -6.1], turn: 190, heel: 5 },
   })
   // the racket comes up in front of the body, tip up
   .key(1.64, {
@@ -135,7 +137,7 @@ const tweenerKeys = tweenerSeq
     racketDir: [0.1, 0.95, -0.3],
     racketNormal: [0.9, 0, 0.35],
     lFoot: { p: [0.36, 0, -6.6], turn: 170, heel: 0 },
-    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 10 },
+    rFoot: { p: [-0.36, 0, -6.12], turn: 190, heel: 10 },
   })
   // (Federer, US Open 2009: a wide base, the trunk bent well forward over the ball, the left arm out for balance)
   .key(1.77, {
@@ -177,40 +179,77 @@ const tweenerKeys = tweenerSeq
     racketDir: [0.1, -0.3, 0.95],
     racketNormal: [0.1, 0.95, 0.3],
   })
-  // spin back toward the net
+  // spin back toward the net by pivoting on the left foot: the right foot swings round on the net side of it
+  // (turning the other way would twist the legs across each other)
+  .key(2.3, {
+    pelvis: [0.00, 0.87, -0.44 + Z],
+    pelvisRot: [205, 7, 0],
+    chestRot: [15, 8, 0],
+    rHand: [-0.34, 1.03, -0.59 + Z],
+    rPole: [-0.45, -0.8, 0.21],
+    lHand: [-0.04, 1.07, -0.82 + Z],
+    lPole: [0.45, -0.8, -0.21],
+    lAttach: 0,
+    racketDir: [-0.38, 0.87, -0.33],
+    racketNormal: [0.91, 0.00, -0.42],
+    lFoot: { p: [0.36, 0, -0.65 + Z], turn: -155, heel: 10 },
+    rFoot: { p: [-0.36, 0.0, -0.17 + Z], turn: -155, heel: 25 },
+  })
   .key(2.45, {
-    pelvis: [0, 0.88, -0.42 + Z],
-    pelvisRot: [110, 5, 0],
-    chestRot: [-30, 5, 0],
-    rHand: [0.29, 1.04, -0.63 + Z],
-    rPole: [-0.45, -0.8, -0.37],
-    lHand: [0.41, 1.1, -0.46 + Z],
-    lPole: [-0.11, -0.8, 0.57],
-    racketDir: [0.86, 0.5, -0.05],
-    racketNormal: [0.05, 0.1, 0.99],
-    lFoot: { p: [0.25, 0, -0.55 + Z], turn: 100, heel: 10 },
-    rFoot: { p: [-0.25, 0, -0.35 + Z], turn: 120, heel: 20 },
+    pelvis: [0.18, 0.87, -0.36 + Z],
+    pelvisRot: [250, 7, 0],
+    chestRot: [20, 8, 0],
+    rHand: [-0.17, 1.03, -0.22 + Z],
+    rPole: [-0.17, -0.8, 0.47],
+    lHand: [-0.12, 1.07, -0.60 + Z],
+    lPole: [0.17, -0.8, -0.47],
+    lAttach: 0,
+    racketDir: [-0.50, 0.87, 0.03],
+    racketNormal: [0.34, 0.00, -0.94],
+    lFoot: { p: [0.36, 0, -0.65 + Z], turn: -110, heel: 20 },
+    rFoot: { p: [0.08, 0.1, 0.05 + Z], turn: -110, heel: 40 },
   })
-  .key(2.75, {
-    pelvis: [0, 0.86, -0.4 + Z],
-    pelvisRot: [30, 8, 0],
-    chestRot: [-10, 12, 0],
-    rHand: [0.26, 1.02, -0.16 + Z],
-    rPole: [0.28, -0.8, -0.51],
-    lHand: [0.11, 1.08, 0.0 + Z],
+  .key(2.6, {
+    pelvis: [0.52, 0.87, -0.42 + Z],
+    pelvisRot: [310, 7, 0],
+    chestRot: [15, 8, 0],
+    rHand: [0.47, 1.03, -0.05 + Z],
+    rPole: [0.32, -0.8, 0.38],
+    lHand: [0.17, 1.07, -0.28 + Z],
+    lPole: [-0.32, -0.8, -0.38],
+    lAttach: 0.5,
+    racketDir: [-0.22, 0.87, 0.45],
+    racketNormal: [-0.64, 0.00, -0.77],
+    lFoot: { p: [0.36, 0, -0.65 + Z], turn: -50, heel: 25 },
+    rFoot: { p: [0.93, 0.0, -0.17 + Z], turn: -50, heel: 15 },
+  })
+  .key(2.78, {
+    pelvis: [0.70, 0.87, -0.52 + Z],
+    pelvisRot: [350, 7, 0],
+    chestRot: [5, 8, 0],
+    rHand: [0.90, 1.03, -0.20 + Z],
+    rPole: [0.49, -0.8, 0.09],
+    lHand: [0.52, 1.07, -0.19 + Z],
+    lPole: [-0.49, -0.8, -0.09],
     lAttach: 2,
-    lPole: [-0.58, -0.8, 0.0],
-    racketDir: [0.2, 0.5, 0.84],
-    racketNormal: [-0.97, 0, 0.21],
-    lFoot: { p: [-0.2, 0, -0.5 + Z], turn: 0, heel: 6 },
-    rFoot: { p: [0.28, 0, -0.34 + Z], turn: 20, heel: 10 },
+    racketDir: [0.12, 0.87, 0.49],
+    racketNormal: [-0.98, 0.00, -0.17],
+    lFoot: { p: [0.36, 0, -0.62 + Z], turn: -10, heel: 8 },
+    rFoot: { p: [1.06, 0.0, -0.62 + Z], turn: -10, heel: 8 },
   })
-  .ready(3.05, {
-    pelvis: [0, 0.86, -0.4 + Z],
-    rHand: [0.1, 1.02, -0.06 + Z],
-    lHand: [-0.1, 1.08, 0.0 + Z],
-    lFoot: { p: [-0.35, 0, -0.38 + Z] },
-    rFoot: { p: [0.35, 0, -0.38 + Z] },
+  .key(3.05, {
+    pelvis: [0.7, 0.86, -0.52 + Z],
+    pelvisRot: [360, 10, 0],
+    chestRot: [0, 14, 0],
+    rHand: [0.8, 1.02, -0.18 + Z],
+    rPole: [0.5, -0.8, -0.3],
+    lHand: [0.6, 1.08, -0.12 + Z],
+    lAttach: 2,
+    lPole: [-0.5, -0.8, -0.3],
+    racketDir: [-0.25, 0.5, 0.83],
+    racketNormal: [-0.95, 0, -0.3],
+    lFoot: { p: [0.35, 0, -0.50 + Z], turn: -12, heel: 8 },
+    rFoot: { p: [1.05, 0, -0.50 + Z], turn: 12, heel: 8 },
   })
   .done()
 

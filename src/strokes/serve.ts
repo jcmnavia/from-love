@@ -210,6 +210,15 @@ export const serve: Stroke = {
   // Arm and racket keyed from Sinner's serve (side view, ~2.7× slow motion, contact = 0): the pendulum back,
   // the trophy with the elbow at shoulder height and the forearm vertical, the racket dropping down the back
   // (max external rotation ~0.2 s before contact), full reach at contact, then pronation and the arm across.
+  // the toss arm rises faster and straighter than the capture's so the hand is moving up at the ball's speed when it
+  // lets go at about head height (the release is found where the two speeds match, see StrokeRuntime.tossRelease)
+  leftArmKeys: [
+    { t: -1.1, hand: 'clip' },
+    { t: -1.0, hand: [0.22, 0.3, 0.45] },
+    { t: -0.95, hand: [0.18, 0.42, 0.4] },
+    { t: -0.85, hand: [0.14, 0.5, 0.33] },
+    { t: -0.6, hand: 'clip' },
+  ],
   armKeys: [
     { t: -1.9, racket: { dir: [-0.35, -0.5, 0.8] } },
     { t: -1.4, hand: 'clip', racket: { dir: [0.1, -0.95, -0.2] } },

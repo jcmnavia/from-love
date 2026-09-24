@@ -193,6 +193,12 @@ function sliceKeys(soft: boolean) {
  * face open, forward and down to a contact in front of the right hip with the face ~20° open, then the hand keeps
  * travelling toward the target with the face still open (the capture chopped down to the right leg).
  */
+/**
+ * back to where the stroke started: hand by the right hip, racket across the body, so the left hand can take the
+ * throat without reaching across the chest (at the capture's own finish the left arm was stretched through it)
+ */
+const SLICE_RECOVERY: ArmKey[] = [{ t: 0.85, frame: 'chest', hand: [-0.07, -0.35, 0.05], racket: { dir: [-0.42, 0.52, 0.74] } }]
+
 export const SLICE_ARM_KEYS: ArmKey[] = [
   { t: -1.05, racket: { dir: [-0.1, 0.8, 0.6] } },
   { t: -0.45, frame: 'chest', hand: [-0.34, 0, 0.2] },
@@ -204,14 +210,20 @@ export const SLICE_ARM_KEYS: ArmKey[] = [
   { t: 0.12, hand: [0.05, -0.38, 0.62], racket: { dir: [-0.4, 0.25, 0.88], normal: [-0.1, -0.92, -0.3] } },
   { t: 0.3, hand: [0.2, -0.18, 0.55], racket: { dir: [0, 0.55, 0.83], normal: [0, -0.83, 0.55] } },
   { t: 0.6, hand: 'clip', racket: { dir: [-0.1, 0.8, 0.6] } },
+  ...SLICE_RECOVERY,
 ]
 
-/** the free arm lets go of the throat as the forward swing starts and stretches back to keep the shoulders closed */
+/**
+ * the free arm lets go of the throat as the forward swing starts and stretches back to keep the shoulders closed,
+ * then swings down past the left hip and comes round in front before it takes the racket again (straight from
+ * behind the back to the throat, it would pass through the waist)
+ */
 export const SLICE_LEFT_ARM_KEYS: ArmKey[] = [
   { t: -0.08, hand: 'clip' },
   { t: 0.05, hand: [-0.2, -0.32, -0.3] },
   { t: 0.3, hand: [-0.28, -0.3, -0.42] },
-  { t: 0.6, hand: 'clip' },
+  { t: 0.48, frame: 'chest', hand: [-0.08, -0.5, 0.05] },
+  { t: 0.6, frame: 'chest', hand: [0.12, -0.42, 0.3] },
 ]
 
 /** body: the captured low backhand volley turned further (shoulders ~95° at the take-back, still ~65° at contact) */
@@ -295,6 +307,7 @@ export const dropShot: Stroke = {
     { t: 0.12, hand: [-0.08, -0.42, 0.48], racket: { dir: [-0.6, 0.35, 0.72], normal: [-0.2, -0.93, 0.28] } },
     { t: 0.3, hand: [-0.04, -0.36, 0.48], racket: { dir: [-0.45, 0.45, 0.77], normal: [-0.15, -0.9, 0.42] } },
     { t: 0.6, hand: 'clip', racket: { dir: [-0.1, 0.8, 0.6] } },
+    ...SLICE_RECOVERY,
   ],
   leftArmKeys: SLICE_LEFT_ARM_KEYS,
   name: 'Drop shot',
