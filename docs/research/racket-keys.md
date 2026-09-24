@@ -33,6 +33,12 @@ exact to 0.01° / 0.01 mm.
 | `racket` | handle→tip direction and (optionally) the palm-side face normal | turned into the reachable wrist angles closest to it: a grid search over pronation × extension × deviation within the limits, refined twice, with continuity to the previous key |
 | `wrist` | explicit pronation / extension / deviation | used as is |
 
+The racket solver prefers the range a player's wrist actually works in (extension ≤ ~75°, flexion ≤ ~35°, ulnar
+deviation ≤ ~30°, radial ≤ ~12°) and, where a key leaves the elbow free, turns the elbow around the shoulder–wrist
+line before bending the wrist further, as players do. Before this the wrist sat at an anatomical limit 24–83% of the
+time in the keyed strokes, which is where the racket twisted unnaturally; now it never does (the two-hander, which is
+not keyed, excepted).
+
 Between keys the wrist angles follow limited-Bessel Hermite curves, so the racket never overshoots between two keys.
 The hand keeps the capture's own motion plus a smooth offset, so the texture of real movement survives.
 
@@ -69,11 +75,12 @@ how each key was checked for reachability before rendering.
 | Two-handed backhand | left hand locked on the handle for the whole stroke | Sinner front view |
 | Volleys | head above the wrist throughout, open face, short punch that stops in front | coaching model; Federer at court level (real speed) |
 | One-handed backhand | now on the two-hander's captured body: left hand on the throat until the forward swing, racket up behind the left shoulder, dropped late, straight-arm contact in front, arms opening like wings | Federer, side-front slow motion |
-| Slice, drop shot | same body; high take-back with the left hand on the throat, forward-and-down swing nearly level through an open face; the drop shot opens the face more and absorbs with a short finish | coaching model + biomechanics |
+| Slice, drop shot | now on a captured one-handed stroke: the Tennis-MoCap low backhand volleys are the only one-handed backhands in the dataset (every Reves take is two-handed), and a low volley is a slice in miniature. Clip `backhand-slice` (jgacosta, turned so the player rests slightly side-on); racket up by the left shoulder, contact in front, hand travelling toward the target, shoulders sideways, free arm back; the drop shot opens the face and stops short | coaching model + biomechanics |
 | Return, swing volley | the forehand's body and Sinner keys: the return with the loop kept in front (half backswing), the swing volley with the whole forward swing lifted to a chest-height contact (`handShift` keys) | derived from the forehand |
 
 | Forehand left arm | on the throat at the ready, stretched across at the load, pulled in at contact, catching the racket after the finish | Sinner front and side |
-| Tweener | hand-keyed, reshaped after Federer's 2009 US Open tweener: wide base, trunk bent over the ball, left arm out | Federer broadcast slow motion |
+| Tweener | hand-keyed after Federer's 2009 US Open tweener: the lob passes ~3 m over the player and bounces behind them; turn, sprint back beside it (5 m/s, stepped feet), brake, plant wide, pendulum between the legs with the trunk bent over the ball and the left arm out | Federer broadcast slow motion |
+| Volleys (orientation) | the backhand volley capture stood ~45° turned at rest (the net estimate from contact directions is biased for volleys); turned back with `scripts/mocap/turn-net.ts`. The forehand volley's ~80° shoulder turn eased to ~50° | Federer court-level volleys |
 | Split step, footwork | athletic ready stance (hips ~12 cm lower, trunk ~24° forward) and a 6 cm hop, matching the captured players' 4–7 cm hops | Tennis-MoCap takes |
 
 | Backhand smash | hand-keyed, checked against a close-up slow-motion coaching demo filmed from the net: take-off into a scissor jump at contact, arm fully up, the arm staying high and out to the right through the landing, still turned away from the net, free arm low | coaching demo (Topspin Tennis) |
@@ -82,6 +89,12 @@ Still hand-keyed (no capture exists in the dataset): the backhand smash, the twe
 now checked against footage or the captured players' measurements as listed above.
 
 ## Quality checks
+
+- `scripts/naturalness.ts`: time the wrist spends at or near its limits, how closely each racket key is reached, and
+  fast racket spins away from contact.
+- `scripts/collisions.ts`: the racket (frame and head ring) against the head, trunk, legs and left upper arm.
+- `/sheet/<stroke>?clip=<id>&raw=1` renders any capture without the arm and trunk corrections;
+  `scripts/video/strip.py` stacks a reference sheet over several renders of the same instants.
 
 - `scripts/smoothness.ts` samples every stroke at 240 Hz and flags racket, hand and left-elbow speed spikes. It found and
   fixed: a left-grip orientation ~150° off (two-hander), a forced throat grip (one-hander, slice, drop shot), an unstable

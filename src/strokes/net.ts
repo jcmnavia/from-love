@@ -111,6 +111,8 @@ export const forehandVolley: Stroke = {
   id: 'forehand-volley',
   clip: 'forehand-volley',
   contactRacket: { dir: [0.55, 0.65, 0.35], normal: [-0.35, 0.25, 0.9] },
+  // the captured player turned the shoulders ~80°, a groundstroke's turn; a volley takes ~50°
+  trunkYaw: [[-1.23, 0], [-0.7, -8], [-0.4, -22], [-0.2, -25], [-0.05, -8], [0.05, 0]],
   // A volley, not a small groundstroke: the head stays above the wrist from the ready position through the
   // short take-back beside the shoulder, the face open to the ball, then a punch toward the target that stops
   // in front instead of wrapping across the body.

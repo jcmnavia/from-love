@@ -63,6 +63,17 @@ const tweenerSeq = sequence()
   .key(0.0)
   // read the lob and split as it is struck
   .key(0.18, { pelvis: [0, 0.8, 0.02], lFoot: { p: [-0.4, 0, 0.03], heel: 5 }, rFoot: { p: [0.4, 0, 0.03], heel: 5 } })
+  // the racket turns with the body, held up in front of the chest
+  .key(0.26, {
+    pelvis: [-0.08, 0.84, -0.1],
+    pelvisRot: [50, 10, 0],
+    chestRot: [10, 10, 0],
+    rHand: [0.29, 1.2, 0.02],
+    lHand: [0.1, 1.12, 0.12],
+    lAttach: 0,
+    racketDir: [0.3, 0.85, 0.4],
+    racketNormal: [-0.65, 0, 0.75],
+  })
   // turn to the right and drop-step back
   .key(0.34, {
     pelvis: [-0.15, 0.86, -0.2],

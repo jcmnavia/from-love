@@ -13,7 +13,7 @@
       -0.01707,
       0.99985
     ],
-    "netMethod": "mean contact-hand direction over jarua_Derecha_18seg.bvh (-1\u00b0)",
+    "netMethod": "mean contact-hand direction over jarua_Derecha_18seg.bvh (-1°)",
     "mirror": false,
     "vPeak": 9.58,
     "score": 3.04
@@ -32,7 +32,7 @@
       -0.35991,
       0.93299
     ],
-    "netMethod": "mean contact-hand direction over jarua_Reves.bvh (-21\u00b0)",
+    "netMethod": "mean contact-hand direction over jarua_Reves.bvh (-21°)",
     "mirror": false,
     "vPeak": 7.75,
     "score": 2.2
@@ -51,7 +51,7 @@
       -0.15327,
       0.98818
     ],
-    "netMethod": "mean contact-hand direction over jarua_Servicio.bvh (-9\u00b0)",
+    "netMethod": "mean contact-hand direction over jarua_Servicio.bvh (-9°)",
     "mirror": false,
     "vPeak": 10.85,
     "score": 3.05
@@ -70,7 +70,7 @@
       -0.30412,
       0.95263
     ],
-    "netMethod": "mean contact-hand direction over jduribe_Remate.bvh (-18\u00b0)",
+    "netMethod": "mean contact-hand direction over jduribe_Remate.bvh (-18°)",
     "mirror": false,
     "vPeak": 9,
     "score": 2.05
@@ -89,7 +89,7 @@
       -0.15359,
       0.98814
     ],
-    "netMethod": "mean of jarua_VDerecha.bvh (24\u00b0) and jarua_VReves.bvh (-42\u00b0) contact-hand directions",
+    "netMethod": "mean of jarua_VDerecha.bvh (24°) and jarua_VReves.bvh (-42°) contact-hand directions",
     "mirror": false,
     "vPeak": 5.51,
     "score": 3.36
@@ -105,10 +105,10 @@
       14.82
     ],
     "net": [
-      -0.15359,
-      0.98814
+      0.59012,
+      0.80733
     ],
-    "netMethod": "mean of jarua_VReves.bvh (-42\u00b0) and jarua_VDerecha.bvh (24\u00b0) contact-hand directions",
+    "netMethod": "mean of jarua_VReves.bvh (-42°) and jarua_VDerecha.bvh (24°) contact-hand directions; turned -45° so the player is square to the net at rest",
     "mirror": false,
     "vPeak": 5.76,
     "score": 3.11
@@ -127,7 +127,7 @@
       0.35589,
       0.93453
     ],
-    "netMethod": "mean volley contact-hand directions of jgacosta, turned -50\u00b0 so the player rests slightly side-on (~30\u00b0) as before a slice",
+    "netMethod": "mean volley contact-hand directions of jgacosta, turned -50° so the player rests slightly side-on (~30°) as before a slice",
     "mirror": false,
     "vPeak": 4.91,
     "score": 0

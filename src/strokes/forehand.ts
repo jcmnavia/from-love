@@ -176,14 +176,14 @@ export const FOREHAND_ARM_KEYS: ArmKey[] = [
   { t: -1.0, hand: 'clip', racket: { dir: [0.05, 0.9, 0.4] } },
   // compact loop: elbow bent and high, hand beside the head, racket up (Sinner, chest frame)
   { t: -0.75, frame: 'chest', hand: [0.1, -0.25, 0.2], elbow: [0.15, -0.22, -0.1] },
-  { t: -0.75, racket: { dir: [0.4, 0.8, 0.45], normal: [0.85, -0.3, -0.45] } },
+  { t: -0.75, racket: { dir: [0.4, 0.8, 0.45] } },
   { t: -0.6, frame: 'chest', hand: [0.2, -0.17, 0.15], elbow: [0.18, -0.19, -0.07] },
   { t: -0.6, racket: { dir: [0.15, 0.85, 0.5], normal: [0.95, -0.2, -0.25] } },
   // the hand goes back while the head stays up over the head, then the tip falls back over the top
   { t: -0.5, frame: 'chest', hand: [0.33, -0.13, 0.17], elbow: [0.21, -0.16, 0] },
   { t: -0.5, racket: { dir: [0.1, 0.75, 0.65], normal: [0.95, -0.25, 0.15] } },
   { t: -0.4, frame: 'chest', hand: [0.45, -0.12, 0.15], elbow: [0.24, -0.12, 0.01] },
-  { t: -0.4, racket: { dir: [0.15, 0.97, 0.1], normal: [0.6, -0.15, -0.78] } },
+  { t: -0.4, racket: { dir: [0.15, 0.97, 0.1], normal: [0.9, -0.1, -0.4] } },
   { t: -0.33, racket: { dir: [0.25, 0.7, -0.65] } },
   { t: -0.27, hand: 'clip', racket: { dir: [0.4, 0.25, -0.88], normal: [0, -0.95, -0.3] } },
   { t: -0.2, racket: { dir: [0.45, -0.1, -0.88], normal: [0.1, -0.98, 0.15] } },
