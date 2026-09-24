@@ -628,12 +628,12 @@ export const STROKE_TEXT_ES: Record<string, StrokeText> = {
     phases: [
       {
         name: 'Persigue el globo',
-        summary: 'Esprinta directo hacia atrás con los ojos en la pelota por encima del hombro. Corre más allá de donde va a caer la pelota, no hacia ella.',
+        summary: 'El globo te pasa por encima. Gira y esprinta directo hacia atrás junto a su trayectoria, con los ojos en la pelota por encima del hombro, y corre más allá de donde va a caer, no hacia ella.',
         cues: ['Gira y esprinta, no corras de espaldas', 'Corre más allá del bote', 'Ojos en la pelota'],
       },
       {
         name: 'Planta y eleva',
-        summary: 'Los pies aterrizan anchos con la pelota a punto de caer entre ellos. La raqueta sube directo al frente, punta al cielo.',
+        summary: 'Los pies aterrizan anchos con la pelota a punto de caer justo detrás de ellos. La raqueta sube delante de ti, punta arriba.',
         cues: ['Base ancha', 'Pelota entre los pies', 'Raqueta arriba como un péndulo en su punto más alto'],
       },
       {

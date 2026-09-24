@@ -1,138 +1,205 @@
 import { sequence } from '../engine/pose'
-import type { Stroke, V3 } from '../engine/types'
+import type { PoseInput, Stroke, V3 } from '../engine/types'
 import { FOREHAND_ARM_KEYS } from './forehand'
 
-// The player runs away from the net (turn 180) chasing a lob that has bounced behind them.
-// Sprint, plant wide with the ball dropping between the feet, racket up in front, then a straight
-// pendulum swing down between the legs with a wrist flick at the bottom (~0.15 s from the top).
-const tweenerKeys = sequence()
-  .key(0.0, {
-    pelvis: [0, 0.95, 0.3],
-    pelvisRot: [180, 10, 0],
-    chestRot: [0, 10, 0],
-    rHand: [-0.25, 1.0, 0.1],
+// The lob passes about a metre over the player's head and bounces behind them. They turn, sprint back
+// beside the ball's path, overtake it and plant wide so it drops just behind the feet, then swing the
+// racket down between the legs like a pendulum and flick it back over (Federer, US Open 2009).
+
+/** one foot's plants while sprinting away from the net: [mid-stance time, x, z] */
+type Plant = [number, number, number]
+const STANCE = 0.11 // ground contact per step at a sprint
+const RUN_Z0 = -0.6 // hips when the sprint reaches speed (0.45 s)
+const RUN_V = 5 // m/s
+const runZ = (t: number) => RUN_Z0 - RUN_V * (t - 0.45)
+const LEFT_PLANTS: Plant[] = [
+  [0.525, -0.35, runZ(0.525) - 0.05],
+  [0.965, -0.35, runZ(0.965) - 0.05],
+  [1.405, -0.3, runZ(1.405) - 0.05],
+]
+const RIGHT_PLANTS: Plant[] = [
+  [0.745, -0.55, runZ(0.745) - 0.05],
+  [1.185, -0.55, runZ(1.185) - 0.05],
+  [1.55, -0.38, -6.1], // braking step
+]
+/** a foot on its plant, or swinging to the next one (lifted, heel up), at time `t` */
+function runFoot(plants: Plant[], t: number, from: [number, number], fromT: number, turn: number) {
+  let prev: [number, number, number] = [fromT, from[0], from[1]]
+  for (const [pt, x, z] of plants) {
+    const on = pt - STANCE / 2, off = pt + STANCE / 2
+    if (t < on) {
+      const u = Math.min(Math.max((t - prev[0]) / (on - prev[0]), 0), 1)
+      const e = u * u * (3 - 2 * u)
+      return { p: [prev[1] + (x - prev[1]) * e, 0.3 * Math.sin(Math.PI * u), prev[2] + (z - prev[2]) * e] as V3, turn, heel: 60 * Math.sin(Math.PI * u) }
+    }
+    if (t <= off) return { p: [x, 0, z] as V3, turn, heel: ((t - on) / STANCE) * 25 }
+    prev = [off, x, z]
+  }
+  return { p: [prev[1], 0, prev[2]] as V3, turn, heel: 10 }
+}
+const runPose = (t: number): PoseInput => {
+  const z = runZ(t)
+  const phase = Math.sin(((t - 0.525) / 0.44) * 2 * Math.PI) // +1 when the left foot is planted
+  return {
+    pelvis: [-0.45, 0.9 - 0.03 * Math.abs(phase), z],
+    pelvisRot: [180, 14, 0],
+    chestRot: [8 * phase, 10, 0],
+    // the racket carried up by the right shoulder, the left arm swinging against the legs
+    rHand: [-0.66, 1.26, z - 0.1],
     rPole: [-0.6, -0.6, 0.3],
-    lHand: [0.25, 1.05, -0.05],
+    lHand: [-0.12, 1.02, z + 0.28 * phase],
     lAttach: 0,
     lPole: [0.6, -0.6, 0.3],
-    racketDir: [-0.3, 0.3, -0.9],
-    racketNormal: [0.9, 0, -0.3],
-    lFoot: { p: [0.2, 0, 0.55], turn: 180, heel: 0 },
-    rFoot: { p: [-0.2, 0.05, 0.1], turn: 180, heel: 30 },
+    racketDir: [-0.15, 0.85, 0.5],
+    racketNormal: [-0.95, 0, 0.3],
+    lFoot: runFoot(LEFT_PLANTS, t, [-0.35, 0.02], 0.3, 180),
+    rFoot: runFoot(RIGHT_PLANTS, t, [0.2, -0.35], 0.34, 180),
+  }
+}
+
+// relative to the final plant (hips at z −6.4)
+const Z = -5.95
+const tweenerSeq = sequence()
+  .key(0.0)
+  // read the lob and split as it is struck
+  .key(0.18, { pelvis: [0, 0.8, 0.02], lFoot: { p: [-0.4, 0, 0.03], heel: 5 }, rFoot: { p: [0.4, 0, 0.03], heel: 5 } })
+  // turn to the right and drop-step back
+  .key(0.34, {
+    pelvis: [-0.15, 0.86, -0.2],
+    pelvisRot: [100, 10, 0],
+    chestRot: [20, 8, 0],
+    rHand: [0.12, 1.25, -0.4],
+    rPole: [0.3, -0.8, 0.5],
+    lHand: [0.05, 1.08, -0.05],
+    lAttach: 0,
+    racketDir: [0.2, 0.95, -0.2],
+    racketNormal: [0.2, 0, -0.98],
+    lFoot: { p: [-0.35, 0.02, 0.02], turn: 40, heel: 30 },
+    rFoot: { p: [0.2, 0, -0.35], turn: 120, heel: 0 },
   })
-  // running stride: the arms swing, racket carried tip up
-  .key(0.3, {
-    pelvis: [0, 0.94, 0.05],
+// still turning: the racket stays out on the right side so it clears the body
+tweenerSeq.key(0.4, {
+  pelvis: [-0.3, 0.88, -0.4],
+  pelvisRot: [140, 12, 0],
+  chestRot: [10, 10, 0],
+  rHand: [-0.3, 1.26, -0.66],
+  rPole: [-0.3, -0.8, 0.5],
+  lHand: [-0.05, 1.05, -0.3],
+  racketDir: [-0.1, 0.95, 0.2],
+  racketNormal: [-0.7, 0, -0.7],
+})
+const RUN_KEYS = Array.from({ length: 18 }, (_, i) => 0.45 + i * 0.055)
+for (const t of RUN_KEYS) tweenerSeq.key(Math.round(t * 1000) / 1000, runPose(t))
+const tweenerKeys = tweenerSeq
+  // braking step on the right foot, then the left lands wide: the ball is about to drop just behind the feet
+  .key(1.5, {
+    pelvis: [-0.3, 0.87, -5.75],
     pelvisRot: [180, 12, 0],
-    chestRot: [4, 10, 0],
-    rHand: [-0.3, 1.1, -0.1],
-    rPole: [-0.8, -0.3, 0.2],
-    lHand: [0.28, 0.85, 0.25],
-    racketDir: [-0.2, 0.8, -0.55],
-    racketNormal: [0.9, 0.2, -0.3],
-    lFoot: { p: [0.2, 0.1, 0.2], heel: 45 },
-    rFoot: { p: [-0.2, 0, -0.15], heel: 5 },
+    chestRot: [0, 10, 0],
+    rHand: [-0.52, 1.26, -6.0],
+    lHand: [0.05, 1.02, -5.7],
+    lFoot: { p: [-0.1, 0.14, -5.7], turn: 180, heel: 55 },
+    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 0 },
   })
-  .key(0.6, {
-    pelvis: [0, 0.94, -0.22],
-    chestRot: [-4, 10, 0],
-    rHand: [-0.32, 1.25, -0.4],
-    rPole: [-0.8, 0.0, 0.0],
-    lHand: [0.3, 0.9, -0.05],
-    racketDir: [-0.1, 0.9, -0.4],
-    racketNormal: [0.9, 0.1, 0.2],
-    lFoot: { p: [0.2, 0, -0.5], heel: 0 },
-    rFoot: { p: [-0.2, 0.1, -0.1], heel: 50 },
-  })
-  // plant: feet wide, ball about to drop between them, racket straight up in front
-  .key(0.9, {
-    pelvis: [0, 0.9, -0.45],
-    pelvisRot: [180, 12, 0],
-    chestRot: [-5, 10, 0],
-    rHand: [-0.24, 1.3, -0.82],
+  .key(1.58, {
+    pelvis: [-0.15, 0.84, -6.05],
+    pelvisRot: [180, 14, 0],
+    chestRot: [-5, 12, 0],
+    rHand: [-0.3, 1.25, -6.4],
     rPole: [-0.8, 0.1, -0.3],
-    lHand: [0.3, 1.0, -0.2],
+    lHand: [0.3, 1.0, -6.1],
     racketDir: [0.1, 0.95, -0.3],
     racketNormal: [0.9, 0, 0.35],
-    lFoot: { p: [0.36, 0, -0.66], turn: 170, heel: 0 },
-    rFoot: { p: [-0.36, 0, -0.3], turn: 190, heel: 10 },
+    lFoot: { p: [0.2, 0.14, -6.35], turn: 175, heel: 40 },
+    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 5 },
   })
-  // pendulum down: racket swings straight down in front, face turning to point back at the net
+  // the racket comes up in front of the body, tip up
+  .key(1.64, {
+    pelvis: [0, 0.82, -6.33],
+    pelvisRot: [180, 18, 0],
+    chestRot: [-5, 16, 0],
+    rHand: [-0.24, 1.3, -0.82 + Z],
+    rPole: [-0.8, 0.1, -0.3],
+    lHand: [0.3, 1.0, -0.2 + Z],
+    racketDir: [0.1, 0.95, -0.3],
+    racketNormal: [0.9, 0, 0.35],
+    lFoot: { p: [0.36, 0, -6.6], turn: 170, heel: 0 },
+    rFoot: { p: [-0.38, 0, -6.1], turn: 190, heel: 10 },
+  })
   // (Federer, US Open 2009: a wide base, the trunk bent well forward over the ball, the left arm out for balance)
-  .key(1.08, {
-    pelvis: [0, 0.8, -0.45],
+  .key(1.77, {
+    pelvis: [0, 0.8, -0.45 + Z],
     pelvisRot: [180, 30, 0],
     chestRot: [0, 42, 0],
-    rHand: [-0.16, 0.9, -0.7],
+    rHand: [-0.16, 0.9, -0.7 + Z],
     rPole: [-0.8, -0.2, -0.2],
-    lHand: [0.62, 1.02, -0.4],
+    lHand: [0.62, 1.02, -0.4 + Z],
     racketDir: [0.05, -0.6, -0.8],
     racketNormal: [0.0, -0.8, 0.6],
   })
-  .key(1.17, {
-    pelvis: [0, 0.78, -0.45],
+  .key(1.82, {
+    pelvis: [0, 0.78, -0.45 + Z],
     pelvisRot: [180, 32, 0],
     chestRot: [0, 46, 0],
-    rHand: [-0.1, 0.74, -0.62],
+    rHand: [-0.1, 0.74, -0.62 + Z],
     rPole: [-0.8, -0.3, -0.2],
-    lHand: [0.64, 0.98, -0.36],
+    lHand: [0.64, 0.98, -0.36 + Z],
     racketDir: [0.05, -0.98, 0.15],
     racketNormal: [0.05, 0.15, 0.98],
   })
-  // contact: knee height between the legs, wrist flicking the tip up and back toward the net
-  .key(1.25, {
-    pelvis: [0, 0.79, -0.45],
-    lHand: [0.64, 1.0, -0.34],
-    rHand: [-0.06, 0.76, -0.44],
+  // contact behind the feet, between the legs; the wrist flicks the racket up and back toward the net
+  .key(1.9, {
+    pelvis: [0, 0.79, -0.45 + Z],
+    lHand: [0.64, 1.0, -0.34 + Z],
+    rHand: [-0.06, 0.76, -0.44 + Z],
     rPole: [-0.8, -0.4, -0.2],
     racketDir: [0.05, -0.8, 0.6],
     racketNormal: [0.05, 0.6, 0.8],
   })
-  // the racket swings on through behind the legs and the body starts to unwind
-  .key(1.45, {
-    pelvis: [0, 0.9, -0.45],
+  .key(2.1, {
+    pelvis: [0, 0.86, -0.45 + Z],
     pelvisRot: [175, 6, 0],
     chestRot: [-20, 2, 0],
-    rHand: [-0.02, 0.96, -0.12],
+    rHand: [-0.02, 0.96, -0.12 + Z],
     rPole: [-0.7, -0.5, 0.3],
-    lHand: [0.5, 1.05, -0.4],
+    lHand: [0.5, 1.05, -0.4 + Z],
     racketDir: [0.1, -0.3, 0.95],
     racketNormal: [0.1, 0.95, 0.3],
   })
   // spin back toward the net
-  .key(1.8, {
-    pelvis: [0, 0.92, -0.42],
+  .key(2.45, {
+    pelvis: [0, 0.88, -0.42 + Z],
     pelvisRot: [110, 5, 0],
     chestRot: [-30, 5, 0],
-    rHand: [0.29, 1.04, -0.63],
+    rHand: [0.29, 1.04, -0.63 + Z],
     rPole: [-0.45, -0.8, -0.37],
-    lHand: [0.41, 1.1, -0.46],
+    lHand: [0.41, 1.1, -0.46 + Z],
     lPole: [-0.11, -0.8, 0.57],
     racketDir: [0.86, 0.5, -0.05],
     racketNormal: [0.05, 0.1, 0.99],
-    lFoot: { p: [0.25, 0, -0.55], turn: 100, heel: 10 },
-    rFoot: { p: [-0.25, 0, -0.35], turn: 120, heel: 20 },
+    lFoot: { p: [0.25, 0, -0.55 + Z], turn: 100, heel: 10 },
+    rFoot: { p: [-0.25, 0, -0.35 + Z], turn: 120, heel: 20 },
   })
-  .key(2.1, {
-    pelvis: [0, 0.9, -0.4],
-    pelvisRot: [30, 6, 0],
+  .key(2.75, {
+    pelvis: [0, 0.86, -0.4 + Z],
+    pelvisRot: [30, 8, 0],
     chestRot: [-10, 12, 0],
-    rHand: [0.26, 1.02, -0.16],
+    rHand: [0.26, 1.02, -0.16 + Z],
     rPole: [0.28, -0.8, -0.51],
-    lHand: [0.11, 1.08, 0.0],
+    lHand: [0.11, 1.08, 0.0 + Z],
     lAttach: 2,
     lPole: [-0.58, -0.8, 0.0],
     racketDir: [0.2, 0.5, 0.84],
     racketNormal: [-0.97, 0, 0.21],
-    lFoot: { p: [-0.2, 0, -0.5], turn: 0, heel: 6 },
-    rFoot: { p: [0.28, 0, -0.34], turn: 20, heel: 10 },
+    lFoot: { p: [-0.2, 0, -0.5 + Z], turn: 0, heel: 6 },
+    rFoot: { p: [0.28, 0, -0.34 + Z], turn: 20, heel: 10 },
   })
-  .ready(2.4, {
-    pelvis: [0, 0.9, -0.4],
-    rHand: [0.1, 1.02, -0.06],
-    lHand: [-0.1, 1.08, 0.0],
-    lFoot: { p: [-0.3, 0, -0.38] },
-    rFoot: { p: [0.3, 0, -0.38] },
+  .ready(3.05, {
+    pelvis: [0, 0.86, -0.4 + Z],
+    rHand: [0.1, 1.02, -0.06 + Z],
+    lHand: [-0.1, 1.08, 0.0 + Z],
+    lFoot: { p: [-0.35, 0, -0.38 + Z] },
+    rFoot: { p: [0.35, 0, -0.38 + Z] },
   })
   .done()
 
@@ -146,31 +213,33 @@ export const tweener: Stroke = {
   description:
     'When a lob has beaten you and bounced behind you, turning around costs too much time: the tweener lets you hit it while still running away from the net. Sprint past the ball so it is dropping just behind and between your feet, plant with the feet wide, take the racket up in front of you and swing it straight down between the legs like a pendulum, the face pointing back toward the net. The wrist flicks at the bottom and the ball lobs back over. Vilas made it famous in the 1970s, Federer, Kyrgios and Monfils turned it into a weapon. It is a shot of last resort, and the alternative, a turn-and-lob, is usually the higher-percentage play.',
   grips: [{ id: 'continental', note: 'Bevel 2 so the face can open toward the net as the racket swings between the legs.' }],
-  duration: 2.4,
-  origin: [0, -0.5],
+  duration: 3.05,
+  // starts inside the service line; the sprint ends ~0.7 m behind the baseline
+  origin: [0, 5.7],
   keys: tweenerKeys,
   ball: {
-    contactT: 1.25,
+    contactT: 1.9,
+    // the lob is still rising 2 m in front, passes ~3.2 m up over the player and bounces 3.5 m behind them
     waypoints: [
-      { t: 0.0, p: [0.3, 2.6, 3.0] },
-      { t: 0.35, p: [-0.1, 0.03, 1.2] },
+      { t: 0.0, p: [0.2, 3.42, 2.04] },
+      { t: 0.95, p: [0.1, 0.03, -3.5] },
     ],
     out: [0.3, 5.5, 9.0],
   },
   phases: [
-    { id: 'chase', name: 'Chase the lob', t0: 0, t1: 0.7, keyT: 0.6, focus: 'body',
-      summary: 'Sprint straight back with the eyes on the ball over your shoulder. Run past where the ball will drop, not to it.',
+    { id: 'chase', name: 'Chase the lob', t0: 0, t1: 1.45, keyT: 0.35, focus: 'body',
+      summary: 'The lob goes over your head. Turn and sprint straight back beside its path with the eyes on the ball over your shoulder, and run past where it will drop, not to it.',
       cues: ['Turn and sprint, don’t backpedal', 'Run past the bounce', 'Eyes on the ball'] },
-    { id: 'plant', name: 'Plant and lift', t0: 0.7, t1: 1.05, keyT: 0.9, focus: 'feet',
-      summary: 'Feet land wide with the ball about to drop between them. The racket goes straight up in front, tip to the sky.',
+    { id: 'plant', name: 'Plant and lift', t0: 1.45, t1: 1.7, keyT: 1.55, focus: 'feet',
+      summary: 'Feet land wide with the ball about to drop just behind them. The racket comes up in front of you, tip up.',
       cues: ['Wide base', 'Ball between the feet', 'Racket up like a pendulum at the top'] },
-    { id: 'swing', name: 'Pendulum down', t0: 1.05, t1: 1.2, keyT: 1.12, focus: 'racket',
+    { id: 'swing', name: 'Pendulum down', t0: 1.7, t1: 1.85, keyT: 1.8, focus: 'racket',
       summary: 'The racket swings straight down in front of the body and back between the legs; the face turns to point toward the net.',
       cues: ['Straight down, no loop', 'Face opens toward the net', 'Stay low, chest forward'] },
-    { id: 'contact', name: 'Contact and flick', t0: 1.2, t1: 1.35, keyT: 1.25, focus: 'racket',
+    { id: 'contact', name: 'Contact and flick', t0: 1.85, t1: 2.0, keyT: 1.9, focus: 'racket',
       summary: 'Contact at knee height between the legs; the wrist flicks upward so the ball lobs back over the net.',
       cues: ['Contact between the knees', 'Flick up with the wrist', 'Bend the knees, not the back'] },
-    { id: 'turn', name: 'Turn and recover', t0: 1.35, t1: 2.4, keyT: 1.8, focus: 'body',
+    { id: 'turn', name: 'Turn and recover', t0: 2.0, t1: 3.05, keyT: 2.45, focus: 'body',
       summary: 'Spin back toward the net immediately and get the racket up; the reply will come fast.',
       cues: ['Turn straight away', 'Recover forward', 'Ready for a smash reply'] },
   ],

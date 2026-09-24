@@ -145,12 +145,28 @@ export class ArmWarp {
     // wrist: explicit angles, or the angles that reach a racket orientation with the warped arm at that time
     // racket keys need the racket hand's grip; the free hand only takes explicit wrist angles
     const wk = sorted.filter((k) => k.wrist || (k.racket && grip))
-    let prev: { pron: number; ext: number; dev: number } | null = null
+    let prev: { pron: number; ext: number; dev: number; w?: number } | null = null
+    let prevT = -Infinity
+    // where a key leaves the elbow free, the solver may turn it (swivel) so the wrist stays natural
+    const pinned = new Set(sk.map(at))
+    const extraSwivel: [number, number][] = []
     const angles = wk.map((k) => {
-      const a = this.keyAngles(k, rig, base, at(k), grip, prev)
-      prev = { pron: a[0], ext: a[1], dev: a[2] }
-      return a
+      const free = k.racket && !k.wrist && !pinned.has(at(k))
+      // continuity: a wrist can turn ~600°/s in a relaxed preparation, so nearby keys must stay close
+      if (prev) prev.w = Math.min(0.004 / Math.max(at(k) - prevT, 0.01), 0.08)
+      prevT = at(k)
+      const r = this.keyAngles(k, rig, base, at(k), grip, prev, free)
+      if (r.swivel !== undefined) extraSwivel.push([at(k), this.dSwivel.at(at(k)) + r.swivel])
+      prev = { pron: r.angles[0], ext: r.angles[1], dev: r.angles[2] }
+      return r.angles
     })
+    if (extraSwivel.length) {
+      const pts = new Map<number, number>()
+      for (const k of sk) pts.set(at(k), this.dSwivel.at(at(k)))
+      for (const [t, v] of extraSwivel) if (!pts.has(t)) pts.set(t, v)
+      const ts = [...pts.keys()].sort((a, b) => a - b)
+      this.dSwivel = new Curve(ts, ts.map((t) => pts.get(t)!))
+    }
     const wt = wk.map(at)
     this.pron = new Curve(wt, angles.map((a) => a[0]))
     this.ext = new Curve(wt, angles.map((a) => a[1]))
@@ -158,8 +174,16 @@ export class ArmWarp {
   }
 
   /** a key's wrist angles: given outright, or the reachable angles closest to its racket orientation */
-  private keyAngles(k: ArmKey, rig: Rig, base: (t: number) => void, t: number, grip: Grip | null, near: { pron: number; ext: number; dev: number } | null): V3 {
-    if (k.wrist) return k.wrist.map((a) => a * DEG) as V3
+  private keyAngles(
+    k: ArmKey,
+    rig: Rig,
+    base: (t: number) => void,
+    t: number,
+    grip: Grip | null,
+    near: { pron: number; ext: number; dev: number; w?: number } | null,
+    freeElbow: boolean | undefined,
+  ): { angles: V3; swivel?: number } {
+    if (k.wrist) return { angles: k.wrist.map((a) => a * DEG) as V3 }
     base(t)
     const p = this.warped(rig, t, false)
     // court (author) or chest frame → world
@@ -171,8 +195,28 @@ export class ArmWarp {
     const dir = world(k.racket!.dir).normalize()
     const nk = k.racket!.normal
     const normal = nk ? world(nk).addScaledVector(dir, -world(nk).dot(dir)).normalize() : null
-    this.arm.apply(rig, p, { dir, normal, grip: grip!, near })
-    return [p.pron, p.ext, p.dev] as V3
+    const aim = { dir, normal, grip: grip!, near }
+    if (!freeElbow) {
+      this.arm.apply(rig, p, aim, true)
+      return { angles: [p.pron, p.ext, p.dev] }
+    }
+    // turn the elbow around the shoulder–wrist line to find the most natural wrist for this racket, staying near
+    // the capture's own elbow (`off` is how far the swivel keys already turn it here)
+    const s0 = p.swivel
+    const off = this.dSwivel.at(t)
+    let best = 0, cost = Infinity
+    const tryAt = (d: number) => {
+      p.swivel = s0 + d
+      this.arm.apply(rig, p, aim, true)
+      const c = this.arm.aimCost + 0.08 * (off + d) ** 2
+      if (c < cost) { cost = c; best = d }
+    }
+    for (let o = -90; o <= 90; o += 10) tryAt(o * DEG - off)
+    const b0 = best
+    for (let d = -8; d <= 8; d += 2) tryAt(b0 + d * DEG)
+    p.swivel = s0 + best
+    this.arm.apply(rig, p, aim, true)
+    return { angles: [p.pron, p.ext, p.dev], swivel: best }
   }
 
   /**

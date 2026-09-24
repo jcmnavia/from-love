@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { StrokeScene } from '../studio/StrokeScene'
 import { isPlayerModel, useStudio, type CamPreset } from '../studio/store'
@@ -14,6 +14,7 @@ import type { Stroke } from '../engine/types'
  *        chosen instants (seconds on the played timeline), a camera placed at an offset from the
  *        player (world metres: +x = player's right, −z = toward the net) and no overlays; used to
  *        line renders up against reference footage (scripts/video/compare.py)
+ *   /sheet/slice?clip=slice-b&raw=1               another capture, without the arm/trunk corrections
  */
 export function SheetPage() {
   const { strokeId } = useParams()
@@ -30,8 +31,20 @@ export function SheetPage() {
   useEffect(() => {
     if (isPlayerModel(model)) useStudio.setState({ model })
   }, [model])
-  if (!stroke) return <main>Unknown stroke</main>
-  return <Sheet authored={stroke} preset={preset} times={times} camOffset={camOffset} cols={cols} clean={clean} />
+  // dev overrides: another capture (`clip=`) and/or the raw capture without the arm and trunk corrections (`raw=1`)
+  const clipId = params.get('clip')
+  const raw = params.get('raw') === '1'
+  const authored = useMemo<Stroke | undefined>(
+    () =>
+      stroke && {
+        ...stroke,
+        ...(clipId ? { clip: clipId } : {}),
+        ...(raw ? { armKeys: undefined, leftArmKeys: undefined, leftGrip: undefined, trunkYaw: undefined } : {}),
+      },
+    [stroke, clipId, raw],
+  )
+  if (!authored) return <main>Unknown stroke</main>
+  return <Sheet key={`${clipId}-${raw}`} authored={authored} preset={preset} times={times} camOffset={camOffset} cols={cols} clean={clean} />
 }
 
 function Sheet(props: { authored: Stroke; preset: CamPreset; times: number[] | null; camOffset?: [number, number, number]; cols: number; clean: boolean }) {

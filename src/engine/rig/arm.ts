@@ -29,8 +29,11 @@ export interface RacketAim {
   dir: Vector3
   normal: Vector3 | null
   grip: { q: Quaternion }
-  /** wrist angles to stay close to (the previous key's), so consecutive keys do not flip the forearm */
-  near?: { pron: number; ext: number; dev: number } | null
+  /**
+   * wrist angles to stay close to (the previous key's), so consecutive keys do not flip the forearm; `w` is how
+   * strongly (keys a few frames apart must stay close, keys far apart may differ)
+   */
+  near?: { pron: number; ext: number; dev: number; w?: number } | null
 }
 
 export const emptyArmPose = (): ArmPose => ({ hand: new Vector3(), swivel: 0, flex: 0, pron: 0, ext: 0, dev: 0 })
@@ -42,6 +45,18 @@ export const ARM_LIMITS = {
   dev: [-40 * DEG, 25 * DEG],
   pron: [-85 * DEG, 100 * DEG],
 } as const
+
+/**
+ * The range a tennis player's wrist actually works in, radians: extension up to ~75° is used in the forehand lag
+ * (elite max ≈ 89°, Landlinger 2010), flexion rarely past ~35°, ulnar deviation up to ~30° and radial ~12° under
+ * load. The racket solver pays to go beyond it, so it turns the forearm and upper arm first, as players do.
+ */
+export const WRIST_COMFORT = {
+  ext: [-35 * DEG, 75 * DEG],
+  dev: [-30 * DEG, 12 * DEG],
+  pron: [-75 * DEG, 85 * DEG],
+} as const
+const COMFORT_WEIGHT = 3
 
 /** share of the pronation carried by the forearm bone (the rest twists the hand); spreads the skin twist */
 const FOREARM_TWIST_SHARE = 0.5
@@ -166,8 +181,10 @@ export class Arm {
         c += 0.5 * en * en
       }
       c += 0.03 * (ex * ex + dv * dv) + 0.01 * pr * pr
+      const over = (x: number, [lo, hi]: readonly [number, number]) => Math.max(0, x - hi, lo - x)
+      c += COMFORT_WEIGHT * (over(ex, WRIST_COMFORT.ext) ** 2 + over(dv, WRIST_COMFORT.dev) ** 2 + over(pr, WRIST_COMFORT.pron) ** 2)
       const nr = aim.near
-      if (nr) c += 0.05 * ((pr - nr.pron) ** 2 + 0.3 * (ex - nr.ext) ** 2 + 0.3 * (dv - nr.dev) ** 2)
+      if (nr) c += (nr.w ?? 0.05) * ((pr - nr.pron) ** 2 + 0.6 * (ex - nr.ext) ** 2 + 0.6 * (dv - nr.dev) ** 2)
       return c
     }
     const L = ARM_LIMITS
@@ -195,7 +212,11 @@ export class Arm {
     pose.pron = best.pr
     pose.ext = best.ex
     pose.dev = best.dv
+    this.aimCost = best.c
   }
+
+  /** the cost of the last racket aim (direction and face error plus wrist strain), for callers searching the elbow */
+  aimCost = 0
 
   /** anatomical upper-arm frame: x = hinge axis, y = along the bone, z = x × y */
   private armBasis(uA: Vector3, n: Vector3, out: Quaternion) {
@@ -343,7 +364,10 @@ export class Arm {
       pose.ext = this.raw.ext = ext
       pose.dev = this.raw.dev = dev
       if (dry) return pose
-    } else if (handWorld) this.aim(B, handWorld, pose)
+    } else if (handWorld) {
+      this.aim(B, handWorld, pose)
+      if (dry) return pose
+    }
     const clamp = (x: number, [lo, hi]: readonly [number, number]) => Math.min(Math.max(x, lo), hi)
     pose.pron = clamp(pose.pron, ARM_LIMITS.pron)
     pose.ext = clamp(pose.ext, ARM_LIMITS.ext)

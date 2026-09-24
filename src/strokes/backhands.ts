@@ -376,10 +376,11 @@ export const backhandOneHanded: Stroke = {
   trunkYaw: [[-1.4, 0], [-0.1, 0], [-0.03, -15], [0.05, -35], [0.2, -42], [0.45, -30]],
   armKeys: [
     { t: -1.4, racket: { dir: [-0.1, 0.8, 0.6] } },
-    // racket vertical in front of the face with both hands on it, then carried up behind the left shoulder
-    { t: -1.0, frame: 'chest', hand: [-0.25, -0.25, 0.3], racket: { dir: [0, 1, 0.1] } },
-    { t: -0.7, frame: 'chest', hand: [-0.35, -0.2, 0.25], racket: { dir: [0.05, 0.98, -0.1] } },
-    { t: -0.45, frame: 'chest', hand: [-0.42, -0.1, 0.15], racket: { dir: [0.1, 0.95, -0.25] } },
+    // racket up in front with both hands on it (tip leaning left: the right wrist cannot cock further with the
+    // left hand on the throat), then carried up behind the left shoulder
+    { t: -1.0, frame: 'chest', hand: [-0.22, -0.18, 0.32], racket: { dir: [-0.45, 0.85, 0.25] } },
+    { t: -0.7, frame: 'chest', hand: [-0.35, -0.15, 0.25], racket: { dir: [-0.3, 0.95, 0] } },
+    { t: -0.45, frame: 'chest', hand: [-0.42, -0.1, 0.15], racket: { dir: [-0.15, 0.95, -0.25] } },
     // the head stays up until ~0.27 s before contact, then drops behind as the hand falls to the hip
     { t: -0.27, frame: 'chest', hand: [-0.4, -0.15, 0.15] },
     { t: -0.27, racket: { dir: [-0.1, 0.8, -0.6] } },

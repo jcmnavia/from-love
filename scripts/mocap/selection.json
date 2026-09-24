@@ -112,5 +112,24 @@
     "mirror": false,
     "vPeak": 5.76,
     "score": 3.11
+  },
+  {
+    "id": "backhand-slice",
+    "file": "jgacosta_VReves.bvh",
+    "player": "jgacosta",
+    "peak": 413,
+    "contact": 4.14,
+    "window": [
+      3.09,
+      4.99
+    ],
+    "net": [
+      0.35589,
+      0.93453
+    ],
+    "netMethod": "mean volley contact-hand directions of jgacosta, turned -50\u00b0 so the player rests slightly side-on (~30\u00b0) as before a slice",
+    "mirror": false,
+    "vPeak": 4.91,
+    "score": 0
   }
 ]
